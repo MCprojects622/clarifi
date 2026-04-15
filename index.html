@@ -1454,107 +1454,204 @@ function renderAll() {
   // Nav counts
   function setCount(id, n) {
     var el = document.getElementById(id);
+    if (!el) return;
     if (n > 0) { el.textContent = n; el.style.display = ''; } else { el.style.display = 'none'; }
   }
   setCount('nav-cards-count', state.cards.length);
   setCount('nav-income-count', state.income.length);
   setCount('nav-upcoming-count', allUpcoming.filter(function(u){ return !u.paid; }).length);
+  setCount('nav-billssubs-count', state.subscriptions.length + state.bills.length);
 
-  // Home cards
+  // Home cards grid
   var hcg = document.getElementById('home-cards-grid');
-  if (state.cards.length===0) {
-    hcg.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">💳</div><div class="empty-title" style="font-size:16px">No cards yet</div><div class="empty-sub" style="font-size:13px">Add your cards to see available balance</div><button class="empty-btn" onclick="switchScreen(\'cards\')">Add Cards →</button></div>';
-  } else {
-    hcg.innerHTML = '<div class="cards-grid">' + state.cards.map(function(c){
-      var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
-      return '<div class="card-chip" onclick="switchScreen(\'cards\')">' +
-        '<div class="card-chip-header"><div class="card-chip-name">'+c.name.substring(0,14).toUpperCase()+'</div><div class="card-chip-dot" style="background:'+color+'"></div></div>' +
-        '<div class="card-available">'+fmt(avail)+'</div>' +
-        '<div class="card-bar-track"><div class="card-bar-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
-        '<div class="card-usage">'+fmt(c.balance)+' of '+fmt(c.limit)+' used</div></div>';
-    }).join('') + '</div>';
+  if (hcg) {
+    if (state.cards.length===0) {
+      hcg.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">&#x1F4B3;</div><div class="empty-title" style="font-size:16px">No cards yet</div><div class="empty-sub" style="font-size:13px">Add your cards to see available balance</div><button class="empty-btn clarifi-goto-cards">Add Cards</button></div>';
+    } else {
+      hcg.innerHTML = '<div class="cards-grid">' + state.cards.map(function(c){
+        var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
+        return '<div class="card-chip clarifi-goto-cards" style="cursor:pointer">' +
+          '<div class="card-chip-header"><div class="card-chip-name">'+c.name.substring(0,14).toUpperCase()+'</div><div class="card-chip-dot" style="background:'+color+'"></div></div>' +
+          '<div class="card-available">'+fmt(avail)+'</div>' +
+          '<div class="card-bar-track"><div class="card-bar-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
+          '<div class="card-usage">'+fmt(c.balance)+' of '+fmt(c.limit)+' used</div></div>';
+      }).join('') + '</div>';
+    }
   }
 
-  // Home upcoming preview
+  // Home upcoming preview (next 3)
   var hup = document.getElementById('home-upcoming-preview');
-  var next3 = allUpcoming.filter(function(u){ return !u.paid; }).slice(0,3);
-  if (next3.length===0) {
-    hup.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">📅</div><div class="empty-title" style="font-size:16px">Nothing due</div><div class="empty-sub" style="font-size:13px">Add bills and payments</div><button class="empty-btn" onclick="switchScreen(\'upcoming\')">Add →</button></div>';
-  } else {
-    hup.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' + next3.map(function(u){ return upcomingRowMini(u); }).join('') + '</div>';
+  if (hup) {
+    var next3 = allUpcoming.filter(function(u){ return !u.paid; }).slice(0,3);
+    if (next3.length===0) {
+      hup.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">&#x1F4C5;</div><div class="empty-title" style="font-size:16px">Nothing due</div><div class="empty-sub" style="font-size:13px">Add bills and payments</div><button class="empty-btn clarifi-goto-upcoming">Add</button></div>';
+    } else {
+      hup.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' + next3.map(function(u){ return upcomingRowMini(u); }).join('') + '</div>';
+    }
   }
 
   // Home income
   var hil = document.getElementById('home-income-list');
-  if (state.income.length===0) {
-    hil.innerHTML = '<div class="income-add-row" onclick="switchScreen(\'income\')"><span>➕</span> Add your income streams to see your full picture</div>';
-  } else {
-    hil.innerHTML = state.income.map(function(i){ return incomeItemHTML(i, false); }).join('') +
-      '<div class="income-add-row" onclick="openModal(\'income\')"><span>➕</span> Add another income stream</div>';
+  if (hil) {
+    if (state.income.length===0) {
+      hil.innerHTML = '<div class="income-add-row clarifi-goto-income"><span>&#x2795;</span> Add your income streams to see your full picture</div>';
+    } else {
+      hil.innerHTML = state.income.map(function(i){ return incomeItemHTML(i, false); }).join('') +
+        '<div class="income-add-row clarifi-add-income"><span>&#x2795;</span> Add another income stream</div>';
+    }
   }
 
-  // Cards full
+  // Cards full page
   var cfc = document.getElementById('cards-full-content');
-  if (state.cards.length===0) {
-    cfc.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><div class="empty-title">No cards added yet</div><div class="empty-sub">Add your credit cards to track available balance, usage, and due dates</div><button class="empty-btn" onclick="openModal(\'card\')">+ Add Your First Card</button></div>';
-  } else {
-    cfc.innerHTML = '<div class="cards-full-grid">' + state.cards.map(function(c){
-      var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
-      var status=pct<0.5?'Good 🟢':pct<0.8?'Getting full 🟡':'Almost maxed 🔴';
-      return '<div class="card-full">' +
-        '<div class="card-full-header"><div><div class="card-full-name">'+c.name+'</div><div class="card-full-type">'+c.type+'</div></div><div class="card-full-badge">'+status+'</div></div>' +
-        '<div class="card-full-body">' +
-        '<div class="card-full-row">' +
-        '<div><div class="card-stat-label">Available</div><div class="card-stat-val green">'+fmt(avail)+'</div></div>' +
-        '<div><div class="card-stat-label">Balance</div><div class="card-stat-val">'+fmt(c.balance)+'</div></div>' +
-        '<div><div class="card-stat-label">Limit</div><div class="card-stat-val">'+fmt(c.limit)+'</div></div>' +
-        '</div>' +
-        '<div class="card-progress-track"><div class="card-progress-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
-        '<div class="card-progress-labels"><span>'+Math.round(pct*100)+'% used</span><span>'+Math.round((1-pct)*100)+'% available</span></div>' +
-        (c.statement||c.due?'<div class="card-dates">'+(c.statement?'<div class="card-date-pill"><div class="card-date-lbl">Statement Closes</div><div class="card-date-val">'+c.statement+'</div></div>':'')+(c.due?'<div class="card-date-pill"><div class="card-date-lbl">Payment Due</div><div class="card-date-val">'+c.due+'</div></div>':'')+'</div>':'') +
-        '<div class="card-actions">' +
-        '<button onclick="editCard('' + String(c.id) + '')" style="background:var(--coral-light);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">&#9998; Edit</button>' +
-        '<button onclick="deleteCard('' + String(c.id) + '')" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove</button>' +
-        '</div>' +
-        '</div></div>';
-    }).join('') + '</div>';
+  if (cfc) {
+    if (state.cards.length===0) {
+      cfc.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F4B3;</div><div class="empty-title">No cards added yet</div><div class="empty-sub">Add your credit cards to track available balance, usage, and due dates</div><button class="empty-btn clarifi-add-card">+ Add Your First Card</button></div>';
+    } else {
+      cfc.innerHTML = '<div class="cards-full-grid">' + state.cards.map(function(c){
+        var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
+        var status=pct<0.5?'Good &#x1F7E2;':pct<0.8?'Getting full &#x1F7E1;':'Almost maxed &#x1F534;';
+        var cid = String(c.id);
+        return '<div class="card-full">' +
+          '<div class="card-full-header"><div><div class="card-full-name">'+c.name+'</div><div class="card-full-type">'+c.type+'</div></div><div class="card-full-badge">'+status+'</div></div>' +
+          '<div class="card-full-body">' +
+          '<div class="card-full-row">' +
+          '<div><div class="card-stat-label">Available</div><div class="card-stat-val green">'+fmt(avail)+'</div></div>' +
+          '<div><div class="card-stat-label">Balance</div><div class="card-stat-val">'+fmt(c.balance)+'</div></div>' +
+          '<div><div class="card-stat-label">Limit</div><div class="card-stat-val">'+fmt(c.limit)+'</div></div>' +
+          '</div>' +
+          '<div class="card-progress-track"><div class="card-progress-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
+          '<div class="card-progress-labels"><span>'+Math.round(pct*100)+'% used</span><span>'+Math.round((1-pct)*100)+'% available</span></div>' +
+          (c.statement||c.due?'<div class="card-dates">'+(c.statement?'<div class="card-date-pill"><div class="card-date-lbl">Statement Closes</div><div class="card-date-val">'+c.statement+'</div></div>':'')+(c.due?'<div class="card-date-pill"><div class="card-date-lbl">Payment Due</div><div class="card-date-val">'+c.due+'</div></div>':'')+'</div>':'') +
+          '<div class="card-actions">' +
+          '<button class="clarifi-edit-card" data-id="'+cid+'" style="background:var(--coral-light);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">&#9998; Edit</button>' +
+          '<button class="clarifi-del-card" data-id="'+cid+'" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove</button>' +
+          '</div>' +
+          '</div></div>';
+      }).join('') + '</div>';
+    }
   }
 
-  // Income full
+  // Income full page
   var ifl = document.getElementById('income-full-list');
-  var itot = state.income.reduce(function(s,i){ return s+i.amount; },0);
-  document.getElementById('income-total-display').textContent = 'Total: '+fmt(itot)+'/month';
-  if (state.income.length===0) {
-    ifl.innerHTML = '<div class="empty-state" style="padding:32px"><div class="empty-icon">💰</div><div class="empty-title">No income added</div><div class="empty-sub">Add your primary job, gig earnings, and any other income streams</div><button class="empty-btn" onclick="openModal(\'income\')">+ Add Income Source</button></div>';
-  } else {
-    ifl.innerHTML = state.income.map(function(i){ return incomeItemHTML(i, true); }).join('') +
-      '<div class="income-add-row" onclick="openModal(\'income\')"><span>➕</span> Add another income stream</div>';
+  if (ifl) {
+    var itot = state.income.reduce(function(s,i){ return s+i.amount; },0);
+    var itd = document.getElementById('income-total-display');
+    if (itd) itd.textContent = 'Total: '+fmt(itot)+'/month';
+    if (state.income.length===0) {
+      ifl.innerHTML = '<div class="empty-state" style="padding:32px"><div class="empty-icon">&#x1F4B0;</div><div class="empty-title">No income added</div><div class="empty-sub">Add your primary job, gig earnings, and any other income streams</div><button class="empty-btn clarifi-add-income">+ Add Income Source</button></div>';
+    } else {
+      ifl.innerHTML = state.income.map(function(i){ return incomeItemHTML(i, true); }).join('') +
+        '<div class="income-add-row clarifi-add-income"><span>&#x2795;</span> Add another income stream</div>';
+    }
   }
 
-  // Upcoming full
+  // Upcoming full page
   var ufc = document.getElementById('upcoming-full-content');
-  var upTotal = allUpcoming.filter(function(u){ return !u.paid; }).reduce(function(s,u){ return s+u.amount; },0);
-  document.getElementById('upcoming-total-pill').textContent = 'Due: '+fmt(upTotal);
-  if (allUpcoming.length===0) {
-    ufc.innerHTML = '<div class="empty-state" style="padding:32px"><div class="empty-icon">📅</div><div class="empty-title">Nothing coming up</div><div class="empty-sub">Add your bills, subscriptions, and credit card due dates</div><button class="empty-btn" onclick="openModal(\'upcoming\')">+ Add Payment</button></div>';
-  } else {
-    ufc.innerHTML = '<table class="upcoming-table"><thead><tr><th>Date</th><th>Payment</th><th>Type</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>' +
-      allUpcoming.map(function(u){ return upcomingTableRow(u); }).join('') +
-      '</tbody></table>';
+  if (ufc) {
+    var upTotal = allUpcoming.filter(function(u){ return !u.paid; }).reduce(function(s,u){ return s+u.amount; },0);
+    var utp = document.getElementById('upcoming-total-pill');
+    if (utp) utp.textContent = 'Due: '+fmt(upTotal);
+    if (allUpcoming.length===0) {
+      ufc.innerHTML = '<div class="empty-state" style="padding:32px"><div class="empty-icon">&#x1F4C5;</div><div class="empty-title">Nothing coming up</div><div class="empty-sub">Add your bills, subscriptions, and credit card due dates</div><button class="empty-btn clarifi-add-upcoming">+ Add Payment</button></div>';
+    } else {
+      ufc.innerHTML = '<table class="upcoming-table"><thead><tr><th>Date</th><th>Payment</th><th>Type</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>' +
+        allUpcoming.map(function(u){ return upcomingTableRow(u); }).join('') +
+        '</tbody></table>';
+    }
+  }
+
+  // Bills & Subs page
+  var subsTotal = state.subscriptions.reduce(function(s,x){ return s+x.amount; },0);
+  var billsTotal = state.bills.reduce(function(s,x){ return s+x.amount; },0);
+  var sd = document.getElementById('subs-total-display');
+  var bd = document.getElementById('bills-total-display');
+  if (sd) sd.textContent = 'Total: '+fmt(subsTotal)+'/mo';
+  if (bd) bd.textContent = 'Total: '+fmt(billsTotal)+'/mo';
+
+  var subsList = document.getElementById('subs-list');
+  if (subsList) {
+    if (state.subscriptions.length===0) {
+      subsList.innerHTML = '<div class="empty-state" style="padding:28px"><div class="empty-icon">&#x1F501;</div><div class="empty-title" style="font-size:16px">No subscriptions yet</div><div class="empty-sub" style="font-size:13px">Add Netflix, Spotify, gym — auto-appear in Coming Up</div><button class="empty-btn clarifi-add-sub">+ Add Subscription</button></div>';
+    } else {
+      subsList.innerHTML = '<div class="income-list">' + state.subscriptions.map(function(s){
+        var sid = String(s.id);
+        var dayStr = s.day ? s.day + (s.day==1?'st':s.day==2?'nd':s.day==3?'rd':'th') + ' of month' : 'No date set';
+        return '<div class="income-item">' +
+          '<div class="income-icon-wrap">&#x1F501;</div>' +
+          '<div class="income-info"><div class="income-name">'+s.name+'</div><div class="income-meta">'+s.freq+' &middot; Due '+dayStr+(s.card?' &middot; '+s.card:'')+'</div></div>' +
+          '<div class="income-amount" style="color:var(--coral)">'+fmt(s.amount)+'</div>' +
+          '<button class="del-btn clarifi-edit-sub" data-id="'+sid+'" title="Edit" style="color:#00B87A;margin-right:2px">&#9998;</button>' +
+          '<button class="del-btn clarifi-del-sub" data-id="'+sid+'" title="Remove">&#x2715;</button>' +
+          '</div>';
+      }).join('') +
+      '<div class="income-add-row clarifi-add-sub"><span>&#x2795;</span> Add another subscription</div>' +
+      '</div>';
+    }
+  }
+
+  var billsList = document.getElementById('bills-list');
+  if (billsList) {
+    if (state.bills.length===0) {
+      billsList.innerHTML = '<div class="empty-state" style="padding:28px"><div class="empty-icon">&#x1F4CB;</div><div class="empty-title" style="font-size:16px">No bills yet</div><div class="empty-sub" style="font-size:13px">Add rent, electric, internet — auto-appear in Coming Up</div><button class="empty-btn clarifi-add-bill">+ Add Bill</button></div>';
+    } else {
+      billsList.innerHTML = '<div class="income-list">' + state.bills.map(function(b){
+        var bid = String(b.id);
+        var dayStr = b.day ? b.day + (b.day==1?'st':b.day==2?'nd':b.day==3?'rd':'th') + ' of month' : 'No date set';
+        return '<div class="income-item">' +
+          '<div class="income-icon-wrap">&#x1F4CB;</div>' +
+          '<div class="income-info"><div class="income-name">'+b.name+'</div><div class="income-meta">Recurring &middot; Due '+dayStr+(b.card?' &middot; '+b.card:'')+'</div></div>' +
+          '<div class="income-amount" style="color:var(--gold)">'+fmt(b.amount)+'</div>' +
+          '<button class="del-btn clarifi-edit-bill" data-id="'+bid+'" title="Edit" style="color:#00B87A;margin-right:2px">&#9998;</button>' +
+          '<button class="del-btn clarifi-del-bill" data-id="'+bid+'" title="Remove">&#x2715;</button>' +
+          '</div>';
+      }).join('') +
+      '<div class="income-add-row" style="border-color:var(--gold-mid);color:var(--gold)" class="clarifi-add-bill"><span>&#x2795;</span> Add another bill</div>' +
+      '</div>';
+    }
   }
 }
+
 
 function incomeItemHTML(i, showDelete) {
   var iid = String(i.id);
+  var btns = showDelete
+    ? '<button class="del-btn clarifi-edit-income" data-id="'+iid+'" title="Edit" style="color:#00B87A;margin-right:2px">&#9998;</button>' +
+      '<button class="del-btn clarifi-del-income" data-id="'+iid+'" title="Remove">&#x2715;</button>'
+    : '';
   return '<div class="income-item">' +
     '<div class="income-icon-wrap">'+typeIcon(i.type)+'</div>' +
-    '<div class="income-info"><div class="income-name">'+i.name+'</div><div class="income-meta">'+i.type+' · '+i.freq+'</div></div>' +
+    '<div class="income-info"><div class="income-name">'+i.name+'</div>' +
+    '<div class="income-meta">'+i.type+' &middot; '+i.freq+'</div></div>' +
     '<div class="income-amount">'+fmt(i.amount)+'</div>' +
-    (showDelete?'<button class="del-btn" onclick="editIncome('' + iid + '')" title="Edit" style="color:var(--sage);margin-right:2px">&#9998;</button><button class="del-btn" onclick="deleteIncome('' + iid + '')" title="Remove">&#x2715;</button>':'') +
-    '</div>';
+    btns + '</div>';
 }
 
-window.markPaidUpcoming = window.markPaidUpcoming || markPaidUpcoming;
+
+function upcomingTableRow(u) {
+  var d = new Date(u.date+'T00:00:00');
+  var days = daysUntil(u.date);
+  var soon = days<=5 && !u.paid;
+  var statusClass = u.paid?'status-paid':soon?'status-soon':'status-due';
+  var statusText = u.paid?'Paid':days<=0?'Due now':days<=5?'Due soon':'Upcoming';
+  var uid = String(u.id);
+  var autoTag = u.auto ? '<span style="font-size:9px;background:#E8FFF5;color:#00B87A;border-radius:8px;padding:2px 6px;margin-left:5px;font-weight:800">AUTO</span>' : '';
+  var deleteBtn = u.auto ? '' : '<button class="del-btn clarifi-del-upcoming" data-id="'+uid+'" title="Remove">&#x2715;</button>';
+  var markBtnClass = 'mark-btn clarifi-mark-paid' + (u.paid ? ' undo' : '');
+  var markBtnText = u.paid ? 'Undo' : 'Mark paid';
+  var markBtn = '<button class="'+markBtnClass+'" data-id="'+uid+'">'+markBtnText+'</button>';
+  var day = d.getDate();
+  var mo = d.toLocaleString('default',{month:'short'}).toUpperCase();
+  var soonClass = soon ? ' soon' : '';
+  return '<tr>' +
+    '<td><div class="up-date-badge'+soonClass+'"><div class="up-date-day">'+day+'</div><div class="up-date-mo">'+mo+'</div></div></td>' +
+    '<td><div class="up-name">'+u.name+autoTag+'</div></td>' +
+    '<td><span class="up-type-pill">'+u.type+'</span></td>' +
+    '<td><div class="up-amount">'+fmt(u.amount)+'</div></td>' +
+    '<td><span class="status-badge '+statusClass+'">'+statusText+'</span></td>' +
+    '<td style="display:flex;gap:6px;align-items:center">'+markBtn+deleteBtn+'</td></tr>';
+}
+
+
 function upcomingRowMini(u) {
   var d = new Date(u.date+'T00:00:00');
   var days = daysUntil(u.date);
@@ -1709,6 +1806,32 @@ window.authSignOut = authSignOut;
 
 // Wire up auth buttons via event listeners after DOM ready
 document.addEventListener('DOMContentLoaded', function() {
+
+  // ── Global event delegation for all dynamic buttons ──────────
+  document.body.addEventListener('click', function(e) {
+    var el = e.target;
+    var id = el.getAttribute('data-id');
+
+    if (el.classList.contains('clarifi-edit-card')) { editCard(id); return; }
+    if (el.classList.contains('clarifi-del-card')) { deleteCard(id); return; }
+    if (el.classList.contains('clarifi-edit-income') || el.classList.contains('clarifi-edit-income')) { editIncome(id); return; }
+    if (el.classList.contains('clarifi-del-income')) { deleteIncome(id); return; }
+    if (el.classList.contains('clarifi-edit-sub')) { editSub(id); return; }
+    if (el.classList.contains('clarifi-del-sub')) { deleteSub(id); return; }
+    if (el.classList.contains('clarifi-edit-bill')) { editBill(id); return; }
+    if (el.classList.contains('clarifi-del-bill')) { deleteBill(id); return; }
+    if (el.classList.contains('clarifi-mark-paid')) { markPaidUpcoming(id); return; }
+    if (el.classList.contains('clarifi-del-upcoming')) { deleteUpcoming(id); return; }
+    if (el.classList.contains('clarifi-goto-cards')) { switchScreen('cards'); return; }
+    if (el.classList.contains('clarifi-goto-upcoming')) { switchScreen('upcoming'); return; }
+    if (el.classList.contains('clarifi-goto-income')) { switchScreen('income'); return; }
+    if (el.classList.contains('clarifi-add-card')) { openModal('card'); return; }
+    if (el.classList.contains('clarifi-add-income')) { openModal('income'); return; }
+    if (el.classList.contains('clarifi-add-sub')) { openModal('subscription'); return; }
+    if (el.classList.contains('clarifi-add-bill')) { openModal('bill'); return; }
+    if (el.classList.contains('clarifi-add-upcoming')) { openModal('upcoming'); return; }
+  });
+
   var btn = document.getElementById('auth-btn');
   var toggleLink = document.getElementById('auth-toggle-link');
   var forgotLink = document.getElementById('auth-forgot-link');
