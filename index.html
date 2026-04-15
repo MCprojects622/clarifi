@@ -1155,9 +1155,9 @@ window.markPaid = function(id) {
   if (u) { u.paid=!u.paid; save(); renderAll(); showToast(u.paid?'Marked as paid ✅':'Marked unpaid'); }
 }
 
-window.deleteCard = function(id) { state.cards=state.cards.filter(function(c){ return c.id!==id; }); save(); renderAll(); showToast('Card removed'); }
-window.deleteIncome = function(id) { state.income=state.income.filter(function(i){ return i.id!==id; }); save(); renderAll(); showToast('Income removed'); }
-window.deleteUpcoming = function(id) { state.upcoming=state.upcoming.filter(function(u){ return u.id!==id; }); save(); renderAll(); showToast('Payment removed'); }
+window.deleteCard = function(id) { state.cards=state.cards.filter(function(c){ return String(c.id)!==String(id); }); save(); renderAll(); showToast('Card removed'); }
+window.deleteIncome = function(id) { state.income=state.income.filter(function(i){ return String(i.id)!==String(id); }); save(); renderAll(); showToast('Income removed'); }
+window.deleteUpcoming = function(id) { state.upcoming=state.upcoming.filter(function(u){ return String(u.id)!==String(id); }); save(); renderAll(); showToast('Payment removed'); }
 
 function fmt(n) { return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
 function fmtShort(n) { return n>=1000?'$'+(n/1000).toFixed(1)+'k':'$'+Math.round(n); }
@@ -1285,12 +1285,12 @@ window.saveBill = function() {
 };
 
 window.deleteSub = function(id) {
-  state.subscriptions = state.subscriptions.filter(function(s){ return s.id !== id; });
+  state.subscriptions = state.subscriptions.filter(function(s){ return String(s.id) !== String(id); });
   save(); renderAll(); showToast('Subscription removed');
 };
 
 window.deleteBill = function(id) {
-  state.bills = state.bills.filter(function(b){ return b.id !== id; });
+  state.bills = state.bills.filter(function(b){ return String(b.id) !== String(id); });
   save(); renderAll(); showToast('Bill removed');
 };
 
@@ -1309,6 +1309,129 @@ window.markPaidUpcoming = function(id) {
     }
   }
 };
+
+
+// ── EDIT FUNCTIONS ────────────────────────────────────────────
+function editCard(id) {
+  var c = state.cards.find(function(x){ return String(x.id) === String(id); });
+  if (!c) return;
+  document.getElementById('edit-card-id').value = id;
+  document.getElementById('edit-card-name').value = c.name || '';
+  document.getElementById('edit-card-limit').value = c.limit || '';
+  document.getElementById('edit-card-balance').value = c.balance || '';
+  document.getElementById('edit-card-statement').value = c.statement || '';
+  document.getElementById('edit-card-due').value = c.due || '';
+  document.getElementById('modal-edit-card').classList.add('open');
+}
+window.editCard = editCard;
+
+function editIncome(id) {
+  var i = state.income.find(function(x){ return String(x.id) === String(id); });
+  if (!i) return;
+  document.getElementById('edit-income-id').value = id;
+  document.getElementById('edit-income-name').value = i.name || '';
+  document.getElementById('edit-income-amount').value = i.amount || '';
+  document.getElementById('edit-income-freq').value = i.freq || 'Biweekly';
+  document.getElementById('modal-edit-income').classList.add('open');
+}
+window.editIncome = editIncome;
+
+function editSub(id) {
+  var s = state.subscriptions.find(function(x){ return String(x.id) === String(id); });
+  if (!s) return;
+  document.getElementById('edit-sub-id').value = id;
+  document.getElementById('edit-sub-name').value = s.name || '';
+  document.getElementById('edit-sub-amount').value = s.amount || '';
+  document.getElementById('edit-sub-day').value = s.day || '';
+  document.getElementById('edit-sub-freq').value = s.freq || 'Monthly';
+  document.getElementById('edit-sub-card').value = s.card || '';
+  document.getElementById('modal-edit-sub').classList.add('open');
+}
+window.editSub = editSub;
+
+function editBill(id) {
+  var b = state.bills.find(function(x){ return String(x.id) === String(id); });
+  if (!b) return;
+  document.getElementById('edit-bill-id').value = id;
+  document.getElementById('edit-bill-name').value = b.name || '';
+  document.getElementById('edit-bill-amount').value = b.amount || '';
+  document.getElementById('edit-bill-day').value = b.day || '';
+  document.getElementById('edit-bill-card').value = b.card || '';
+  document.getElementById('modal-edit-bill').classList.add('open');
+}
+window.editBill = editBill;
+
+// Wire up edit modal save/cancel buttons
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Close buttons
+  ['edit-card','edit-income','edit-sub','edit-bill','edit-upcoming'].forEach(function(name) {
+    var closeBtn = document.getElementById('close-' + name);
+    var cancelBtn = document.getElementById('cancel-' + name);
+    var overlay = document.getElementById('modal-' + name);
+    if (closeBtn) closeBtn.addEventListener('click', function(){ overlay.classList.remove('open'); });
+    if (cancelBtn) cancelBtn.addEventListener('click', function(){ overlay.classList.remove('open'); });
+    if (overlay) overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.classList.remove('open'); });
+  });
+
+  // Save card
+  var saveCardBtn = document.getElementById('save-edit-card');
+  if (saveCardBtn) saveCardBtn.addEventListener('click', function() {
+    var id = document.getElementById('edit-card-id').value;
+    var c = state.cards.find(function(x){ return String(x.id) === String(id); });
+    if (!c) return;
+    c.name      = document.getElementById('edit-card-name').value.trim();
+    c.limit     = parseFloat(document.getElementById('edit-card-limit').value) || 0;
+    c.balance   = parseFloat(document.getElementById('edit-card-balance').value) || 0;
+    c.statement = document.getElementById('edit-card-statement').value.trim();
+    c.due       = document.getElementById('edit-card-due').value.trim();
+    save(); document.getElementById('modal-edit-card').classList.remove('open');
+    renderAll(); showToast('Card updated! ✅');
+  });
+
+  // Save income
+  var saveIncomeBtn = document.getElementById('save-edit-income');
+  if (saveIncomeBtn) saveIncomeBtn.addEventListener('click', function() {
+    var id = document.getElementById('edit-income-id').value;
+    var i = state.income.find(function(x){ return String(x.id) === String(id); });
+    if (!i) return;
+    i.name   = document.getElementById('edit-income-name').value.trim();
+    i.amount = parseFloat(document.getElementById('edit-income-amount').value) || 0;
+    i.freq   = document.getElementById('edit-income-freq').value;
+    save(); document.getElementById('modal-edit-income').classList.remove('open');
+    renderAll(); showToast('Income updated! ✅');
+  });
+
+  // Save subscription
+  var saveSubBtn = document.getElementById('save-edit-sub');
+  if (saveSubBtn) saveSubBtn.addEventListener('click', function() {
+    var id = document.getElementById('edit-sub-id').value;
+    var s = state.subscriptions.find(function(x){ return String(x.id) === String(id); });
+    if (!s) return;
+    s.name   = document.getElementById('edit-sub-name').value.trim();
+    s.amount = parseFloat(document.getElementById('edit-sub-amount').value) || 0;
+    s.day    = document.getElementById('edit-sub-day').value.trim();
+    s.freq   = document.getElementById('edit-sub-freq').value;
+    s.card   = document.getElementById('edit-sub-card').value.trim();
+    save(); document.getElementById('modal-edit-sub').classList.remove('open');
+    renderAll(); showToast('Subscription updated! ✅');
+  });
+
+  // Save bill
+  var saveBillBtn = document.getElementById('save-edit-bill');
+  if (saveBillBtn) saveBillBtn.addEventListener('click', function() {
+    var id = document.getElementById('edit-bill-id').value;
+    var b = state.bills.find(function(x){ return String(x.id) === String(id); });
+    if (!b) return;
+    b.name   = document.getElementById('edit-bill-name').value.trim();
+    b.amount = parseFloat(document.getElementById('edit-bill-amount').value) || 0;
+    b.day    = document.getElementById('edit-bill-day').value.trim();
+    b.card   = document.getElementById('edit-bill-card').value.trim();
+    save(); document.getElementById('modal-edit-bill').classList.remove('open');
+    renderAll(); showToast('Bill updated! ✅');
+  });
+
+});
 
 function renderAll() {
   var allUpcoming = getAllUpcoming();
@@ -1389,7 +1512,10 @@ function renderAll() {
         '<div class="card-progress-track"><div class="card-progress-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
         '<div class="card-progress-labels"><span>'+Math.round(pct*100)+'% used</span><span>'+Math.round((1-pct)*100)+'% available</span></div>' +
         (c.statement||c.due?'<div class="card-dates">'+(c.statement?'<div class="card-date-pill"><div class="card-date-lbl">Statement Closes</div><div class="card-date-val">'+c.statement+'</div></div>':'')+(c.due?'<div class="card-date-pill"><div class="card-date-lbl">Payment Due</div><div class="card-date-val">'+c.due+'</div></div>':'')+'</div>':'') +
-        '<div class="card-actions"><button onclick="deleteCard('+c.id+')" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove Card</button></div>' +
+        '<div class="card-actions">' +
+        '<button onclick="editCard('' + String(c.id) + '')" style="background:var(--coral-light);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">&#9998; Edit</button>' +
+        '<button onclick="deleteCard('' + String(c.id) + '')" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove</button>' +
+        '</div>' +
         '</div></div>';
     }).join('') + '</div>';
   }
@@ -1419,11 +1545,12 @@ function renderAll() {
 }
 
 function incomeItemHTML(i, showDelete) {
+  var iid = String(i.id);
   return '<div class="income-item">' +
     '<div class="income-icon-wrap">'+typeIcon(i.type)+'</div>' +
     '<div class="income-info"><div class="income-name">'+i.name+'</div><div class="income-meta">'+i.type+' · '+i.freq+'</div></div>' +
     '<div class="income-amount">'+fmt(i.amount)+'</div>' +
-    (showDelete?'<button class="del-btn" onclick="deleteIncome('+i.id+')" title="Remove">✕</button>':'') +
+    (showDelete?'<button class="del-btn" onclick="editIncome('' + iid + '')" title="Edit" style="color:var(--sage);margin-right:2px">&#9998;</button><button class="del-btn" onclick="deleteIncome('' + iid + '')" title="Remove">&#x2715;</button>':'') +
     '</div>';
 }
 
@@ -1628,5 +1755,183 @@ auth.onAuthStateChanged(function(user) {
   }
 });
 </script>
+
+<!-- EDIT CARD -->
+<div class="modal-overlay" id="modal-edit-card">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Card ✏️</div>
+      <div class="modal-close" id="close-edit-card">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card Name</label>
+      <input class="form-input" id="edit-card-name" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Credit Limit ($)</label>
+        <input class="form-input" id="edit-card-limit" type="number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Current Balance ($)</label>
+        <input class="form-input" id="edit-card-balance" type="number">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Statement Closes</label>
+        <input class="form-input" id="edit-card-statement" type="text">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Payment Due</label>
+        <input class="form-input" id="edit-card-due" type="text">
+      </div>
+    </div>
+    <input type="hidden" id="edit-card-id">
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-edit-card">Cancel</button>
+      <button class="btn-save" id="save-edit-card">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT INCOME -->
+<div class="modal-overlay" id="modal-edit-income">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Income ✏️</div>
+      <div class="modal-close" id="close-edit-income">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Source Name</label>
+      <input class="form-input" id="edit-income-name" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Monthly Amount ($)</label>
+        <input class="form-input" id="edit-income-amount" type="number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pay Frequency</label>
+        <select class="form-input" id="edit-income-freq">
+          <option>Biweekly</option>
+          <option>Weekly</option>
+          <option>Monthly</option>
+          <option>Variable</option>
+        </select>
+      </div>
+    </div>
+    <input type="hidden" id="edit-income-id">
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-edit-income">Cancel</button>
+      <button class="btn-save" id="save-edit-income">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SUBSCRIPTION -->
+<div class="modal-overlay" id="modal-edit-sub">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Subscription ✏️</div>
+      <div class="modal-close" id="close-edit-sub">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Service Name</label>
+      <input class="form-input" id="edit-sub-name" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Monthly Amount ($)</label>
+        <input class="form-input" id="edit-sub-amount" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date (day of month)</label>
+        <input class="form-input" id="edit-sub-day" type="number" min="1" max="31">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Frequency</label>
+        <select class="form-input" id="edit-sub-freq">
+          <option>Monthly</option>
+          <option>Annual</option>
+          <option>Weekly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Paid With</label>
+        <input class="form-input" id="edit-sub-card" type="text">
+      </div>
+    </div>
+    <input type="hidden" id="edit-sub-id">
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-edit-sub">Cancel</button>
+      <button class="btn-save" id="save-edit-sub">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT BILL -->
+<div class="modal-overlay" id="modal-edit-bill">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Bill ✏️</div>
+      <div class="modal-close" id="close-edit-bill">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bill Name</label>
+      <input class="form-input" id="edit-bill-name" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="edit-bill-amount" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date (day of month)</label>
+        <input class="form-input" id="edit-bill-day" type="number" min="1" max="31">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Paid With</label>
+      <input class="form-input" id="edit-bill-card" type="text">
+    </div>
+    <input type="hidden" id="edit-bill-id">
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-edit-bill">Cancel</button>
+      <button class="btn-save" id="save-edit-bill">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT INCOME MODAL (for income screen) -->
+<div class="modal-overlay" id="modal-edit-upcoming">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Payment ✏️</div>
+      <div class="modal-close" id="close-edit-upcoming">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Payment Name</label>
+      <input class="form-input" id="edit-up-name" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="edit-up-amount" type="number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date</label>
+        <input class="form-input" id="edit-up-date" type="date">
+      </div>
+    </div>
+    <input type="hidden" id="edit-up-id">
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-edit-upcoming">Cancel</button>
+      <button class="btn-save" id="save-edit-upcoming">Save Changes</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
