@@ -234,9 +234,11 @@ body {
 /* ── CONTENT ── */
 .content {
   flex: 1; overflow-y: auto; padding: 28px 32px;
+  /* Extra bottom padding so last card row clears mobile nav */
+  padding-bottom: 48px;
 }
-.screen { display: none; }
-.screen.active { display: block; }
+.screen { display: none; flex-direction: column; height: 100%; }
+.screen.active { display: flex; }
 
 /* ── STAT CARDS ROW ── */
 .stats-row {
