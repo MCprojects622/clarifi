@@ -2338,7 +2338,7 @@ function renderSpendingLog() {
     list.innerHTML = '<div class="spending-log-empty"><div class="empty-icon">💸</div>' +
       '<div class="empty-title">' + (state.transactions.length===0?'No transactions yet':'No results for this filter') + '</div>' +
       '<div class="empty-sub">' + (state.transactions.length===0?'Log an expense or payment — your card balances update automatically':'Try a different filter') + '</div>' +
-      (state.transactions.length===0?'<button class="empty-btn" onclick="openModal('log-expense')">+ Add First Transaction</button>':'') +
+      (state.transactions.length===0?'<button class="empty-btn" onclick="openModal(\'log-expense\')">+ Add First Transaction</button>':'') +
       '</div>';
     return;
   }
@@ -2373,7 +2373,7 @@ function renderSpendingLog() {
         '</div>' +
         '<div class="txn-amount-wrap">' +
           '<div class="txn-amount ' + (isPayment?'payment':'expense') + '">' + (isPayment?'+':'-') + fmt(t.amount) + '</div>' +
-          '<button onclick="deleteTransaction('' + tid + '')" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px 0;display:block;margin-left:auto" title="Delete">✕</button>' +
+          '<button onclick="deleteTransaction(\"' + tid + '\")" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px 0;display:block;margin-left:auto" title="Delete">✕</button>' +
         '</div>' +
         '</div>';
     });
