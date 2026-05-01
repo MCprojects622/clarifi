@@ -13,11 +13,33 @@
 <meta name="description" content="Your Financial Clarity — track cards, income, bills and spending in one place">
 <link rel="manifest" href="clarifi-manifest.json">
 <!-- PWA Icons (inline SVG as data URI for self-contained use) -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%23E040A0'/%3E%3Ctext x='80' y='360' font-family='Arial Black' font-size='340' font-weight='900' fill='white'%3EC%3C/text%3E%3Ctext x='310' y='210' font-family='Georgia' font-size='150' font-style='italic' fill='%2300B87A'%3Efi%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E040A0%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%238040D0%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22115%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%20%20%3Ctext%20x%3D%2260%22%20y%3D%22370%22%20font-family%3D%22Arial%20Black%2C%20sans-serif%22%20font-size%3D%22330%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EC%3C/text%3E%0A%20%20%3Ctext%20x%3D%22295%22%20y%3D%22195%22%20font-family%3D%22Georgia%2C%20serif%22%20font-size%3D%22155%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%2300B87A%22%3Efi%3C/text%3E%0A%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E040A0%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%238040D0%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22115%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%20%20%3Ctext%20x%3D%2260%22%20y%3D%22370%22%20font-family%3D%22Arial%20Black%2C%20sans-serif%22%20font-size%3D%22330%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EC%3C/text%3E%0A%20%20%3Ctext%20x%3D%22295%22%20y%3D%22195%22%20font-family%3D%22Georgia%2C%20serif%22%20font-size%3D%22155%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%2300B87A%22%3Efi%3C/text%3E%0A%3C/svg%3E">
 
 <title>Clarifi — Your Financial Clarity</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
+<script>
+(function() {
+  var manifest = {
+    name: "Clarifi",
+    short_name: "Clarifi",
+    description: "Your Financial Clarity",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#FDF5FF",
+    theme_color: "#E040A0",
+    orientation: "portrait-primary",
+    icons: [
+      { src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E040A0%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%238040D0%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22115%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%20%20%3Ctext%20x%3D%2260%22%20y%3D%22370%22%20font-family%3D%22Arial%20Black%2C%20sans-serif%22%20font-size%3D%22330%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EC%3C/text%3E%0A%20%20%3Ctext%20x%3D%22295%22%20y%3D%22195%22%20font-family%3D%22Georgia%2C%20serif%22%20font-size%3D%22155%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%2300B87A%22%3Efi%3C/text%3E%0A%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+    ]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  var manifestUrl = URL.createObjectURL(blob);
+  var link = document.querySelector('link[rel="manifest"]');
+  if (link) link.href = manifestUrl;
+})();
+</script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -1139,44 +1161,63 @@ body {
 <div class="modal-overlay" id="modal-card">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Add a Card 💳</div>
+      <div class="modal-title">Add Account 💳</div>
       <div class="modal-close" onclick="closeModal('modal-card')">✕</div>
     </div>
+    <!-- Account category picker -->
     <div class="form-group">
-      <label class="form-label">Card Name</label>
+      <label class="form-label">Account Type</label>
+      <div class="type-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="type-opt selected" onclick="selectCardCategory(this,'add')" data-val="credit"><span class="type-opt-icon">💳</span>Credit Card</div>
+        <div class="type-opt" onclick="selectCardCategory(this,'add')" data-val="debit"><span class="type-opt-icon">🏦</span>Debit Card</div>
+        <div class="type-opt" onclick="selectCardCategory(this,'add')" data-val="bank"><span class="type-opt-icon">🏛️</span>Bank Account</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="card-name-label">Card / Account Name</label>
       <input class="form-input" id="card-name" placeholder="e.g. Capital One Platinum" type="text">
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Credit Limit ($)</label>
-        <input class="form-input" id="card-limit" placeholder="300" type="number">
+    <!-- Credit-only fields -->
+    <div id="card-credit-fields">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Credit Limit ($)</label>
+          <input class="form-input" id="card-limit" placeholder="300" type="number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Balance ($)</label>
+          <input class="form-input" id="card-balance" placeholder="245" type="number">
+        </div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Statement Closes</label>
+          <input class="form-input" id="card-statement" placeholder="e.g. 27th" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Due</label>
+          <input class="form-input" id="card-due" placeholder="e.g. 21st" type="text">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Card Type</label>
+        <div class="type-grid">
+          <div class="type-opt selected" onclick="selectType(this,'card-type')" data-val="Secured"><span class="type-opt-icon">🔒</span>Secured</div>
+          <div class="type-opt" onclick="selectType(this,'card-type')" data-val="Unsecured"><span class="type-opt-icon">💳</span>Unsecured</div>
+          <div class="type-opt" onclick="selectType(this,'card-type')" data-val="Business"><span class="type-opt-icon">🏢</span>Business</div>
+        </div>
+      </div>
+    </div>
+    <!-- Debit / Bank fields -->
+    <div id="card-bank-fields" style="display:none">
       <div class="form-group">
         <label class="form-label">Current Balance ($)</label>
-        <input class="form-input" id="card-balance" placeholder="245" type="number">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Statement Closes</label>
-        <input class="form-input" id="card-statement" placeholder="e.g. 27th" type="text">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Payment Due</label>
-        <input class="form-input" id="card-due" placeholder="e.g. 21st" type="text">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Card Type</label>
-      <div class="type-grid">
-        <div class="type-opt selected" onclick="selectType(this,'card-type')" data-val="Secured"><span class="type-opt-icon">🔒</span>Secured</div>
-        <div class="type-opt" onclick="selectType(this,'card-type')" data-val="Unsecured"><span class="type-opt-icon">💳</span>Unsecured</div>
-        <div class="type-opt" onclick="selectType(this,'card-type')" data-val="Business"><span class="type-opt-icon">🏢</span>Business</div>
+        <input class="form-input" id="card-bank-balance" placeholder="e.g. 1250.00" type="number" step="0.01">
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-card')">Cancel</button>
-      <button class="btn-save" onclick="saveCard()">Save Card</button>
+      <button class="btn-save" onclick="saveCard()">Save Account</button>
     </div>
   </div>
 </div>
@@ -1369,16 +1410,25 @@ function getType(group, def) { return state.selectedTypes[group] || def; }
 
 window.saveCard = function() {
   var name = document.getElementById('card-name').value.trim();
-  var limit = parseFloat(document.getElementById('card-limit').value)||0;
-  var balance = parseFloat(document.getElementById('card-balance').value)||0;
-  var statement = document.getElementById('card-statement').value.trim();
-  var due = document.getElementById('card-due').value.trim();
-  var type = getType('card-type','Unsecured');
-  if (!name) { showToast('Please enter a card name'); return; }
-  state.cards.push({id:Date.now(),name,limit,balance,statement,due,type});
+  var category = getType('card-category', 'credit');
+  if (!name) { showToast('Please enter an account name'); return; }
+  var card;
+  if (category === 'credit') {
+    var limit = parseFloat(document.getElementById('card-limit').value)||0;
+    var balance = parseFloat(document.getElementById('card-balance').value)||0;
+    var statement = document.getElementById('card-statement').value.trim();
+    var due = document.getElementById('card-due').value.trim();
+    var type = getType('card-type','Unsecured');
+    card = {id:Date.now(), name, limit, balance, statement, due, type, category:'credit'};
+  } else {
+    var balance = parseFloat(document.getElementById('card-bank-balance').value)||0;
+    var label = category === 'debit' ? 'Debit' : 'Bank Account';
+    card = {id:Date.now(), name, limit:0, balance:0, bankBalance:balance, statement:'', due:'', type:label, category:category};
+  }
+  state.cards.push(card);
   save(); closeModal('modal-card');
-  ['card-name','card-limit','card-balance','card-statement','card-due'].forEach(function(id){ document.getElementById(id).value=''; });
-  renderAll(); showToast('Card added! 💳');
+  ['card-name','card-limit','card-balance','card-statement','card-due','card-bank-balance'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderAll(); showToast(category==='credit' ? 'Card added! 💳' : 'Account added! 🏦');
 }
 
 window.saveIncome = function() {
@@ -1572,12 +1622,30 @@ window.markPaidUpcoming = function(id) {
 function editCard(id) {
   var c = state.cards.find(function(x){ return String(x.id) === String(id); });
   if (!c) return;
+  var cat = c.category || 'credit';
   document.getElementById('edit-card-id').value = id;
+  document.getElementById('edit-card-category').value = cat;
   document.getElementById('edit-card-name').value = c.name || '';
-  document.getElementById('edit-card-limit').value = c.limit || '';
-  document.getElementById('edit-card-balance').value = c.balance || '';
-  document.getElementById('edit-card-statement').value = c.statement || '';
-  document.getElementById('edit-card-due').value = c.due || '';
+  // Set category pills
+  ['credit','debit','bank'].forEach(function(v) {
+    var el = document.getElementById('edit-cat-' + v);
+    if (el) el.classList.toggle('selected', v === cat);
+  });
+  // Show/hide correct fields
+  var creditFields = document.getElementById('edit-card-credit-fields');
+  var bankFields = document.getElementById('edit-card-bank-fields');
+  if (cat === 'credit') {
+    if (creditFields) creditFields.style.display = '';
+    if (bankFields) bankFields.style.display = 'none';
+    document.getElementById('edit-card-limit').value = c.limit || '';
+    document.getElementById('edit-card-balance').value = c.balance || '';
+    document.getElementById('edit-card-statement').value = c.statement || '';
+    document.getElementById('edit-card-due').value = c.due || '';
+  } else {
+    if (creditFields) creditFields.style.display = 'none';
+    if (bankFields) bankFields.style.display = '';
+    document.getElementById('edit-card-bank-balance').value = c.bankBalance || '';
+  }
   document.getElementById('modal-edit-card').classList.add('open');
 }
 window.editCard = editCard;
@@ -1637,13 +1705,20 @@ document.addEventListener('DOMContentLoaded', function() {
     var id = document.getElementById('edit-card-id').value;
     var c = state.cards.find(function(x){ return String(x.id) === String(id); });
     if (!c) return;
-    c.name      = document.getElementById('edit-card-name').value.trim();
-    c.limit     = parseFloat(document.getElementById('edit-card-limit').value) || 0;
-    c.balance   = parseFloat(document.getElementById('edit-card-balance').value) || 0;
-    c.statement = document.getElementById('edit-card-statement').value.trim();
-    c.due       = document.getElementById('edit-card-due').value.trim();
+    var cat = document.getElementById('edit-card-category').value || c.category || 'credit';
+    c.name     = document.getElementById('edit-card-name').value.trim();
+    c.category = cat;
+    if (cat === 'credit') {
+      c.limit     = parseFloat(document.getElementById('edit-card-limit').value) || 0;
+      c.balance   = parseFloat(document.getElementById('edit-card-balance').value) || 0;
+      c.statement = document.getElementById('edit-card-statement').value.trim();
+      c.due       = document.getElementById('edit-card-due').value.trim();
+    } else {
+      c.bankBalance = parseFloat(document.getElementById('edit-card-bank-balance').value) || 0;
+      c.limit = 0; c.balance = 0; c.statement = ''; c.due = '';
+    }
     save(); document.getElementById('modal-edit-card').classList.remove('open');
-    renderAll(); showToast('Card updated! ✅');
+    renderAll(); showToast('Account updated! ✅');
   });
 
   // Save income
@@ -1726,6 +1801,16 @@ function renderAll() {
       hcg.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">&#x1F4B3;</div><div class="empty-title" style="font-size:16px">No cards yet</div><div class="empty-sub" style="font-size:13px">Add your cards to see available balance</div><button class="empty-btn clarifi-goto-cards">Add Cards</button></div>';
     } else {
       hcg.innerHTML = '<div class="cards-grid">' + state.cards.map(function(c){
+        var isBank = c.category === 'debit' || c.category === 'bank';
+        if (isBank) {
+          var bal = c.bankBalance || 0;
+          var dotColor = '#00B87A';
+          return '<div class="card-chip clarifi-goto-cards" style="cursor:pointer">' +
+            '<div class="card-chip-header"><div class="card-chip-name">'+c.name.substring(0,14).toUpperCase()+'</div><div class="card-chip-dot" style="background:'+dotColor+'"></div></div>' +
+            '<div class="card-available">'+fmt(bal)+'</div>' +
+            '<div class="card-bar-track"><div class="card-bar-fill" style="background:'+dotColor+';width:100%"></div></div>' +
+            '<div class="card-usage">'+(c.category==='debit'?'Debit':'Bank')+' · Available balance</div></div>';
+        }
         var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
         return '<div class="card-chip clarifi-goto-cards" style="cursor:pointer">' +
           '<div class="card-chip-header"><div class="card-chip-name">'+c.name.substring(0,14).toUpperCase()+'</div><div class="card-chip-dot" style="background:'+color+'"></div></div>' +
@@ -1765,25 +1850,46 @@ function renderAll() {
       cfc.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F4B3;</div><div class="empty-title">No cards added yet</div><div class="empty-sub">Add your credit cards to track available balance, usage, and due dates</div><button class="empty-btn clarifi-add-card">+ Add Your First Card</button></div>';
     } else {
       cfc.innerHTML = '<div class="cards-full-grid">' + state.cards.map(function(c){
-        var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
-        var status=pct<0.5?'Good &#x1F7E2;':pct<0.8?'Getting full &#x1F7E1;':'Almost maxed &#x1F534;';
         var cid = String(c.id);
-        return '<div class="card-full">' +
-          '<div class="card-full-header"><div><div class="card-full-name">'+c.name+'</div><div class="card-full-type">'+c.type+'</div></div><div class="card-full-badge">'+status+'</div></div>' +
-          '<div class="card-full-body">' +
-          '<div class="card-full-row">' +
-          '<div><div class="card-stat-label">Available</div><div class="card-stat-val green">'+fmt(avail)+'</div></div>' +
-          '<div><div class="card-stat-label">Balance</div><div class="card-stat-val">'+fmt(c.balance)+'</div></div>' +
-          '<div><div class="card-stat-label">Limit</div><div class="card-stat-val">'+fmt(c.limit)+'</div></div>' +
-          '</div>' +
-          '<div class="card-progress-track"><div class="card-progress-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
-          '<div class="card-progress-labels"><span>'+Math.round(pct*100)+'% used</span><span>'+Math.round((1-pct)*100)+'% available</span></div>' +
-          (c.statement||c.due?'<div class="card-dates">'+(c.statement?'<div class="card-date-pill"><div class="card-date-lbl">Statement Closes</div><div class="card-date-val">'+c.statement+'</div></div>':'')+(c.due?'<div class="card-date-pill"><div class="card-date-lbl">Payment Due</div><div class="card-date-val">'+c.due+'</div></div>':'')+'</div>':'') +
-          '<div class="card-actions">' +
-          '<button class="clarifi-edit-card" data-id="'+cid+'" style="background:var(--coral-light);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">&#9998; Edit</button>' +
-          '<button class="clarifi-del-card" data-id="'+cid+'" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove</button>' +
-          '</div>' +
-          '</div></div>';
+        var cat = c.category || 'credit';
+        var isBank = cat === 'debit' || cat === 'bank';
+        var cardHTML;
+        if (isBank) {
+          var bal = c.bankBalance || 0;
+          var catIcon = cat === 'debit' ? '🏦' : '🏛️';
+          var catLabel = cat === 'debit' ? 'Debit Card' : 'Bank Account';
+          var headerGrad = cat === 'debit' ? 'linear-gradient(135deg,#00B87A,#0080A0)' : 'linear-gradient(135deg,#8040D0,#4040C0)';
+          cardHTML = '<div class="card-full">' +
+            '<div class="card-full-header" style="background:'+headerGrad+'"><div><div class="card-full-name">'+c.name+'</div><div class="card-full-type">'+catLabel+'</div></div><div class="card-full-badge">'+catIcon+' '+catLabel+'</div></div>' +
+            '<div class="card-full-body">' +
+            '<div class="card-full-row" style="grid-template-columns:1fr">' +
+            '<div><div class="card-stat-label">Available Balance</div><div class="card-stat-val green">'+fmt(bal)+'</div></div>' +
+            '</div>' +
+            '<div class="card-actions">' +
+            '<button class="clarifi-edit-card" data-id="'+cid+'" style="background:var(--coral-light);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">&#9998; Edit</button>' +
+            '<button class="clarifi-del-card" data-id="'+cid+'" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove</button>' +
+            '</div></div></div>';
+        } else {
+          var avail=c.limit-c.balance; var pct=c.limit>0?c.balance/c.limit:0; var color=cardColor(pct);
+          var status=pct<0.5?'Good &#x1F7E2;':pct<0.8?'Getting full &#x1F7E1;':'Almost maxed &#x1F534;';
+          cardHTML = '<div class="card-full">' +
+            '<div class="card-full-header"><div><div class="card-full-name">'+c.name+'</div><div class="card-full-type">'+c.type+'</div></div><div class="card-full-badge">'+status+'</div></div>' +
+            '<div class="card-full-body">' +
+            '<div class="card-full-row">' +
+            '<div><div class="card-stat-label">Available</div><div class="card-stat-val green">'+fmt(avail)+'</div></div>' +
+            '<div><div class="card-stat-label">Balance</div><div class="card-stat-val">'+fmt(c.balance)+'</div></div>' +
+            '<div><div class="card-stat-label">Limit</div><div class="card-stat-val">'+fmt(c.limit)+'</div></div>' +
+            '</div>' +
+            '<div class="card-progress-track"><div class="card-progress-fill" style="background:'+color+';width:'+Math.min(pct*100,100)+'%"></div></div>' +
+            '<div class="card-progress-labels"><span>'+Math.round(pct*100)+'% used</span><span>'+Math.round((1-pct)*100)+'% available</span></div>' +
+            (c.statement||c.due?'<div class="card-dates">'+(c.statement?'<div class="card-date-pill"><div class="card-date-lbl">Statement Closes</div><div class="card-date-val">'+c.statement+'</div></div>':'')+(c.due?'<div class="card-date-pill"><div class="card-date-lbl">Payment Due</div><div class="card-date-val">'+c.due+'</div></div>':'')+'</div>':'') +
+            '<div class="card-actions">' +
+            '<button class="clarifi-edit-card" data-id="'+cid+'" style="background:var(--coral-light);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">&#9998; Edit</button>' +
+            '<button class="clarifi-del-card" data-id="'+cid+'" style="background:rgba(224,64,160,0.08);color:var(--coral);border:1.5px solid rgba(224,64,160,0.2);border-radius:10px;padding:8px 16px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Remove</button>' +
+            '</div>' +
+            '</div></div>';
+        }
+        return cardHTML;
       }).join('') + '</div>';
     }
   }
@@ -2219,7 +2325,14 @@ window.saveExpense = function() {
     var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
     if (card) {
       cardName = card.name;
-      card.balance = (card.balance || 0) + amount; // add to balance
+      var isBank = card.category === 'debit' || card.category === 'bank';
+      if (isBank) {
+        // Debit/bank: spending reduces available balance
+        card.bankBalance = Math.max(0, (card.bankBalance || 0) - amount);
+      } else {
+        // Credit card: spending increases the balance owed
+        card.balance = (card.balance || 0) + amount;
+      }
     }
   }
 
@@ -2248,13 +2361,23 @@ window.savePayment = function() {
 
   var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
   var cardName = card ? card.name : 'Unknown';
+  var isBank = card && (card.category === 'debit' || card.category === 'bank');
   if (card) {
-    card.balance = Math.max(0, (card.balance || 0) - amount); // reduce balance
+    if (isBank) {
+      // For debit/bank: a "payment" is a deposit — adds to available balance
+      card.bankBalance = (card.bankBalance || 0) + amount;
+    } else {
+      // Credit card: payment reduces the balance owed
+      card.balance = Math.max(0, (card.balance || 0) - amount);
+    }
   }
 
+  var txnDesc = isBank ? (note || cardName + ' Deposit') : (note || cardName + ' Payment');
+  var txnCat  = isBank ? '🏦 Deposit' : '💳 Payment';
+
   state.transactions.push({
-    id: Date.now(), type: 'payment', desc: note || cardName + ' Payment',
-    amount: amount, date: date, cardId: cardId, cardName: cardName, cat: '💳 Payment'
+    id: Date.now(), type: 'payment', desc: txnDesc,
+    amount: amount, date: date, cardId: cardId, cardName: cardName, cat: txnCat
   });
   state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
 
@@ -2262,7 +2385,8 @@ window.savePayment = function() {
   closeModal('modal-log-payment');
   ['pay-amount','pay-note'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   renderAll();
-  showToast('Payment logged! ✅ ' + cardName + ' balance reduced');
+  var msg = isBank ? 'Deposit logged! ✅ ' + cardName + ' balance increased' : 'Payment logged! ✅ ' + cardName + ' balance reduced';
+  showToast(msg);
 };
 
 window.deleteTransaction = function(id) {
@@ -2272,8 +2396,14 @@ window.deleteTransaction = function(id) {
   if (txn.cardId) {
     var card = state.cards.find(function(c){ return String(c.id) === String(txn.cardId); });
     if (card) {
-      if (txn.type === 'expense') card.balance = Math.max(0, (card.balance||0) - txn.amount);
-      if (txn.type === 'payment') card.balance = (card.balance||0) + txn.amount;
+      var isBank = card.category === 'debit' || card.category === 'bank';
+      if (isBank) {
+        if (txn.type === 'expense') card.bankBalance = (card.bankBalance||0) + txn.amount; // restore
+        if (txn.type === 'payment') card.bankBalance = Math.max(0, (card.bankBalance||0) - txn.amount); // reverse deposit
+      } else {
+        if (txn.type === 'expense') card.balance = Math.max(0, (card.balance||0) - txn.amount);
+        if (txn.type === 'payment') card.balance = (card.balance||0) + txn.amount;
+      }
     }
   }
   state.transactions = state.transactions.filter(function(t){ return String(t.id) !== String(id); });
@@ -2396,34 +2526,53 @@ function renderSpendingLog() {
 <div class="modal-overlay" id="modal-edit-card">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Edit Card ✏️</div>
+      <div class="modal-title">Edit Account ✏️</div>
       <div class="modal-close" id="close-edit-card">✕</div>
     </div>
     <div class="form-group">
-      <label class="form-label">Card Name</label>
+      <label class="form-label">Account Type</label>
+      <div class="type-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="type-opt selected" id="edit-cat-credit" onclick="selectCardCategory(this,'edit')" data-val="credit"><span class="type-opt-icon">💳</span>Credit Card</div>
+        <div class="type-opt" id="edit-cat-debit" onclick="selectCardCategory(this,'edit')" data-val="debit"><span class="type-opt-icon">🏦</span>Debit Card</div>
+        <div class="type-opt" id="edit-cat-bank" onclick="selectCardCategory(this,'edit')" data-val="bank"><span class="type-opt-icon">🏛️</span>Bank Account</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card / Account Name</label>
       <input class="form-input" id="edit-card-name" type="text">
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Credit Limit ($)</label>
-        <input class="form-input" id="edit-card-limit" type="number">
+    <!-- Credit-only fields -->
+    <div id="edit-card-credit-fields">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Credit Limit ($)</label>
+          <input class="form-input" id="edit-card-limit" type="number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Balance ($)</label>
+          <input class="form-input" id="edit-card-balance" type="number">
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Current Balance ($)</label>
-        <input class="form-input" id="edit-card-balance" type="number">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Statement Closes</label>
+          <input class="form-input" id="edit-card-statement" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Due</label>
+          <input class="form-input" id="edit-card-due" type="text">
+        </div>
       </div>
     </div>
-    <div class="form-row">
+    <!-- Debit / Bank fields -->
+    <div id="edit-card-bank-fields" style="display:none">
       <div class="form-group">
-        <label class="form-label">Statement Closes</label>
-        <input class="form-input" id="edit-card-statement" type="text">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Payment Due</label>
-        <input class="form-input" id="edit-card-due" type="text">
+        <label class="form-label">Current Balance ($)</label>
+        <input class="form-input" id="edit-card-bank-balance" type="number" step="0.01">
       </div>
     </div>
     <input type="hidden" id="edit-card-id">
+    <input type="hidden" id="edit-card-category" value="credit">
     <div class="modal-footer">
       <button class="btn-cancel" id="cancel-edit-card">Cancel</button>
       <button class="btn-save" id="save-edit-card">Save Changes</button>
@@ -2722,9 +2871,12 @@ function renderSpendingLog() {
       <label class="form-label">Note (optional)</label>
       <input class="form-input" id="pay-note" placeholder="e.g. Full balance, Minimum payment..." type="text">
     </div>
+    <div id="pay-bank-note" style="display:none;font-size:12px;font-weight:700;color:var(--sage);background:var(--sage-light);border-radius:10px;padding:10px 14px;margin-bottom:8px;line-height:1.5">
+      🏦 For debit/bank accounts, logging a payment adds a <strong>deposit</strong> to your balance.
+    </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-log-payment')">Cancel</button>
-      <button class="btn-save" onclick="savePayment()">Log Payment</button>
+      <button class="btn-save" id="pay-save-btn" onclick="savePayment()">Log Payment</button>
     </div>
   </div>
 </div>
@@ -2774,6 +2926,69 @@ function renderSpendingLog() {
     if (el) el.style.display = 'block';
   }
 })();
+
+window.selectCardCategory = function(el, mode) {
+  // Update pill selection
+  el.parentElement.querySelectorAll('.type-opt').forEach(function(o){ o.classList.remove('selected'); });
+  el.classList.add('selected');
+  var val = el.getAttribute('data-val');
+
+  var creditFields = document.getElementById(mode === 'edit' ? 'edit-card-credit-fields' : 'card-credit-fields');
+  var bankFields   = document.getElementById(mode === 'edit' ? 'edit-card-bank-fields'   : 'card-bank-fields');
+  var nameInput    = document.getElementById(mode === 'edit' ? 'edit-card-name'           : 'card-name');
+
+  if (val === 'credit') {
+    if (creditFields) creditFields.style.display = '';
+    if (bankFields)   bankFields.style.display   = 'none';
+    if (nameInput) nameInput.placeholder = 'e.g. Capital One Platinum';
+    if (mode === 'edit') document.getElementById('edit-card-category').value = 'credit';
+    else state.selectedTypes['card-category'] = 'credit';
+  } else {
+    if (creditFields) creditFields.style.display = 'none';
+    if (bankFields)   bankFields.style.display   = '';
+    var ph = val === 'debit' ? 'e.g. Chase Debit' : 'e.g. Chase Checking';
+    if (nameInput) nameInput.placeholder = ph;
+    if (mode === 'edit') document.getElementById('edit-card-category').value = val;
+    else state.selectedTypes['card-category'] = val;
+  }
+};
+
+// Init: set default category on openModal
+var _origOpenModal = openModal;
+openModal = function(type) {
+  _origOpenModal(type);
+  if (type === 'card') {
+    // Reset to credit card view
+    var creditFields = document.getElementById('card-credit-fields');
+    var bankFields   = document.getElementById('card-bank-fields');
+    if (creditFields) creditFields.style.display = '';
+    if (bankFields)   bankFields.style.display   = 'none';
+    state.selectedTypes['card-category'] = 'credit';
+    // Reset pill selection
+    var pills = document.querySelectorAll('#modal-card .type-opt');
+    pills.forEach(function(p,i){ p.classList.toggle('selected', i===0); });
+  }
+};
+
+
+// Update payment modal when account selected
+document.addEventListener('DOMContentLoaded', function() {
+  var payCardSel = document.getElementById('pay-card');
+  if (payCardSel) {
+    payCardSel.addEventListener('change', function() {
+      var cardId = this.value;
+      var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
+      var isBank = card && (card.category === 'debit' || card.category === 'bank');
+      var note = document.getElementById('pay-bank-note');
+      var btn  = document.getElementById('pay-save-btn');
+      var title = document.querySelector('#modal-log-payment .modal-title');
+      if (note) note.style.display = isBank ? 'block' : 'none';
+      if (btn)  btn.textContent = isBank ? 'Log Deposit' : 'Log Payment';
+      if (title) title.textContent = isBank ? 'Log Deposit 🏦' : 'Log Card Payment 💳';
+    });
+  }
+});
+
 </script>
 
 </body>
