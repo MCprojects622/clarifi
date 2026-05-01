@@ -323,7 +323,7 @@ body {
 .cards-full-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .card-full {
   background: var(--white); border-radius: 20px;
-  border: 1.5px solid var(--border); overflow: hidden;
+  border: 1.5px solid var(--border);
   transition: all 0.2s;
 }
 .card-full:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(224,64,160,0.12); }
@@ -535,6 +535,109 @@ body {
 .user-email { flex: 1; font-size: 11px; font-weight: 700; color: #5A2060; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
 .signout-btn { font-size: 11px; font-weight: 800; color: #C090B8; background: none; border: none; cursor: pointer; font-family: Nunito,sans-serif; }
 .signout-btn:hover { color: #E040A0; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+  body { flex-direction: column; overflow: auto; height: auto; min-height: 100vh; }
+  .sidebar { display: none; }
+  .main { overflow: visible; }
+  .content { overflow: visible; padding: 16px; }
+  .topbar { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+  .topbar-actions { flex-wrap: wrap; gap: 6px; }
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .content-grid { grid-template-columns: 1fr !important; gap: 14px; }
+  .stat-value { font-size: 22px; }
+  .cards-full-grid { grid-template-columns: 1fr !important; }
+  .card-full-row { grid-template-columns: 1fr 1fr 1fr; }
+  .card-full-header { flex-wrap: wrap; gap: 6px; }
+  .form-row { grid-template-columns: 1fr !important; }
+  .type-grid { grid-template-columns: repeat(3, 1fr); }
+  .modal { padding: 20px; border-radius: 20px; }
+
+  /* Mobile bottom nav */
+  .mobile-nav {
+    display: flex !important;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 2px solid var(--border);
+    z-index: 100; padding: 8px 0 env(safe-area-inset-bottom, 8px);
+    box-shadow: 0 -4px 20px rgba(28,8,48,0.1);
+  }
+  .content { padding-bottom: 80px; }
+  .topbar { padding-top: env(safe-area-inset-top, 14px); }
+  .spending-filters { flex-wrap: wrap; }
+  .spending-stats { grid-template-columns: 1fr 1fr !important; }
+}
+@media (min-width: 769px) {
+  .mobile-nav { display: none !important; }
+}
+
+/* Mobile bottom nav styles */
+.mobile-nav {
+  display: none;
+}
+.mobile-nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 6px 4px; cursor: pointer;
+  font-size: 9px; font-weight: 800; color: var(--muted);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  transition: color 0.15s; border: none; background: none;
+}
+.mobile-nav-item.active { color: var(--coral); }
+.mobile-nav-icon { font-size: 20px; line-height: 1; }
+
+/* ── SPENDING LOG ── */
+.spending-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin-bottom: 20px;
+}
+.spending-filters {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-pill {
+  padding: 7px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 800; cursor: pointer;
+  border: 1.5px solid var(--border); background: var(--white);
+  color: var(--muted); transition: all 0.15s;
+  font-family: 'Nunito', sans-serif;
+}
+.filter-pill:hover { border-color: var(--coral); color: var(--coral); background: var(--coral-light); }
+.filter-pill.active { background: var(--coral); color: #fff; border-color: var(--coral); box-shadow: 0 2px 10px rgba(224,64,160,0.3); }
+.txn-list { display: flex; flex-direction: column; gap: 8px; }
+.txn-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; background: var(--cream);
+  border-radius: 14px; border: 1.5px solid var(--border);
+  transition: all 0.15s;
+}
+.txn-item:hover { border-color: var(--coral-mid); }
+.txn-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.txn-icon.expense { background: rgba(224,64,160,0.1); }
+.txn-icon.payment { background: var(--sage-light); }
+.txn-info { flex: 1; min-width: 0; }
+.txn-name { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.txn-meta { font-size: 11px; font-weight: 600; color: var(--muted); }
+.txn-card-pill {
+  font-size: 10px; font-weight: 800; padding: 3px 9px;
+  background: var(--gold-light); color: var(--gold);
+  border-radius: 20px; white-space: nowrap; display: inline-block;
+}
+.txn-card-pill.payment-pill { background: var(--sage-light); color: var(--sage); }
+.txn-amount-wrap { text-align: right; }
+.txn-amount {
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 900; line-height: 1;
+}
+.txn-amount.expense { color: var(--coral); }
+.txn-amount.payment { color: var(--sage); }
+.txn-date-small { font-size: 10px; font-weight: 700; color: var(--dim); margin-top: 3px; }
+.spending-log-empty { padding: 48px 24px; text-align: center; }
+
 </style>
 </head>
 <body>
@@ -640,12 +743,13 @@ body {
       <div class="nav-item-icon">📉</div>
       <div class="nav-item-label">Debt Tracker</div>
     </div>
-    <div class="nav-item" onclick="showToast('Spending log coming soon! 💸')">
+    <div class="nav-item" id="nav-spending" onclick="switchScreen('spending')">
       <div class="nav-item-icon">💸</div>
       <div class="nav-item-label">Spending Log</div>
+      <div class="nav-item-count" id="nav-spending-count" style="display:none"></div>
     </div>
   </nav>
-  <div class="sidebar-footer">
+  <div id="user-menu" style="display:none;padding:8px;border-top:1.5px solid var(--border)"><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#FDF5FF;border-radius:12px;border:1.5px solid #F0C8E8"><div class="user-avatar" id="user-avatar">Y</div><div class="user-email" id="user-email"></div><button class="signout-btn" onclick="authSignOut()">Sign out</button></div></div><div class="sidebar-footer">
     <div class="sidebar-copyright"><strong style="color:#E040A0">Clari</strong><strong style="color:#00B87A;font-family:'Playfair Display',serif;font-style:italic">fi</strong> · © 2026 Yolanda McLeod<br>All rights reserved</div>
   </div>
 </aside>
@@ -882,6 +986,68 @@ body {
     </div>
   </div>
 
+
+  <!-- ══ SPENDING LOG SCREEN ══ -->
+  <div class="screen" id="screen-spending">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">💸 Spending Log</div>
+        <div class="topbar-sub">Track every transaction — balances update automatically</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-secondary" onclick="openModal('log-payment')">💳 Log Payment</button>
+        <button class="btn-primary" onclick="openModal('log-expense')">＋ Add Transaction</button>
+      </div>
+    </div>
+    <div class="content">
+      <!-- Stats row -->
+      <div class="spending-stats">
+        <div class="stat-card">
+          <div class="stat-icon">💸</div>
+          <div class="stat-label">This Month Spent</div>
+          <div class="stat-value coral" id="spending-month-total">$0</div>
+          <div class="stat-sub" id="spending-month-count">0 transactions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💳</div>
+          <div class="stat-label">Payments Made</div>
+          <div class="stat-value green" id="spending-payments-total">$0</div>
+          <div class="stat-sub" id="spending-payments-count">0 payments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-label">Total Available Credit</div>
+          <div class="stat-value" id="spending-avail-credit">$0</div>
+          <div class="stat-sub" id="spending-avail-credit-sub">Across all cards</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="spending-filters">
+        <button class="filter-pill active" id="filter-all" onclick="setSpendingFilter('all')">All</button>
+        <button class="filter-pill" id="filter-expenses" onclick="setSpendingFilter('expenses')">Expenses</button>
+        <button class="filter-pill" id="filter-payments" onclick="setSpendingFilter('payments')">Payments</button>
+        <button class="filter-pill" id="filter-this-month" onclick="setSpendingFilter('month')">This Month</button>
+      </div>
+
+      <!-- Transactions panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Transactions</div>
+          <div class="panel-action" id="spending-count-display">0 entries</div>
+        </div>
+        <div class="panel-body" id="spending-log-list">
+          <div class="spending-log-empty">
+            <div class="empty-icon">💸</div>
+            <div class="empty-title">No transactions yet</div>
+            <div class="empty-sub">Log an expense or payment — your card balances update automatically</div>
+            <button class="empty-btn" onclick="openModal('log-expense')">+ Add First Transaction</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- end main -->
 
 <!-- ══ MODALS ══ -->
@@ -1014,12 +1180,12 @@ body {
 <script>
 // ── FIREBASE INIT ─────────────────────────────────────────────
 var firebaseConfig = {
-  apiKey: "AIzaSyC0omg-skf407yK86dS37EktMfiYrpZD6M",
-  authDomain: "clarifi-d3b06.firebaseapp.com",
-  projectId: "clarifi-d3b06",
-  storageBucket: "clarifi-d3b06.firebasestorage.app",
-  messagingSenderId: "287414781225",
-  appId: "1:287414781225:web:fdf43d0d68758f47262338"
+  apiKey: "AIzaSyABTuSElATLflAujzrjVN2gx0DBc8iDqXA",
+  authDomain: "clarifi-8d365.firebaseapp.com",
+  projectId: "clarifi-8d365",
+  storageBucket: "clarifi-8d365.firebasestorage.app",
+  messagingSenderId: "808130012594",
+  appId: "1:808130012594:web:1bde330b3cdd12d11c30ab"
 };
 firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
@@ -1605,7 +1771,7 @@ function renderAll() {
           '<button class="del-btn clarifi-del-bill" data-id="'+bid+'" title="Remove">&#x2715;</button>' +
           '</div>';
       }).join('') +
-      '<div class="income-add-row" style="border-color:var(--gold-mid);color:var(--gold)" class="clarifi-add-bill"><span>&#x2795;</span> Add another bill</div>' +
+      '<div class="income-add-row clarifi-add-bill" style="border-color:var(--gold-mid);color:var(--gold)"><span>&#x2795;</span> Add another bill</div>' +
       '</div>';
     }
   }
@@ -1877,6 +2043,328 @@ auth.onAuthStateChanged(function(user) {
     authSetLoading(false);
   }
 });
+
+
+// ── SPENDING LOG ─────────────────────────────────────────────
+
+// Extend state with transactions
+if (!state.transactions) state.transactions = JSON.parse(localStorage.getItem('fin_txns')||'[]');
+var _spendingFilter = 'all';
+
+// Extend save() to include transactions
+var _origSave = save;
+save = function() {
+  localStorage.setItem('fin_txns', JSON.stringify(state.transactions));
+  _origSave();
+  // Also push transactions to Firestore
+  if (currentUser) {
+    db.collection('users').doc(currentUser.uid).update({
+      transactions: state.transactions
+    }).catch(function(){});
+  }
+};
+
+// Extend loadFromFirestore to pull transactions
+var _origLoad = loadFromFirestore;
+loadFromFirestore = function(callback) {
+  _origLoad(function() {
+    if (currentUser) {
+      db.collection('users').doc(currentUser.uid).get().then(function(doc) {
+        if (doc.exists && doc.data().transactions) {
+          state.transactions = doc.data().transactions;
+          localStorage.setItem('fin_txns', JSON.stringify(state.transactions));
+        }
+        callback();
+      }).catch(function(){ callback(); });
+    } else {
+      callback();
+    }
+  });
+};
+
+function populateCardSelects() {
+  ['exp-card','pay-card'].forEach(function(selId) {
+    var sel = document.getElementById(selId);
+    if (!sel) return;
+    var cur = sel.value;
+    sel.innerHTML = '<option value="">Select card...</option>';
+    state.cards.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = String(c.id);
+      opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
+    if (cur) sel.value = cur;
+  });
+}
+
+window.openModal = function(type) {
+  var id = 'modal-' + type;
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('open');
+  if (type === 'upcoming') {
+    var ud = document.getElementById('up-date');
+    if (ud) ud.value = new Date().toISOString().split('T')[0];
+  }
+  if (type === 'log-expense') {
+    var ed = document.getElementById('exp-date');
+    if (ed) ed.value = new Date().toISOString().split('T')[0];
+    populateCardSelects();
+    // Reset category selection
+    var firstCat = document.querySelector('#modal-log-expense .type-opt');
+    if (firstCat) {
+      document.querySelectorAll('#modal-log-expense .type-opt').forEach(function(o){ o.classList.remove('selected'); });
+      firstCat.classList.add('selected');
+      state.selectedTypes['exp-cat'] = firstCat.getAttribute('data-val');
+    }
+  }
+  if (type === 'log-payment') {
+    var pd = document.getElementById('pay-date');
+    if (pd) pd.value = new Date().toISOString().split('T')[0];
+    populateCardSelects();
+  }
+};
+
+window.saveExpense = function() {
+  var desc   = document.getElementById('exp-desc').value.trim();
+  var amount = parseFloat(document.getElementById('exp-amount').value) || 0;
+  var date   = document.getElementById('exp-date').value;
+  var cardId = document.getElementById('exp-card').value;
+  var cat    = getType('exp-cat', '📦 Other');
+  if (!desc)   { showToast('Please enter a description'); return; }
+  if (!amount) { showToast('Please enter an amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var cardName = '';
+  if (cardId) {
+    var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
+    if (card) {
+      cardName = card.name;
+      card.balance = (card.balance || 0) + amount; // add to balance
+    }
+  }
+
+  state.transactions.push({
+    id: Date.now(), type: 'expense', desc: desc,
+    amount: amount, date: date, cardId: cardId, cardName: cardName, cat: cat
+  });
+  state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+  save();
+  closeModal('modal-log-expense');
+  ['exp-desc','exp-amount','exp-date'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderAll();
+  var cardMsg = cardName ? ' · ' + cardName + ' balance updated' : '';
+  showToast('Transaction logged! 💸' + cardMsg);
+};
+
+window.savePayment = function() {
+  var cardId = document.getElementById('pay-card').value;
+  var amount = parseFloat(document.getElementById('pay-amount').value) || 0;
+  var date   = document.getElementById('pay-date').value;
+  var note   = document.getElementById('pay-note').value.trim();
+  if (!cardId) { showToast('Please select a card'); return; }
+  if (!amount) { showToast('Please enter a payment amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
+  var cardName = card ? card.name : 'Unknown';
+  if (card) {
+    card.balance = Math.max(0, (card.balance || 0) - amount); // reduce balance
+  }
+
+  state.transactions.push({
+    id: Date.now(), type: 'payment', desc: note || cardName + ' Payment',
+    amount: amount, date: date, cardId: cardId, cardName: cardName, cat: '💳 Payment'
+  });
+  state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+  save();
+  closeModal('modal-log-payment');
+  ['pay-amount','pay-note'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderAll();
+  showToast('Payment logged! ✅ ' + cardName + ' balance reduced');
+};
+
+window.deleteTransaction = function(id) {
+  var txn = state.transactions.find(function(t){ return String(t.id) === String(id); });
+  if (!txn) return;
+  // Reverse balance effect
+  if (txn.cardId) {
+    var card = state.cards.find(function(c){ return String(c.id) === String(txn.cardId); });
+    if (card) {
+      if (txn.type === 'expense') card.balance = Math.max(0, (card.balance||0) - txn.amount);
+      if (txn.type === 'payment') card.balance = (card.balance||0) + txn.amount;
+    }
+  }
+  state.transactions = state.transactions.filter(function(t){ return String(t.id) !== String(id); });
+  save(); renderAll(); showToast('Transaction removed');
+};
+
+window.setSpendingFilter = function(f) {
+  _spendingFilter = f;
+  ['all','expenses','payments','month'].forEach(function(x){
+    var el = document.getElementById('filter-' + (x==='expenses'?'expenses':x==='payments'?'payments':x==='month'?'this-month':'all'));
+    if (el) el.classList.remove('active');
+  });
+  var activeEl = document.getElementById('filter-' + (f==='month'?'this-month':f==='all'?'all':f));
+  if (activeEl) activeEl.classList.add('active');
+  renderSpendingLog();
+};
+
+function renderSpendingLog() {
+  var now = new Date();
+  var thisMonth = now.getMonth();
+  var thisYear = now.getFullYear();
+
+  var txns = state.transactions.slice();
+  if (_spendingFilter === 'expenses') txns = txns.filter(function(t){ return t.type==='expense'; });
+  if (_spendingFilter === 'payments') txns = txns.filter(function(t){ return t.type==='payment'; });
+  if (_spendingFilter === 'month') txns = txns.filter(function(t){
+    var d = new Date(t.date+'T00:00:00');
+    return d.getMonth()===thisMonth && d.getFullYear()===thisYear;
+  });
+
+  // Stats
+  var monthTxns = state.transactions.filter(function(t){
+    var d = new Date(t.date+'T00:00:00');
+    return t.type==='expense' && d.getMonth()===thisMonth && d.getFullYear()===thisYear;
+  });
+  var monthTotal = monthTxns.reduce(function(s,t){ return s+t.amount; },0);
+  var paymentsMonth = state.transactions.filter(function(t){
+    var d = new Date(t.date+'T00:00:00');
+    return t.type==='payment' && d.getMonth()===thisMonth && d.getFullYear()===thisYear;
+  });
+  var paymentsTotal = paymentsMonth.reduce(function(s,t){ return s+t.amount; },0);
+  var totalAvail = state.cards.reduce(function(s,c){ return s+(c.limit-c.balance); },0);
+
+  var smt = document.getElementById('spending-month-total');
+  var smc = document.getElementById('spending-month-count');
+  var spt = document.getElementById('spending-payments-total');
+  var spc = document.getElementById('spending-payments-count');
+  var sac = document.getElementById('spending-avail-credit');
+  var sacs = document.getElementById('spending-avail-credit-sub');
+  if (smt) smt.textContent = fmt(monthTotal);
+  if (smc) smc.textContent = monthTxns.length + ' transaction' + (monthTxns.length!==1?'s':'') + ' this month';
+  if (spt) spt.textContent = fmt(paymentsTotal);
+  if (spc) spc.textContent = paymentsMonth.length + ' payment' + (paymentsMonth.length!==1?'s':'') + ' this month';
+  if (sac) sac.textContent = fmt(totalAvail);
+  if (sacs) sacs.textContent = state.cards.length + ' card' + (state.cards.length!==1?'s':'') + ' tracked';
+
+  var cd = document.getElementById('spending-count-display');
+  if (cd) cd.textContent = txns.length + ' entr' + (txns.length===1?'y':'ies');
+
+  var list = document.getElementById('spending-log-list');
+  if (!list) return;
+
+  if (txns.length === 0) {
+    list.innerHTML = '<div class="spending-log-empty"><div class="empty-icon">💸</div>' +
+      '<div class="empty-title">' + (state.transactions.length===0?'No transactions yet':'No results for this filter') + '</div>' +
+      '<div class="empty-sub">' + (state.transactions.length===0?'Log an expense or payment — your card balances update automatically':'Try a different filter') + '</div>' +
+      (state.transactions.length===0?'<button class="empty-btn" onclick="openModal('log-expense')">+ Add First Transaction</button>':'') +
+      '</div>';
+    return;
+  }
+
+  // Group by date
+  var groups = {};
+  var groupOrder = [];
+  txns.forEach(function(t) {
+    if (!groups[t.date]) { groups[t.date] = []; groupOrder.push(t.date); }
+    groups[t.date].push(t);
+  });
+  // Deduplicate groupOrder
+  groupOrder = groupOrder.filter(function(v,i,a){ return a.indexOf(v)===i; });
+  groupOrder.sort(function(a,b){ return new Date(b)-new Date(a); });
+
+  var html = '<div class="txn-list">';
+  groupOrder.forEach(function(dateStr) {
+    var d = new Date(dateStr+'T00:00:00');
+    var label = d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+    html += '<div style="font-size:11px;font-weight:800;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;padding:12px 4px 6px">' + label + '</div>';
+    groups[dateStr].forEach(function(t) {
+      var isPayment = t.type === 'payment';
+      var tid = String(t.id);
+      var cardPill = t.cardName
+        ? '<span class="txn-card-pill' + (isPayment?' payment-pill':'') + '">' + t.cardName + '</span>'
+        : '';
+      html += '<div class="txn-item">' +
+        '<div class="txn-icon ' + (isPayment?'payment':'expense') + '">' + (t.cat?t.cat.split(' ')[0]:'💸') + '</div>' +
+        '<div class="txn-info">' +
+          '<div class="txn-name">' + t.desc + '</div>' +
+          '<div class="txn-meta">' + (t.cat||'') + (t.cardName?' &nbsp;':'') + cardPill + '</div>' +
+        '</div>' +
+        '<div class="txn-amount-wrap">' +
+          '<div class="txn-amount ' + (isPayment?'payment':'expense') + '">' + (isPayment?'+':'-') + fmt(t.amount) + '</div>' +
+          '<button onclick="deleteTransaction('' + tid + '')" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px 0;display:block;margin-left:auto" title="Delete">✕</button>' +
+        '</div>' +
+        '</div>';
+    });
+  });
+  html += '</div>';
+  list.innerHTML = html;
+}
+
+// Hook into renderAll to also render spending log when on that screen
+var _origRenderAll = renderAll;
+renderAll = function() {
+  _origRenderAll();
+  if (state.currentScreen === 'spending') {
+    renderSpendingLog();
+  }
+  // Update mobile nav active state
+  document.querySelectorAll('.mobile-nav-item').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  var mBtn = document.getElementById('mnav-' + state.currentScreen);
+  if (mBtn) mBtn.classList.add('active');
+};
+
+// Also update switchScreen to trigger spending render
+var _origSwitch = switchScreen;
+switchScreen = function(name) {
+  _origSwitch(name);
+  if (name === 'spending') renderSpendingLog();
+};
+
+// Load transactions from Firestore on sign in — extend onSignedIn
+var _origOnSignedIn = onSignedIn;
+onSignedIn = function(user) {
+  currentUser = user;
+  var initials = user.email ? user.email[0].toUpperCase() : 'Y';
+  var avatarEl = document.getElementById('user-avatar');
+  var emailEl = document.getElementById('user-email');
+  var menuEl = document.getElementById('user-menu');
+  var overlayEl = document.getElementById('auth-overlay');
+  if (avatarEl) avatarEl.textContent = initials;
+  if (emailEl) emailEl.textContent = user.email;
+  if (menuEl) menuEl.style.display = 'flex';
+  if (overlayEl) overlayEl.style.display = 'none';
+  authSetLoading(false);
+  db.collection('users').doc(user.uid).get().then(function(doc) {
+    if (doc.exists) {
+      var data = doc.data();
+      state.cards         = data.cards         || [];
+      state.income        = data.income        || [];
+      state.upcoming      = data.upcoming      || [];
+      state.subscriptions = data.subscriptions || [];
+      state.bills         = data.bills         || [];
+      state.transactions  = data.transactions  || [];
+      ['fin_cards','fin_income','fin_upcoming','fin_subs','fin_bills','fin_txns'].forEach(function(k,i) {
+        var keys = [state.cards,state.income,state.upcoming,state.subscriptions,state.bills,state.transactions];
+        localStorage.setItem(k, JSON.stringify(keys[i]));
+      });
+    }
+    renderAll();
+    showToast('Welcome to Clarifi! \uD83C\uDF38');
+  }).catch(function() {
+    renderAll();
+    showToast('Welcome to Clarifi! \uD83C\uDF38');
+  });
+};
+
+
 </script>
 
 <!-- EDIT CARD -->
@@ -2056,5 +2544,184 @@ auth.onAuthStateChanged(function(user) {
     </div>
   </div>
 </div>
+
+
+<!-- ADD SUBSCRIPTION -->
+<div class="modal-overlay" id="modal-subscription">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Subscription 🔁</div>
+      <div class="modal-close" onclick="closeModal('modal-subscription')">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Service Name</label>
+      <input class="form-input" id="sub-name" placeholder="e.g. Netflix, Spotify, Gym" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Monthly Amount ($)</label>
+        <input class="form-input" id="sub-amount" placeholder="15.99" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date (day of month)</label>
+        <input class="form-input" id="sub-day" placeholder="1" type="number" min="1" max="31">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Frequency</label>
+        <select class="form-input" id="sub-freq">
+          <option>Monthly</option>
+          <option>Annual</option>
+          <option>Weekly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Paid With (card name)</label>
+        <input class="form-input" id="sub-card" placeholder="e.g. Capital One" type="text">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-subscription')">Cancel</button>
+      <button class="btn-save" onclick="saveSubscription()">Save Subscription</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD BILL -->
+<div class="modal-overlay" id="modal-bill">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Recurring Bill 📋</div>
+      <div class="modal-close" onclick="closeModal('modal-bill')">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bill Name</label>
+      <input class="form-input" id="bill-name" placeholder="e.g. Rent, Electric, Internet" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="bill-amount" placeholder="120.00" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date (day of month)</label>
+        <input class="form-input" id="bill-day" placeholder="1" type="number" min="1" max="31">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Paid With (card/account)</label>
+      <input class="form-input" id="bill-card" placeholder="e.g. Checking Account" type="text">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-bill')">Cancel</button>
+      <button class="btn-save" onclick="saveBill()">Save Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOG EXPENSE -->
+<div class="modal-overlay" id="modal-log-expense">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Log Transaction 💸</div>
+      <div class="modal-close" onclick="closeModal('modal-log-expense')">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <input class="form-input" id="exp-desc" placeholder="e.g. Grocery run, Gas, Amazon" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="exp-amount" placeholder="45.00" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="exp-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card / Account Used</label>
+      <select class="form-input" id="exp-card">
+        <option value="">Select card...</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <div class="type-grid" style="grid-template-columns: repeat(4,1fr)">
+        <div class="type-opt selected" onclick="selectType(this,'exp-cat')" data-val="🛒 Groceries"><span class="type-opt-icon">🛒</span>Groceries</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="⛽ Gas"><span class="type-opt-icon">⛽</span>Gas</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🍔 Food"><span class="type-opt-icon">🍔</span>Food</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🛍️ Shopping"><span class="type-opt-icon">🛍️</span>Shopping</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="💊 Health"><span class="type-opt-icon">💊</span>Health</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🚗 Transport"><span class="type-opt-icon">🚗</span>Transport</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🎮 Fun"><span class="type-opt-icon">🎮</span>Fun</div>
+        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="📦 Other"><span class="type-opt-icon">📦</span>Other</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-log-expense')">Cancel</button>
+      <button class="btn-save" onclick="saveExpense()">Log Transaction</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOG PAYMENT (paying off a card) -->
+<div class="modal-overlay" id="modal-log-payment">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Log Card Payment 💳</div>
+      <div class="modal-close" onclick="closeModal('modal-log-payment')">✕</div>
+    </div>
+    <div class="form-sub" style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.6">
+      When you pay your card bill, log it here — the balance on that card will update automatically.
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card / Account</label>
+      <select class="form-input" id="pay-card">
+        <option value="">Select card...</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Payment Amount ($)</label>
+        <input class="form-input" id="pay-amount" placeholder="245.00" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="pay-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optional)</label>
+      <input class="form-input" id="pay-note" placeholder="e.g. Full balance, Minimum payment..." type="text">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-log-payment')">Cancel</button>
+      <button class="btn-save" onclick="savePayment()">Log Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<nav class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-item active" id="mnav-home" onclick="switchScreen('home')">
+    <span class="mobile-nav-icon">⚡</span>Snapshot
+  </button>
+  <button class="mobile-nav-item" id="mnav-cards" onclick="switchScreen('cards')">
+    <span class="mobile-nav-icon">💳</span>Cards
+  </button>
+  <button class="mobile-nav-item" id="mnav-spending" onclick="switchScreen('spending')">
+    <span class="mobile-nav-icon">💸</span>Log
+  </button>
+  <button class="mobile-nav-item" id="mnav-upcoming" onclick="switchScreen('upcoming')">
+    <span class="mobile-nav-icon">📅</span>Coming Up
+  </button>
+  <button class="mobile-nav-item" id="mnav-billssubs" onclick="switchScreen('billssubs')">
+    <span class="mobile-nav-icon">🔁</span>Bills
+  </button>
+</nav>
+
 </body>
 </html>
