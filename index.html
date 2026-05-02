@@ -3285,8 +3285,12 @@ function renderSpendingLog() {
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Paid With (card name)</label>
-        <input class="form-input" id="sub-card" placeholder="e.g. Capital One" type="text">
+        <label class="form-label">Paid With (card / account)</label>
+        <select class="form-input" id="sub-card" onchange="checkSubAffordability()">
+          <option value="">Select account...</option>
+        </select>
+        <!-- Affordability warning -->
+        <div id="sub-affordability" style="display:none;margin-top:8px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:700;line-height:1.6"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -3318,8 +3322,12 @@ function renderSpendingLog() {
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Paid With (card/account)</label>
-      <input class="form-input" id="bill-card" placeholder="e.g. Checking Account" type="text">
+      <label class="form-label">Paid With (card / account)</label>
+      <select class="form-input" id="bill-card" onchange="checkBillAffordability()">
+        <option value="">Select account...</option>
+      </select>
+      <!-- Affordability warning -->
+      <div id="bill-affordability" style="display:none;margin-top:8px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:700;line-height:1.6"></div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-bill')">Cancel</button>
@@ -3351,9 +3359,33 @@ function renderSpendingLog() {
     </div>
     <div class="form-group">
       <label class="form-label">Card / Account Used</label>
-      <select class="form-input" id="exp-card">
-        <option value="">Select card...</option>
+      <select class="form-input" id="exp-card" onchange="onSpendingAccountChange('exp-card','inline-exp-account')">
+        <option value="">Select account...</option>
       </select>
+    </div>
+    <div id="inline-exp-account" style="display:none;background:var(--cream);border:1.5px solid var(--coral-mid);border-radius:14px;padding:16px;margin-top:-8px;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">New Account</div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="inline-exp-acct-name" placeholder="e.g. Chase Checking" type="text">
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Type</label>
+          <select class="form-input" id="inline-exp-acct-type">
+            <option value="bank">🏛️ Bank Account</option>
+            <option value="debit">🏦 Debit Card</option>
+            <option value="credit">💳 Credit Card</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Current Balance ($)</label>
+          <input class="form-input" id="inline-exp-acct-balance" placeholder="0.00" type="number" step="0.01">
+        </div>
+      </div>
+      <button onclick="saveSpendingInlineAccount('exp-card','inline-exp-account','inline-exp-acct-name','inline-exp-acct-type','inline-exp-acct-balance')" style="margin-top:12px;width:100%;background:var(--coral);color:#fff;border:none;border-radius:10px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer">
+        Create Account & Select
+      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Category</label>
@@ -4461,6 +4493,197 @@ window.saveInlineAccount = function(mode) {
 };
 
 // income account selects handled by populateIncomeAccountSelect()
+
+
+// ── SPENDING LOG INLINE ACCOUNT ───────────────────────────────
+
+window.onSpendingAccountChange = function(selId, formId) {
+  var sel  = document.getElementById(selId);
+  var form = document.getElementById(formId);
+  if (form) form.style.display = sel && sel.value === '__new__' ? 'block' : 'none';
+};
+
+window.saveSpendingInlineAccount = function(selId, formId, nameId, typeId, balId) {
+  var name    = document.getElementById(nameId) ? document.getElementById(nameId).value.trim() : '';
+  var type    = document.getElementById(typeId) ? document.getElementById(typeId).value : 'bank';
+  var balance = document.getElementById(balId)  ? parseFloat(document.getElementById(balId).value)||0 : 0;
+  var sel     = document.getElementById(selId);
+  var form    = document.getElementById(formId);
+  if (!name) { showToast('Please enter an account name'); return; }
+
+  var isCredit = type === 'credit';
+  var newCard = {
+    id: Date.now(), name: name, category: type,
+    type: type === 'credit' ? 'Unsecured' : type === 'debit' ? 'Debit' : 'Bank Account',
+    bankBalance: isCredit ? 0 : balance,
+    balance: isCredit ? 0 : 0,
+    limit: isCredit ? balance : 0,
+    statement: '', due: ''
+  };
+  state.cards.push(newCard);
+  save();
+
+  if (sel) {
+    var opt = document.createElement('option');
+    opt.value = String(newCard.id);
+    opt.textContent = name;
+    var newOpt = sel.querySelector('option[value="__new__"]');
+    if (newOpt) sel.insertBefore(opt, newOpt);
+    else sel.appendChild(opt);
+    sel.value = String(newCard.id);
+  }
+  if (form) form.style.display = 'none';
+  if (document.getElementById(nameId)) document.getElementById(nameId).value = '';
+  if (document.getElementById(balId))  document.getElementById(balId).value  = '';
+  showToast(name + ' created & selected! 🏦');
+  populateCardSelects();
+};
+
+// ── SUBSCRIPTION / BILL AFFORDABILITY CHECK ───────────────────
+
+function getRecurringOnCard(cardId, excludeType) {
+  // Sum all subscriptions + bills on this card
+  var total = 0;
+  state.subscriptions.forEach(function(s) {
+    if (String(s.cardId) === String(cardId)) total += (s.amount || 0);
+  });
+  state.bills.forEach(function(b) {
+    if (String(b.cardId) === String(cardId)) total += (b.amount || 0);
+  });
+  return total;
+}
+
+function showAffordabilityCheck(cardId, newAmount, warningElId) {
+  var el = document.getElementById(warningElId);
+  if (!el) return;
+  if (!cardId) { el.style.display = 'none'; return; }
+
+  var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
+  if (!card) { el.style.display = 'none'; return; }
+
+  var existingRecurring = getRecurringOnCard(cardId);
+  var totalWithNew = existingRecurring + newAmount;
+  var isBank = card.category === 'debit' || card.category === 'bank';
+  var available = isBank ? (card.bankBalance || 0) : (card.limit - card.balance);
+  var limit = isBank ? (card.bankBalance || 0) : card.limit;
+
+  el.style.display = 'block';
+
+  // Build the message
+  var icon, color, bg, msg;
+
+  if (isBank) {
+    // Bank/debit — check if recurring would overdraft
+    if (totalWithNew > available) {
+      icon = '🚨'; color = '#B8007A'; bg = 'rgba(224,64,160,0.1)';
+      msg = '<strong>Overdraft risk!</strong> This account has <strong>' + fmt(available) + '</strong> available. ' +
+        'Adding this brings your monthly recurring charges to <strong>' + fmt(totalWithNew) + '</strong> — ' +
+        'that\'s <strong>' + fmt(totalWithNew - available) + ' over</strong> your available balance.';
+    } else if (totalWithNew > available * 0.8) {
+      icon = '⚠️'; color = '#C08000'; bg = 'rgba(255,180,0,0.1)';
+      msg = '<strong>Getting tight.</strong> Your recurring charges would be <strong>' + fmt(totalWithNew) + '</strong>/mo ' +
+        'against <strong>' + fmt(available) + '</strong> available. That\'s ' + Math.round((totalWithNew/available)*100) + '% of your balance.';
+    } else {
+      icon = '✅'; color = '#00B87A'; bg = 'rgba(0,184,122,0.1)';
+      msg = '<strong>Looks good!</strong> Your total recurring on this account would be <strong>' + fmt(totalWithNew) + '</strong>/mo ' +
+        'against <strong>' + fmt(available) + '</strong> available balance.';
+    }
+  } else {
+    // Credit card — check utilization
+    var pct = limit > 0 ? (totalWithNew / limit) * 100 : 0;
+    if (totalWithNew > available) {
+      icon = '🚨'; color = '#B8007A'; bg = 'rgba(224,64,160,0.1)';
+      msg = '<strong>Over the limit!</strong> Adding this would put <strong>' + fmt(totalWithNew) + '</strong> in recurring charges on ' +
+        card.name + ' — but you only have <strong>' + fmt(available) + '</strong> available. ' +
+        'That\'s <strong>' + fmt(totalWithNew - available) + ' over your limit</strong>.';
+    } else if (pct > 80) {
+      icon = '⚠️'; color = '#C08000'; bg = 'rgba(255,180,0,0.1)';
+      msg = '<strong>High utilization warning.</strong> Recurring charges on ' + card.name + ' would be <strong>' + fmt(totalWithNew) + '</strong>/mo ' +
+        '— that\'s <strong>' + Math.round(pct) + '% of your ' + fmt(limit) + ' limit</strong>. ' +
+        'Consider spreading across cards.';
+    } else if (pct > 50) {
+      icon = '⚠️'; color = '#C08000'; bg = 'rgba(255,180,0,0.1)';
+      msg = '<strong>Heads up.</strong> Recurring charges on ' + card.name + ' would reach <strong>' + fmt(totalWithNew) + '</strong>/mo ' +
+        '(' + Math.round(pct) + '% of limit). ' +
+        (existingRecurring > 0 ? 'You already have ' + fmt(existingRecurring) + '/mo on this card.' : '');
+    } else {
+      icon = '✅'; color = '#00B87A'; bg = 'rgba(0,184,122,0.1)';
+      msg = '<strong>Card can carry this.</strong> Total recurring on ' + card.name + ' would be <strong>' + fmt(totalWithNew) + '</strong>/mo ' +
+        '(' + Math.round(pct) + '% of your ' + fmt(limit) + ' limit). ' +
+        (existingRecurring > 0 ? 'Current recurring: ' + fmt(existingRecurring) + '/mo.' : 'No other recurring charges on this card.');
+    }
+  }
+
+  el.style.background = bg;
+  el.style.border = '1.5px solid ' + color;
+  el.style.color = color;
+  el.innerHTML = icon + ' ' + msg;
+}
+
+window.checkSubAffordability = function() {
+  var cardId = document.getElementById('sub-card') ? document.getElementById('sub-card').value : '';
+  var amount = parseFloat(document.getElementById('sub-amount') ? document.getElementById('sub-amount').value : 0) || 0;
+  showAffordabilityCheck(cardId, amount, 'sub-affordability');
+};
+
+window.checkBillAffordability = function() {
+  var cardId = document.getElementById('bill-card') ? document.getElementById('bill-card').value : '';
+  var amount = parseFloat(document.getElementById('bill-amount') ? document.getElementById('bill-amount').value : 0) || 0;
+  showAffordabilityCheck(cardId, amount, 'bill-affordability');
+};
+
+// Also check when amount changes
+document.addEventListener('DOMContentLoaded', function() {
+  var subAmt = document.getElementById('sub-amount');
+  if (subAmt) subAmt.addEventListener('input', window.checkSubAffordability);
+  var billAmt = document.getElementById('bill-amount');
+  if (billAmt) billAmt.addEventListener('input', window.checkBillAffordability);
+});
+
+// ── POPULATE SUB/BILL CARD DROPDOWNS ON MODAL OPEN ────────────
+function populateRecurringCardSelect(selId) {
+  var sel = document.getElementById(selId);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select account...</option>';
+  state.cards.forEach(function(c) {
+    var opt = document.createElement('option');
+    opt.value = String(c.id);
+    var isBank = c.category === 'debit' || c.category === 'bank';
+    var balLabel = isBank ? ' (' + fmt(c.bankBalance||0) + ' avail)' : ' (' + fmt(c.limit-c.balance) + ' avail)';
+    opt.textContent = c.name + balLabel;
+    sel.appendChild(opt);
+  });
+}
+
+// Hook into openModal for subscription and bill
+var _origOpenModalRecurring = openModal;
+openModal = function(type) {
+  _origOpenModalRecurring(type);
+  if (type === 'subscription') {
+    populateRecurringCardSelect('sub-card');
+    var el = document.getElementById('sub-affordability');
+    if (el) el.style.display = 'none';
+  }
+  if (type === 'bill') {
+    populateRecurringCardSelect('bill-card');
+    var el = document.getElementById('bill-affordability');
+    if (el) el.style.display = 'none';
+  }
+};
+
+// Also update populateCardSelects to include __new__ for expense card
+var _origPopulateCS = populateCardSelects;
+populateCardSelects = function() {
+  _origPopulateCS();
+  // Add __new__ to expense card select
+  var expSel = document.getElementById('exp-card');
+  if (expSel && !expSel.querySelector('option[value="__new__"]')) {
+    var newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '➕ Add new account...';
+    expSel.appendChild(newOpt);
+  }
+};
 
 </script>
 
