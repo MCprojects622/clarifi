@@ -2742,12 +2742,20 @@ function renderAll() {
     } else {
       subsList.innerHTML = '<div class="income-list">' + state.subscriptions.map(function(s){
         var sid = String(s.id);
-        var dayStr = s.day ? s.day + (s.day==1?'st':s.day==2?'nd':s.day==3?'rd':'th') + ' of month' : 'No date set';
-        return '<div class="income-item">' +
+        var dayStr = s.day ? s.day + (s.day==1?'st':s.day==2?'nd':s.day==3?'rd':'th') + ' of month' : 'No date';
+        var isPaid = isRecurringPaid(s, 'sub');
+        var paidBg = isPaid ? 'rgba(0,184,122,0.1)' : 'rgba(224,64,160,0.08)';
+        var paidColor = isPaid ? 'var(--sage)' : 'var(--coral)';
+        var paidLabel = isPaid ? '&#x2713; Paid' : 'Mark Paid';
+        return '<div class="income-item" style="opacity:' + (isPaid?'0.7':'1') + '">' +
           '<div class="income-icon-wrap">&#x1F501;</div>' +
-          '<div class="income-info"><div class="income-name">'+s.name+'</div><div class="income-meta">'+s.freq+' &middot; Due '+dayStr+(s.card?' &middot; '+s.card:'')+'</div></div>' +
+          '<div class="income-info">' +
+            '<div class="income-name">'+s.name+(isPaid?' <span style="font-size:10px;background:var(--sage-light);color:var(--sage);border-radius:6px;padding:2px 6px;font-weight:800">PAID</span>':'')+'</div>' +
+            '<div class="income-meta">'+s.freq+' &middot; '+dayStr+(s.card?' &middot; '+s.card:'')+'</div>' +
+          '</div>' +
           '<div class="income-amount" style="color:var(--coral)">'+fmt(s.amount)+'</div>' +
-          '<button class="del-btn clarifi-edit-sub" data-id="'+sid+'" title="Edit" style="color:#00B87A;margin-right:2px">&#9998;</button>' +
+          '<button class="del-btn clarifi-mark-paid-recurring" data-id="'+sid+'" data-rtype="sub" title="Mark Paid" style="background:'+paidBg+';color:'+paidColor+';border:1.5px solid '+paidColor+';border-radius:8px;padding:4px 8px;font-size:11px;font-weight:800;min-width:auto">'+paidLabel+'</button>' +
+          '<button class="del-btn clarifi-edit-sub" data-id="'+sid+'" title="Edit" style="color:#00B87A">&#9998;</button>' +
           '<button class="del-btn clarifi-del-sub" data-id="'+sid+'" title="Remove">&#x2715;</button>' +
           '</div>';
       }).join('') +
@@ -2763,12 +2771,20 @@ function renderAll() {
     } else {
       billsList.innerHTML = '<div class="income-list">' + state.bills.map(function(b){
         var bid = String(b.id);
-        var dayStr = b.day ? b.day + (b.day==1?'st':b.day==2?'nd':b.day==3?'rd':'th') + ' of month' : 'No date set';
-        return '<div class="income-item">' +
+        var dayStr = b.day ? b.day + (b.day==1?'st':b.day==2?'nd':b.day==3?'rd':'th') + ' of month' : 'No date';
+        var isPaid = isRecurringPaid(b, 'bill');
+        var paidBg = isPaid ? 'rgba(0,184,122,0.1)' : 'rgba(212,168,67,0.1)';
+        var paidColor = isPaid ? 'var(--sage)' : 'var(--gold)';
+        var paidLabel = isPaid ? '&#x2713; Paid' : 'Mark Paid';
+        return '<div class="income-item" style="opacity:' + (isPaid?'0.7':'1') + '">' +
           '<div class="income-icon-wrap">&#x1F4CB;</div>' +
-          '<div class="income-info"><div class="income-name">'+b.name+'</div><div class="income-meta">Recurring &middot; Due '+dayStr+(b.card?' &middot; '+b.card:'')+'</div></div>' +
+          '<div class="income-info">' +
+            '<div class="income-name">'+b.name+(isPaid?' <span style="font-size:10px;background:var(--sage-light);color:var(--sage);border-radius:6px;padding:2px 6px;font-weight:800">PAID</span>':'')+'</div>' +
+            '<div class="income-meta">Recurring &middot; '+dayStr+(b.card?' &middot; '+b.card:'')+'</div>' +
+          '</div>' +
           '<div class="income-amount" style="color:var(--gold)">'+fmt(b.amount)+'</div>' +
-          '<button class="del-btn clarifi-edit-bill" data-id="'+bid+'" title="Edit" style="color:#00B87A;margin-right:2px">&#9998;</button>' +
+          '<button class="del-btn clarifi-mark-paid-recurring" data-id="'+bid+'" data-rtype="bill" title="Mark Paid" style="background:'+paidBg+';color:'+paidColor+';border:1.5px solid '+paidColor+';border-radius:8px;padding:4px 8px;font-size:11px;font-weight:800;min-width:auto">'+paidLabel+'</button>' +
+          '<button class="del-btn clarifi-edit-bill" data-id="'+bid+'" title="Edit" style="color:#00B87A">&#9998;</button>' +
           '<button class="del-btn clarifi-del-bill" data-id="'+bid+'" title="Remove">&#x2715;</button>' +
           '</div>';
       }).join('') +
@@ -3022,8 +3038,9 @@ document.addEventListener('DOMContentLoaded', function() {
       ['clarifi-add-sub',      function(){ openModal('subscription'); }],
       ['clarifi-add-bill',     function(){ openModal('bill'); }],
       ['clarifi-add-upcoming', function(){ openModal('upcoming'); }],
-      ['clarifi-edit-txn',     function(el){ editTransaction(el.getAttribute('data-id')); }],
-      ['clarifi-del-txn',      function(el){ deleteTransaction(el.getAttribute('data-id')); }],
+      ['clarifi-edit-txn',          function(el){ editTransaction(el.getAttribute('data-id')); }],
+      ['clarifi-del-txn',           function(el){ deleteTransaction(el.getAttribute('data-id')); }],
+      ['clarifi-mark-paid-recurring',function(el){ markPaidRecurring(el.getAttribute('data-id'), el.getAttribute('data-rtype')); }],
     ];
 
     for (var i = 0; i < handlers.length; i++) {
@@ -3932,6 +3949,12 @@ function renderSpendingLog() {
         <input class="form-input" id="edit-txn-date" type="date">
       </div>
     </div>
+    <div class="form-group" id="edit-txn-account-group">
+      <label class="form-label">Card / Account</label>
+      <select class="form-input" id="edit-txn-account">
+        <option value="">Select account...</option>
+      </select>
+    </div>
     <div class="form-group" id="edit-txn-cat-group">
       <label class="form-label">Category</label>
       <div class="type-grid" style="grid-template-columns:repeat(4,1fr)" id="edit-txn-cat-grid"></div>
@@ -4019,6 +4042,46 @@ function renderSpendingLog() {
 <button id="mobile-fab-feedback" onclick="openModal('feedback')" style="display:none;position:fixed;right:16px;bottom:80px;z-index:150;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#8040D0);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(224,64,160,0.4);align-items:center;justify-content:center">
   💬
 </button>
+
+
+<!-- MARK RECURRING PAID -->
+<div class="modal-overlay" id="modal-mark-paid-recurring">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="mark-paid-modal-title">Mark as Paid ✅</div>
+      <div class="modal-close" onclick="closeModal('modal-mark-paid-recurring')">✕</div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:16px;line-height:1.6" id="mark-paid-modal-sub">
+      Confirm the payment details — this will log to your spending log and update your account balance.
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <input class="form-input" id="mark-paid-desc" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="mark-paid-amount" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date Paid</label>
+        <input class="form-input" id="mark-paid-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Paid From (account)</label>
+      <select class="form-input" id="mark-paid-account">
+        <option value="">Select account (optional)...</option>
+      </select>
+    </div>
+    <input type="hidden" id="mark-paid-id">
+    <input type="hidden" id="mark-paid-rtype">
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-mark-paid-recurring')">Cancel</button>
+      <button class="btn-save" onclick="confirmRecurringPaid()">Confirm Payment ✅</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── MOBILE BOTTOM NAV ── -->
 <nav class="mobile-nav" id="mobile-nav">
@@ -5188,10 +5251,28 @@ window.editTransaction = function(id) {
   var t = state.transactions.find(function(x){ return String(x.id) === String(id); });
   if (!t) return;
 
-  document.getElementById('edit-txn-id').value    = id;
-  document.getElementById('edit-txn-desc').value  = t.desc || '';
+  document.getElementById('edit-txn-id').value     = id;
+  document.getElementById('edit-txn-desc').value   = t.desc || '';
   document.getElementById('edit-txn-amount').value = t.amount || '';
   document.getElementById('edit-txn-date').value   = t.date || '';
+
+  // Populate account dropdown
+  var acctGroup = document.getElementById('edit-txn-account-group');
+  var acctSel   = document.getElementById('edit-txn-account');
+  // Hide account for income type (income has its own screen)
+  if (acctGroup) acctGroup.style.display = t.type === 'income' ? 'none' : '';
+  if (acctSel) {
+    acctSel.innerHTML = '<option value="">No account / unknown</option>';
+    state.cards.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = String(c.id);
+      var isBank = c.category === 'debit' || c.category === 'bank';
+      var bal = isBank ? fmt(c.bankBalance||0) + ' bal' : fmt(c.limit-c.balance) + ' avail';
+      opt.textContent = c.name + ' (' + bal + ')';
+      acctSel.appendChild(opt);
+    });
+    if (t.cardId) acctSel.value = String(t.cardId);
+  }
 
   // Show category grid only for expense/send types
   var catGroup = document.getElementById('edit-txn-cat-group');
@@ -5212,10 +5293,11 @@ window.editTransaction = function(id) {
 };
 
 window.saveEditTransaction = function() {
-  var id     = document.getElementById('edit-txn-id').value;
-  var desc   = document.getElementById('edit-txn-desc').value.trim();
-  var amount = parseFloat(document.getElementById('edit-txn-amount').value) || 0;
-  var date   = document.getElementById('edit-txn-date').value;
+  var id       = document.getElementById('edit-txn-id').value;
+  var desc     = document.getElementById('edit-txn-desc').value.trim();
+  var amount   = parseFloat(document.getElementById('edit-txn-amount').value) || 0;
+  var date     = document.getElementById('edit-txn-date').value;
+  var newCardId= document.getElementById('edit-txn-account') ? document.getElementById('edit-txn-account').value : '';
 
   if (!desc)   { showToast('Please enter a description'); return; }
   if (!amount) { showToast('Please enter an amount'); return; }
@@ -5224,37 +5306,45 @@ window.saveEditTransaction = function() {
   var t = state.transactions.find(function(x){ return String(x.id) === String(id); });
   if (!t) return;
 
-  // Reverse old balance effect on card
+  // ── Reverse old balance effect on the OLD account ──
   if (t.cardId) {
-    var card = state.cards.find(function(c){ return String(c.id) === String(t.cardId); });
-    if (card) {
-      var isBank = card.category === 'debit' || card.category === 'bank';
+    var oldCard = state.cards.find(function(c){ return String(c.id) === String(t.cardId); });
+    if (oldCard) {
+      var oldIsBank = oldCard.category === 'debit' || oldCard.category === 'bank';
       if (t.type === 'expense' || t.type === 'send') {
-        if (isBank) card.bankBalance = (card.bankBalance||0) + t.amount;
-        else        card.balance = Math.max(0, (card.balance||0) - t.amount);
+        if (oldIsBank) oldCard.bankBalance = (oldCard.bankBalance||0) + t.amount;
+        else           oldCard.balance = Math.max(0, (oldCard.balance||0) - t.amount);
+      }
+      if (t.type === 'payment') {
+        if (oldIsBank) oldCard.bankBalance = Math.max(0, (oldCard.bankBalance||0) - t.amount);
+        else           oldCard.balance = (oldCard.balance||0) + t.amount;
       }
     }
   }
 
-  // Apply new values
+  // ── Apply updated values ──
   t.desc   = desc;
   t.amount = amount;
   t.date   = date;
 
-  var showCat = t.type === 'expense' || t.type === 'send';
-  if (showCat) {
-    t.cat = getType('edit-txn-cat', t.cat || '📦 Other');
-  }
+  // Update account
+  var newCard = newCardId ? state.cards.find(function(c){ return String(c.id) === String(newCardId); }) : null;
+  t.cardId   = newCardId || '';
+  t.cardName = newCard ? newCard.name : '';
 
-  // Re-apply balance effect with new amount
-  if (t.cardId) {
-    var card2 = state.cards.find(function(c){ return String(c.id) === String(t.cardId); });
-    if (card2) {
-      var isBank2 = card2.category === 'debit' || card2.category === 'bank';
-      if (t.type === 'expense' || t.type === 'send') {
-        if (isBank2) card2.bankBalance = Math.max(0, (card2.bankBalance||0) - amount);
-        else         card2.balance = (card2.balance||0) + amount;
-      }
+  var showCat = t.type === 'expense' || t.type === 'send';
+  if (showCat) t.cat = getType('edit-txn-cat', t.cat || '📦 Other');
+
+  // ── Apply new balance effect on the NEW account ──
+  if (newCard) {
+    var newIsBank = newCard.category === 'debit' || newCard.category === 'bank';
+    if (t.type === 'expense' || t.type === 'send') {
+      if (newIsBank) newCard.bankBalance = Math.max(0, (newCard.bankBalance||0) - amount);
+      else           newCard.balance = (newCard.balance||0) + amount;
+    }
+    if (t.type === 'payment') {
+      if (newIsBank) newCard.bankBalance = (newCard.bankBalance||0) + amount;
+      else           newCard.balance = Math.max(0, (newCard.balance||0) - amount);
     }
   }
 
@@ -5422,6 +5512,142 @@ var _origOnSignedInTutorial = onSignedIn;
 onSignedIn = function(user) {
   _origOnSignedInTutorial(user);
   setTimeout(startTutorialIfNew, 1500);
+};
+
+
+// ── RECURRING PAID STATUS ─────────────────────────────────────
+
+// paid status stored as: { id: { monthKey: 'YYYY-MM', paid: true } }
+// for annual subs: { id: { yearKey: 'YYYY', paid: true } }
+
+function getPaidKey(item, rtype) {
+  var now = new Date();
+  if (rtype === 'sub' && item.freq === 'Annual') {
+    return String(now.getFullYear());
+  }
+  return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+}
+
+function isRecurringPaid(item, rtype) {
+  var paidData = item.paidHistory || {};
+  var key = getPaidKey(item, rtype);
+  return paidData[key] === true;
+}
+
+window.markPaidRecurring = function(id, rtype) {
+  var item = rtype === 'sub'
+    ? state.subscriptions.find(function(s){ return String(s.id) === String(id); })
+    : state.bills.find(function(b){ return String(b.id) === String(id); });
+  if (!item) return;
+
+  // If already paid, unmark it
+  if (isRecurringPaid(item, rtype)) {
+    var key = getPaidKey(item, rtype);
+    if (item.paidHistory) delete item.paidHistory[key];
+    // Also remove matching transaction from spending log
+    state.transactions = state.transactions.filter(function(t) {
+      return !(t.recurringId === String(id) && t.recurringKey === key);
+    });
+    save(); renderAll();
+    showToast(item.name + ' marked unpaid');
+    return;
+  }
+
+  // Open the confirm modal with pre-filled details
+  document.getElementById('mark-paid-id').value    = id;
+  document.getElementById('mark-paid-rtype').value = rtype;
+  document.getElementById('mark-paid-desc').value  = item.name;
+  document.getElementById('mark-paid-amount').value = item.amount || '';
+  document.getElementById('mark-paid-date').value  = new Date().toISOString().split('T')[0];
+
+  // Populate account dropdown
+  var sel = document.getElementById('mark-paid-account');
+  if (sel) {
+    sel.innerHTML = '<option value="">Select account (optional)...</option>';
+    state.cards.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = String(c.id);
+      var isBank = c.category === 'debit' || c.category === 'bank';
+      var bal = isBank ? fmt(c.bankBalance||0) : fmt(c.limit-c.balance) + ' avail';
+      opt.textContent = c.name + ' (' + bal + ')';
+      sel.appendChild(opt);
+    });
+    // Pre-select the card this recurring is linked to
+    if (item.cardId) sel.value = String(item.cardId);
+  }
+
+  var title = document.getElementById('mark-paid-modal-title');
+  if (title) title.textContent = 'Mark ' + item.name + ' as Paid ✅';
+
+  document.getElementById('modal-mark-paid-recurring').classList.add('open');
+};
+
+window.confirmRecurringPaid = function() {
+  var id     = document.getElementById('mark-paid-id').value;
+  var rtype  = document.getElementById('mark-paid-rtype').value;
+  var desc   = document.getElementById('mark-paid-desc').value.trim();
+  var amount = parseFloat(document.getElementById('mark-paid-amount').value) || 0;
+  var date   = document.getElementById('mark-paid-date').value;
+  var acctId = document.getElementById('mark-paid-account').value;
+
+  if (!desc)   { showToast('Please enter a description'); return; }
+  if (!amount) { showToast('Please enter an amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var item = rtype === 'sub'
+    ? state.subscriptions.find(function(s){ return String(s.id) === String(id); })
+    : state.bills.find(function(b){ return String(b.id) === String(id); });
+  if (!item) return;
+
+  var key = getPaidKey(item, rtype);
+
+  // Mark as paid
+  if (!item.paidHistory) item.paidHistory = {};
+  item.paidHistory[key] = true;
+
+  // Find account
+  var acct = acctId ? state.cards.find(function(c){ return String(c.id) === String(acctId); }) : null;
+  var acctName = acct ? acct.name : '';
+
+  // Update account balance
+  if (acct) {
+    var isBank = acct.category === 'debit' || acct.category === 'bank';
+    if (isBank) {
+      acct.bankBalance = Math.max(0, (acct.bankBalance || 0) - amount);
+    } else {
+      acct.balance = (acct.balance || 0) + amount;
+    }
+  }
+
+  // Add to spending log
+  state.transactions.push({
+    id: Date.now(),
+    type: 'expense',
+    desc: desc,
+    amount: amount,
+    date: date,
+    cardId: acctId,
+    cardName: acctName,
+    cat: rtype === 'sub' ? '🔁 Subscription' : '📋 Bill',
+    recurringId: String(id),
+    recurringKey: key
+  });
+  state.transactions.sort(function(a, b){ return new Date(b.date) - new Date(a.date); });
+
+  save();
+  closeModal('modal-mark-paid-recurring');
+  renderAll();
+
+  var acctMsg = acctName ? ' · ' + acctName + ' updated' : '';
+  showToast(item.name + ' marked paid ✅' + acctMsg + ' · Logged to spending');
+};
+
+// ── Add to event delegation ───────────────────────────────────
+// This is called from the unified event delegation handler
+window._handleMarkPaidRecurring = function(el) {
+  var id    = el.getAttribute('data-id');
+  var rtype = el.getAttribute('data-rtype');
+  markPaidRecurring(id, rtype);
 };
 
 </script>
