@@ -10,13 +10,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Clarifi">
-<meta name="description" content="Your Financial Clarity — track cards, income, bills and spending in one place">
+<meta name="description" content="Because guessing is broke behavior — track cards, income, bills and spending in one place">
 <link rel="manifest" href="clarifi-manifest.json">
 <!-- PWA Icons (inline SVG as data URI for self-contained use) -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E040A0%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%238040D0%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22115%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%20%20%3Ctext%20x%3D%2260%22%20y%3D%22370%22%20font-family%3D%22Arial%20Black%2C%20sans-serif%22%20font-size%3D%22330%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EC%3C/text%3E%0A%20%20%3Ctext%20x%3D%22295%22%20y%3D%22195%22%20font-family%3D%22Georgia%2C%20serif%22%20font-size%3D%22155%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%2300B87A%22%3Efi%3C/text%3E%0A%3C/svg%3E">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E040A0%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%238040D0%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22115%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%20%20%3Ctext%20x%3D%2260%22%20y%3D%22370%22%20font-family%3D%22Arial%20Black%2C%20sans-serif%22%20font-size%3D%22330%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EC%3C/text%3E%0A%20%20%3Ctext%20x%3D%22295%22%20y%3D%22195%22%20font-family%3D%22Georgia%2C%20serif%22%20font-size%3D%22155%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%2300B87A%22%3Efi%3C/text%3E%0A%3C/svg%3E">
 
-<title>Clarifi — Your Financial Clarity</title>
+<title>Clarifi — Because guessing is broke behavior</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
 <script>
@@ -24,7 +24,7 @@
   var manifest = {
     name: "Clarifi",
     short_name: "Clarifi",
-    description: "Your Financial Clarity",
+    description: "Because guessing is broke behavior",
     start_url: "./",
     display: "standalone",
     background_color: "#FDF5FF",
@@ -743,6 +743,74 @@ body {
 .txn-date-small { font-size: 10px; font-weight: 700; color: var(--dim); margin-top: 3px; }
 .spending-log-empty { padding: 48px 24px; text-align: center; }
 
+
+/* ── SETTINGS ── */
+.settings-section {
+  background: var(--white); border-radius: var(--radius);
+  border: 1.5px solid var(--border); margin-bottom: 20px; overflow: hidden;
+}
+.settings-section-header {
+  padding: 16px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.settings-section-icon { font-size: 20px; }
+.settings-section-title {
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900; color: var(--text);
+}
+.settings-section-sub { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 1px; }
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 22px; border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row-label { font-size: 14px; font-weight: 700; color: var(--text); }
+.settings-row-sub { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 2px; }
+
+/* Toggle switch */
+.toggle-wrap { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.toggle-wrap input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+  position: absolute; inset: 0; background: var(--border2);
+  border-radius: 26px; cursor: pointer; transition: 0.2s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute;
+  width: 20px; height: 20px; border-radius: 50%;
+  left: 3px; top: 3px; background: white;
+  transition: 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-wrap input:checked + .toggle-slider { background: var(--coral); }
+.toggle-wrap input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+.settings-select {
+  background: var(--cream); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 8px 12px;
+  font-family: 'Nunito Sans', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--text); outline: none; cursor: pointer;
+}
+.settings-select:focus { border-color: var(--coral); }
+.notif-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 800;
+}
+.notif-status.granted { background: var(--sage-light); color: var(--sage); }
+.notif-status.denied  { background: rgba(224,64,160,0.1); color: var(--coral); }
+.notif-status.default { background: var(--gold-light); color: var(--gold); }
+.settings-btn {
+  background: var(--coral); color: #fff; border: none;
+  border-radius: 10px; padding: 9px 18px;
+  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+  cursor: pointer; transition: all 0.2s;
+}
+.settings-btn:hover { background: var(--coral-dark); }
+.settings-btn.secondary {
+  background: var(--cream); color: var(--mid);
+  border: 1.5px solid var(--border);
+}
+.settings-btn.secondary:hover { border-color: var(--coral); color: var(--coral); background: var(--coral-light); }
+
 </style>
 </head>
 <body>
@@ -760,7 +828,7 @@ body {
         <span class="auth-wm-clari">Clari</span><span class="auth-wm-fi">fi</span>
       </div>
       <div class="auth-bar"></div>
-      <div class="auth-tagline">Your Financial Clarity</div>
+      <div class="auth-tagline">Because guessing is broke behavior</div>
     </div>
     <div id="auth-login-form">
       <div class="auth-title" id="auth-title">Welcome back</div>
@@ -807,7 +875,7 @@ body {
           <span style="font-family:Nunito,sans-serif;font-size:24px;font-weight:900;color:#E040A0;letter-spacing:-0.02em;line-height:1">Clari</span>
           <span style="font-family:'Playfair Display',serif;font-size:23px;font-weight:700;font-style:italic;color:#00B87A">fi</span>
         </div>
-        <div style="font-size:9px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#C090B8;margin-top:1px">Your Financial Clarity</div>
+        <div style="font-size:9px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#C090B8;margin-top:1px">Because guessing is broke behavior</div>
       </div>
     </div>
     <div style="height:3px;background:linear-gradient(90deg,#E040A0,#8040D0,#00B87A);border-radius:3px"></div>
@@ -853,6 +921,12 @@ body {
       <div class="nav-item-label">Spending Log</div>
       <div class="nav-item-count" id="nav-spending-count" style="display:none"></div>
     </div>
+
+    <div class="nav-section-label">App</div>
+    <div class="nav-item" id="nav-settings" onclick="switchScreen('settings')">
+      <div class="nav-item-icon">⚙️</div>
+      <div class="nav-item-label">Settings & Alerts</div>
+    </div>
   </nav>
   <div id="user-menu" style="display:none;padding:8px;border-top:1.5px solid var(--border)"><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#FDF5FF;border-radius:12px;border:1.5px solid #F0C8E8"><div class="user-avatar" id="user-avatar">Y</div><div class="user-email" id="user-email"></div><button class="signout-btn" onclick="authSignOut()">Sign out</button></div></div><div class="sidebar-footer">
     <div class="sidebar-copyright"><strong style="color:#E040A0">Clari</strong><strong style="color:#00B87A;font-family:'Playfair Display',serif;font-style:italic">fi</strong> · © 2026 Yolanda McLeod<br>All rights reserved</div>
@@ -871,7 +945,7 @@ body {
       </div>
       <div class="topbar-actions">
         <div class="greeting-pill" id="today-date"></div>
-        <button class="btn-secondary" onclick="showToast('Settings coming soon! ⚙️')">⚙️ Settings</button>
+        <button class="btn-secondary" onclick="switchScreen('settings')">⚙️ Settings</button>
       </div>
     </div>
     <div class="content">
@@ -982,30 +1056,86 @@ body {
   <div class="screen" id="screen-income">
     <div class="topbar">
       <div>
-        <div class="topbar-title">💰 Income Streams</div>
-        <div class="topbar-sub">All your income sources in one place</div>
+        <div class="topbar-title">💰 Income</div>
+        <div class="topbar-sub">Every deposit, tracked in real time</div>
       </div>
       <div class="topbar-actions">
-        <button class="btn-primary" onclick="openModal('income')">＋ Add Income</button>
+        <button class="btn-primary" onclick="openModal('income')">＋ Log Deposit</button>
       </div>
     </div>
     <div class="content">
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Income Sources</div>
-          <div class="panel-action" id="income-total-display">Total: $0/month</div>
+
+      <!-- Stats row -->
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">This Month</div>
+          <div class="stat-value green" id="income-this-month">$0</div>
+          <div class="stat-sub" id="income-this-month-count">0 deposits</div>
         </div>
-        <div class="panel-body">
-          <div class="income-list" id="income-full-list">
-            <div class="empty-state" style="padding:32px">
-              <div class="empty-icon">💰</div>
-              <div class="empty-title">No income added</div>
-              <div class="empty-sub">Add your primary job, gig earnings, and any other income streams</div>
-              <button class="empty-btn" onclick="openModal('income')">+ Add Income Source</button>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-label">Last Month</div>
+          <div class="stat-value" id="income-last-month">$0</div>
+          <div class="stat-sub" id="income-last-month-count">0 deposits</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-label">Year Total</div>
+          <div class="stat-value" id="income-year-total">$0</div>
+          <div class="stat-sub" id="income-year-count">0 deposits</div>
+        </div>
+      </div>
+
+      <!-- Month-to-month chart + Top Source -->
+      <div class="content-grid" style="margin-bottom:20px">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Month by Month</div>
+            <div class="panel-action" id="income-total-display">$0 this year</div>
+          </div>
+          <div class="panel-body" style="padding:16px 22px">
+            <div id="income-chart" style="display:flex;align-items:flex-end;gap:8px;height:100px;width:100%"></div>
+            <div id="income-chart-labels" style="display:flex;gap:8px;margin-top:6px"></div>
+          </div>
+        </div>
+
+        <!-- Top source by month -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">🏆 Top Source by Month</div>
+          </div>
+          <div class="panel-body" id="income-top-sources">
+            <div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;font-weight:600">
+              Log deposits to see your top income source each month
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Deposits list + export -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Deposits</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="panel-action" id="income-deposit-count">0 entries</div>
+            <select class="settings-select" id="report-month" style="font-size:11px;padding:5px 8px">
+              <option value="all">All time</option>
+            </select>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:12px" onclick="exportCombinedExcel()">📊 Excel</button>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:12px" onclick="exportCombinedPDF()">📄 PDF</button>
+          </div>
+        </div>
+        <div class="panel-body" id="income-full-list">
+          <div class="empty-state" style="padding:32px">
+            <div class="empty-icon">💰</div>
+            <div class="empty-title">No deposits yet</div>
+            <div class="empty-sub">Log your income as it hits your account — it updates your bank balance automatically</div>
+            <button class="empty-btn" onclick="openModal('income')">+ Log First Deposit</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1100,6 +1230,8 @@ body {
         <div class="topbar-sub">Track every transaction — balances update automatically</div>
       </div>
       <div class="topbar-actions">
+        <button class="btn-secondary" onclick="openModal('transfer')">🔄 Transfer</button>
+        <button class="btn-secondary" onclick="openModal('send-money')">📤 Send Money</button>
         <button class="btn-secondary" onclick="openModal('log-payment')">💳 Log Payment</button>
         <button class="btn-primary" onclick="openModal('log-expense')">＋ Add Transaction</button>
       </div>
@@ -1139,7 +1271,14 @@ body {
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">Transactions</div>
-          <div class="panel-action" id="spending-count-display">0 entries</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="panel-action" id="spending-count-display">0 entries</div>
+            <select class="settings-select" id="report-month-spending" style="font-size:11px;padding:5px 8px">
+              <option value="all">All time</option>
+            </select>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:12px" onclick="exportCombinedExcel()">📊 Excel</button>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:12px" onclick="exportCombinedPDF()">📄 PDF</button>
+          </div>
         </div>
         <div class="panel-body" id="spending-log-list">
           <div class="spending-log-empty">
@@ -1150,6 +1289,145 @@ body {
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+
+  <!-- ══ SETTINGS SCREEN ══ -->
+  <div class="screen" id="screen-settings">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">⚙️ Settings & Alerts</div>
+        <div class="topbar-sub">Manage notifications and app preferences</div>
+      </div>
+      <div class="topbar-actions">
+        <div id="notif-permission-status" class="notif-status default">⚪ Notifications off</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- Notification Permission -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div class="settings-section-icon">🔔</div>
+          <div>
+            <div class="settings-section-title">Notifications</div>
+            <div class="settings-section-sub">Allow Clarifi to send you alerts and reminders</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Enable Notifications</div>
+            <div class="settings-row-sub" id="notif-permission-text">Click to allow Clarifi to send you notifications</div>
+          </div>
+          <button class="settings-btn" id="notif-enable-btn" onclick="requestNotifPermission()">Enable</button>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Send a test notification</div>
+            <div class="settings-row-sub">Make sure everything is working</div>
+          </div>
+          <button class="settings-btn secondary" onclick="sendTestNotification()">Test</button>
+        </div>
+      </div>
+
+      <!-- Due Date Alerts -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div class="settings-section-icon">📅</div>
+          <div>
+            <div class="settings-section-title">Due Date Alerts</div>
+            <div class="settings-section-sub">Get notified before bills and payments are due</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Due date reminders</div>
+            <div class="settings-row-sub">Notify me when something is coming up</div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="toggle-due-alerts" onchange="saveNotifSettings()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Remind me</div>
+            <div class="settings-row-sub">How many days before the due date</div>
+          </div>
+          <select class="settings-select" id="due-days-before" onchange="saveNotifSettings()">
+            <option value="1">1 day before</option>
+            <option value="2">2 days before</option>
+            <option value="3" selected>3 days before</option>
+            <option value="5">5 days before</option>
+            <option value="7">7 days before</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Overdue alerts</div>
+            <div class="settings-row-sub">Notify me if something is past due and unpaid</div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="toggle-overdue-alerts" checked onchange="saveNotifSettings()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Spending Log Reminder -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div class="settings-section-icon">💸</div>
+          <div>
+            <div class="settings-section-title">Spending Log Reminder</div>
+            <div class="settings-section-sub">Daily nudge to keep your spending log up to date</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Daily reminder</div>
+            <div class="settings-row-sub">Remind me to log my spending each day</div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="toggle-spending-reminder" onchange="saveNotifSettings()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Reminder time</div>
+            <div class="settings-row-sub">What time should Clarifi remind you?</div>
+          </div>
+          <input type="time" class="settings-select" id="spending-reminder-time" value="20:00" onchange="saveNotifSettings()">
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div class="settings-section-icon">✨</div>
+          <div>
+            <div class="settings-section-title">About Clarifi</div>
+            <div class="settings-section-sub">Because guessing is broke behavior</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Version</div>
+            <div class="settings-row-sub">Clarifi PWA · Built with 💗 by Yolanda McLeod</div>
+          </div>
+          <div style="font-size:12px;font-weight:800;color:var(--muted)">v1.0</div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Sign out</div>
+            <div class="settings-row-sub">You'll need to sign back in</div>
+          </div>
+          <button class="settings-btn secondary" onclick="authSignOut()">Sign Out</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1222,31 +1500,32 @@ body {
   </div>
 </div>
 
-<!-- ADD INCOME -->
+<!-- LOG INCOME DEPOSIT -->
 <div class="modal-overlay" id="modal-income">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Add Income Stream 💰</div>
+      <div class="modal-title">Log Income 💰</div>
       <div class="modal-close" onclick="closeModal('modal-income')">✕</div>
     </div>
     <div class="form-group">
-      <label class="form-label">Source Name</label>
-      <input class="form-input" id="income-name" placeholder="e.g. American Express" type="text">
+      <label class="form-label">Source</label>
+      <input class="form-input" id="income-name" placeholder="e.g. Day Job, Side Hustle, Freelance" type="text">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Monthly Amount ($)</label>
-        <input class="form-input" id="income-amount" placeholder="2699" type="number">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="income-amount" placeholder="1200.00" type="number" step="0.01">
       </div>
       <div class="form-group">
-        <label class="form-label">Pay Frequency</label>
-        <select class="form-input" id="income-freq">
-          <option>Biweekly</option>
-          <option>Weekly</option>
-          <option>Monthly</option>
-          <option>Variable</option>
-        </select>
+        <label class="form-label">Date Received</label>
+        <input class="form-input" id="income-date" type="date">
       </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deposited Into</label>
+      <select class="form-input" id="income-account">
+        <option value="">Select account...</option>
+      </select>
     </div>
     <div class="form-group">
       <label class="form-label">Income Type</label>
@@ -1254,11 +1533,12 @@ body {
         <div class="type-opt selected" onclick="selectType(this,'income-type')" data-val="Primary"><span class="type-opt-icon">🏢</span>Primary</div>
         <div class="type-opt" onclick="selectType(this,'income-type')" data-val="Gig"><span class="type-opt-icon">🚗</span>Gig</div>
         <div class="type-opt" onclick="selectType(this,'income-type')" data-val="Side Hustle"><span class="type-opt-icon">💡</span>Side Hustle</div>
+        <div class="type-opt" onclick="selectType(this,'income-type')" data-val="Other"><span class="type-opt-icon">💸</span>Other</div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-income')">Cancel</button>
-      <button class="btn-save" onclick="saveIncome()">Save Income</button>
+      <button class="btn-save" onclick="saveIncome()">Log Deposit</button>
     </div>
   </div>
 </div>
@@ -1432,15 +1712,44 @@ window.saveCard = function() {
 }
 
 window.saveIncome = function() {
-  var name = document.getElementById('income-name').value.trim();
-  var amount = parseFloat(document.getElementById('income-amount').value)||0;
-  var freq = document.getElementById('income-freq').value;
-  var type = getType('income-type','Primary');
-  if (!name) { showToast('Please enter a source name'); return; }
-  state.income.push({id:Date.now(),name,amount,freq,type});
-  save(); closeModal('modal-income');
-  ['income-name','income-amount'].forEach(function(id){ document.getElementById(id).value=''; });
-  renderAll(); showToast('Income added! 💰');
+  var name    = document.getElementById('income-name').value.trim();
+  var amount  = parseFloat(document.getElementById('income-amount').value) || 0;
+  var date    = document.getElementById('income-date').value;
+  var acctId  = document.getElementById('income-account').value;
+  var type    = getType('income-type', 'Primary');
+  if (!name)   { showToast('Please enter a source'); return; }
+  if (!amount) { showToast('Please enter an amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var acctName = '';
+  if (acctId) {
+    var acct = state.cards.find(function(c){ return String(c.id) === String(acctId); });
+    if (acct) {
+      acctName = acct.name;
+      // Add deposit to bank/debit account balance
+      var isBank = acct.category === 'debit' || acct.category === 'bank';
+      if (isBank) {
+        acct.bankBalance = (acct.bankBalance || 0) + amount;
+      }
+    }
+  }
+
+  // Store as a transaction in the spending log too (as income)
+  state.transactions.push({
+    id: Date.now(), type: 'income', desc: name,
+    amount: amount, date: date, cardId: acctId, cardName: acctName, cat: '💰 ' + type
+  });
+  state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+  // Also store in income array for history
+  state.income.push({id: Date.now()+1, name, amount, date, acctId, acctName, type});
+
+  save();
+  closeModal('modal-income');
+  ['income-name','income-amount','income-date'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderAll();
+  var acctMsg = acctName ? ' · ' + acctName + ' balance updated' : '';
+  showToast('Income logged! 💰' + acctMsg);
 }
 
 window.saveUpcoming = function() {
@@ -1463,7 +1772,23 @@ window.markPaid = function(id) {
 }
 
 window.deleteCard = function(id) { state.cards=state.cards.filter(function(c){ return String(c.id)!==String(id); }); save(); renderAll(); showToast('Card removed'); }
-window.deleteIncome = function(id) { state.income=state.income.filter(function(i){ return String(i.id)!==String(id); }); save(); renderAll(); showToast('Income removed'); }
+window.deleteIncome = function(id) {
+  var entry = state.income.find(function(i){ return String(i.id) === String(id); });
+  if (entry && entry.acctId) {
+    var acct = state.cards.find(function(c){ return String(c.id) === String(entry.acctId); });
+    if (acct && (acct.category === 'debit' || acct.category === 'bank')) {
+      acct.bankBalance = Math.max(0, (acct.bankBalance || 0) - entry.amount);
+    }
+  }
+  state.income = state.income.filter(function(i){ return String(i.id) !== String(id); });
+  // Also remove matching transaction
+  if (entry) {
+    state.transactions = state.transactions.filter(function(t){
+      return !(t.type === 'income' && t.desc === entry.name && t.date === entry.date && t.amount === entry.amount);
+    });
+  }
+  save(); renderAll(); showToast('Income removed');
+};
 window.deleteUpcoming = function(id) { state.upcoming=state.upcoming.filter(function(u){ return String(u.id)!==String(id); }); save(); renderAll(); showToast('Payment removed'); }
 
 function fmt(n) { return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
@@ -1835,11 +2160,26 @@ function renderAll() {
   // Home income
   var hil = document.getElementById('home-income-list');
   if (hil) {
+    var now = new Date();
+    var thisMonthIncome = state.income.filter(function(i){
+      if (!i.date) return false;
+      var d = new Date(i.date + 'T00:00:00');
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    var thisMonthTotal = thisMonthIncome.reduce(function(s,i){ return s+i.amount; }, 0);
     if (state.income.length===0) {
-      hil.innerHTML = '<div class="income-add-row clarifi-goto-income"><span>&#x2795;</span> Add your income streams to see your full picture</div>';
+      hil.innerHTML = '<div class="income-add-row clarifi-goto-income"><span>&#x2795;</span> Log your first deposit to see your income picture</div>';
     } else {
-      hil.innerHTML = state.income.map(function(i){ return incomeItemHTML(i, false); }).join('') +
-        '<div class="income-add-row clarifi-add-income"><span>&#x2795;</span> Add another income stream</div>';
+      var recent = state.income.slice(0,3);
+      hil.innerHTML = recent.map(function(i){
+        var iid = String(i.id);
+        return '<div class="income-item">' +
+          '<div class="income-icon-wrap">' + (i.type==='Primary'?'&#x1F3E2;':i.type==='Gig'?'&#x1F697;':'&#x1F4A1;') + '</div>' +
+          '<div class="income-info"><div class="income-name">' + i.name + '</div>' +
+          '<div class="income-meta">' + (i.date||'') + (i.acctName?' &middot; '+i.acctName:'') + '</div></div>' +
+          '<div class="income-amount">' + fmt(i.amount) + '</div></div>';
+      }).join('') +
+      '<div class="income-add-row clarifi-add-income"><span>&#x2795;</span> Log another deposit</div>';
     }
   }
 
@@ -1895,18 +2235,7 @@ function renderAll() {
   }
 
   // Income full page
-  var ifl = document.getElementById('income-full-list');
-  if (ifl) {
-    var itot = state.income.reduce(function(s,i){ return s+i.amount; },0);
-    var itd = document.getElementById('income-total-display');
-    if (itd) itd.textContent = 'Total: '+fmt(itot)+'/month';
-    if (state.income.length===0) {
-      ifl.innerHTML = '<div class="empty-state" style="padding:32px"><div class="empty-icon">&#x1F4B0;</div><div class="empty-title">No income added</div><div class="empty-sub">Add your primary job, gig earnings, and any other income streams</div><button class="empty-btn clarifi-add-income">+ Add Income Source</button></div>';
-    } else {
-      ifl.innerHTML = state.income.map(function(i){ return incomeItemHTML(i, true); }).join('') +
-        '<div class="income-add-row clarifi-add-income"><span>&#x2795;</span> Add another income stream</div>';
-    }
-  }
+  renderIncomeScreen();
 
   // Upcoming full page
   var ufc = document.getElementById('upcoming-full-content');
@@ -2267,19 +2596,36 @@ var _spendingFilter = 'all';
 
 // loadFromFirestore extended inline
 function populateCardSelects() {
-  ['exp-card','pay-card'].forEach(function(selId) {
+  // All cards (credit + bank/debit)
+  var allSelects = ['exp-card', 'pay-card', 'send-from-account', 'transfer-from', 'transfer-to'];
+  allSelects.forEach(function(selId) {
     var sel = document.getElementById(selId);
     if (!sel) return;
     var cur = sel.value;
-    sel.innerHTML = '<option value="">Select card...</option>';
+    sel.innerHTML = '<option value="">Select account...</option>';
     state.cards.forEach(function(c) {
       var opt = document.createElement('option');
       opt.value = String(c.id);
-      opt.textContent = c.name;
+      opt.textContent = c.name + (c.category && c.category !== 'credit' ? ' (' + c.category + ')' : '');
       sel.appendChild(opt);
     });
     if (cur) sel.value = cur;
   });
+
+  // pay-from-account: only bank/debit accounts
+  var payFrom = document.getElementById('pay-from-account');
+  if (payFrom) {
+    var cur = payFrom.value;
+    payFrom.innerHTML = '<option value="">Select account (optional)...</option>';
+    state.cards.filter(function(c){ return c.category === 'debit' || c.category === 'bank'; })
+      .forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = String(c.id);
+        opt.textContent = c.name;
+        payFrom.appendChild(opt);
+      });
+    if (cur) payFrom.value = cur;
+  }
 }
 
 window.openModal = function(type) {
@@ -2295,7 +2641,6 @@ window.openModal = function(type) {
     var ed = document.getElementById('exp-date');
     if (ed) ed.value = new Date().toISOString().split('T')[0];
     populateCardSelects();
-    // Reset category selection
     var firstCat = document.querySelector('#modal-log-expense .type-opt');
     if (firstCat) {
       document.querySelectorAll('#modal-log-expense .type-opt').forEach(function(o){ o.classList.remove('selected'); });
@@ -2306,6 +2651,22 @@ window.openModal = function(type) {
   if (type === 'log-payment') {
     var pd = document.getElementById('pay-date');
     if (pd) pd.value = new Date().toISOString().split('T')[0];
+    populateCardSelects();
+  }
+  if (type === 'send-money') {
+    var sd = document.getElementById('send-date');
+    if (sd) sd.value = new Date().toISOString().split('T')[0];
+    populateCardSelects();
+    var firstM = document.querySelector('#modal-send-money .type-opt');
+    if (firstM) {
+      document.querySelectorAll('#modal-send-money .type-opt').forEach(function(o){ o.classList.remove('selected'); });
+      firstM.classList.add('selected');
+      state.selectedTypes['send-method'] = firstM.getAttribute('data-val');
+    }
+  }
+  if (type === 'transfer') {
+    var td = document.getElementById('transfer-date');
+    if (td) td.value = new Date().toISOString().split('T')[0];
     populateCardSelects();
   }
 };
@@ -2351,10 +2712,11 @@ window.saveExpense = function() {
 };
 
 window.savePayment = function() {
-  var cardId = document.getElementById('pay-card').value;
-  var amount = parseFloat(document.getElementById('pay-amount').value) || 0;
-  var date   = document.getElementById('pay-date').value;
-  var note   = document.getElementById('pay-note').value.trim();
+  var cardId     = document.getElementById('pay-card').value;
+  var fromAcctId = document.getElementById('pay-from-account') ? document.getElementById('pay-from-account').value : '';
+  var amount     = parseFloat(document.getElementById('pay-amount').value) || 0;
+  var date       = document.getElementById('pay-date').value;
+  var note       = document.getElementById('pay-note').value.trim();
   if (!cardId) { showToast('Please select a card'); return; }
   if (!amount) { showToast('Please enter a payment amount'); return; }
   if (!date)   { showToast('Please select a date'); return; }
@@ -2362,14 +2724,21 @@ window.savePayment = function() {
   var card = state.cards.find(function(c){ return String(c.id) === String(cardId); });
   var cardName = card ? card.name : 'Unknown';
   var isBank = card && (card.category === 'debit' || card.category === 'bank');
+
+  // Update the card/account being paid
   if (card) {
     if (isBank) {
-      // For debit/bank: a "payment" is a deposit — adds to available balance
       card.bankBalance = (card.bankBalance || 0) + amount;
     } else {
-      // Credit card: payment reduces the balance owed
       card.balance = Math.max(0, (card.balance || 0) - amount);
     }
+  }
+
+  // Also deduct from the bank account it was paid FROM
+  var fromAcct = fromAcctId ? state.cards.find(function(c){ return String(c.id) === String(fromAcctId); }) : null;
+  var fromName = fromAcct ? fromAcct.name : '';
+  if (fromAcct && !isBank) {
+    fromAcct.bankBalance = Math.max(0, (fromAcct.bankBalance || 0) - amount);
   }
 
   var txnDesc = isBank ? (note || cardName + ' Deposit') : (note || cardName + ' Payment');
@@ -2377,7 +2746,10 @@ window.savePayment = function() {
 
   state.transactions.push({
     id: Date.now(), type: 'payment', desc: txnDesc,
-    amount: amount, date: date, cardId: cardId, cardName: cardName, cat: txnCat
+    amount: amount, date: date,
+    cardId: cardId, cardName: cardName,
+    fromAcctId: fromAcctId, fromAcctName: fromName,
+    cat: txnCat
   });
   state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
 
@@ -2385,27 +2757,56 @@ window.savePayment = function() {
   closeModal('modal-log-payment');
   ['pay-amount','pay-note'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   renderAll();
-  var msg = isBank ? 'Deposit logged! ✅ ' + cardName + ' balance increased' : 'Payment logged! ✅ ' + cardName + ' balance reduced';
+  var msg = isBank
+    ? 'Deposit logged! ✅ ' + cardName + ' balance increased'
+    : 'Payment logged! ✅ ' + cardName + ' balance reduced' + (fromName ? ' · ' + fromName + ' debited' : '');
   showToast(msg);
 };
 
 window.deleteTransaction = function(id) {
   var txn = state.transactions.find(function(t){ return String(t.id) === String(id); });
   if (!txn) return;
-  // Reverse balance effect
+
+  // Reverse balance on primary account
   if (txn.cardId) {
     var card = state.cards.find(function(c){ return String(c.id) === String(txn.cardId); });
     if (card) {
       var isBank = card.category === 'debit' || card.category === 'bank';
-      if (isBank) {
-        if (txn.type === 'expense') card.bankBalance = (card.bankBalance||0) + txn.amount; // restore
-        if (txn.type === 'payment') card.bankBalance = Math.max(0, (card.bankBalance||0) - txn.amount); // reverse deposit
-      } else {
-        if (txn.type === 'expense') card.balance = Math.max(0, (card.balance||0) - txn.amount);
-        if (txn.type === 'payment') card.balance = (card.balance||0) + txn.amount;
+      if (txn.type === 'expense') {
+        if (isBank) card.bankBalance = (card.bankBalance||0) + txn.amount;
+        else        card.balance = Math.max(0, (card.balance||0) - txn.amount);
+      }
+      if (txn.type === 'payment') {
+        if (isBank) card.bankBalance = Math.max(0, (card.bankBalance||0) - txn.amount);
+        else        card.balance = (card.balance||0) + txn.amount;
+      }
+      if (txn.type === 'send') {
+        if (isBank) card.bankBalance = (card.bankBalance||0) + txn.amount;
+        else        card.balance = Math.max(0, (card.balance||0) - txn.amount);
+      }
+      if (txn.type === 'transfer') {
+        if (isBank) card.bankBalance = (card.bankBalance||0) + txn.amount;
+        else        card.balance = Math.max(0, (card.balance||0) - txn.amount);
       }
     }
   }
+
+  // Reverse on "from account" for payment (bank account that was debited)
+  if (txn.type === 'payment' && txn.fromAcctId) {
+    var fromCard = state.cards.find(function(c){ return String(c.id) === String(txn.fromAcctId); });
+    if (fromCard) fromCard.bankBalance = (fromCard.bankBalance||0) + txn.amount;
+  }
+
+  // Reverse on "to account" for transfer
+  if (txn.type === 'transfer' && txn.toAcctId) {
+    var toCard = state.cards.find(function(c){ return String(c.id) === String(txn.toAcctId); });
+    if (toCard) {
+      var toIsBank = toCard.category === 'debit' || toCard.category === 'bank';
+      if (toIsBank) toCard.bankBalance = Math.max(0, (toCard.bankBalance||0) - txn.amount);
+      else          toCard.balance = (toCard.balance||0) + txn.amount;
+    }
+  }
+
   state.transactions = state.transactions.filter(function(t){ return String(t.id) !== String(id); });
   save(); renderAll(); showToast('Transaction removed');
 };
@@ -2463,6 +2864,27 @@ function renderSpendingLog() {
   var cd = document.getElementById('spending-count-display');
   if (cd) cd.textContent = txns.length + ' entr' + (txns.length===1?'y':'ies');
 
+  // Populate export month dropdown
+  var expSel = document.getElementById('report-month-spending');
+  if (expSel && state.transactions.length > 0) {
+    var curVal = expSel.value;
+    expSel.innerHTML = '<option value="all">All time</option>';
+    var seen = {};
+    state.transactions.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); }).forEach(function(t) {
+      if (!t.date) return;
+      var d = new Date(t.date + 'T00:00:00');
+      var val = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+      if (!seen[val]) {
+        seen[val] = true;
+        var lbl = d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear();
+        var opt = document.createElement('option');
+        opt.value = val; opt.textContent = lbl;
+        expSel.appendChild(opt);
+      }
+    });
+    if (curVal) expSel.value = curVal;
+  }
+
   var list = document.getElementById('spending-log-list');
   if (!list) return;
 
@@ -2492,19 +2914,30 @@ function renderSpendingLog() {
     var label = d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
     html += '<div style="font-size:11px;font-weight:800;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;padding:12px 4px 6px">' + label + '</div>';
     groups[dateStr].forEach(function(t) {
-      var isPayment = t.type === 'payment';
+      var isPayment  = t.type === 'payment';
+      var isIncome   = t.type === 'income';
+      var isSend     = t.type === 'send';
+      var isTransfer = t.type === 'transfer';
       var tid = String(t.id);
-      var cardPill = t.cardName
-        ? '<span class="txn-card-pill' + (isPayment?' payment-pill':'') + '">' + t.cardName + '</span>'
+      var isPositive = isIncome || isPayment;
+      var pillClass = isPositive ? ' payment-pill' : '';
+      var acctLabel = isTransfer
+        ? (t.cardName || '') + (t.toAcctName ? ' → ' + t.toAcctName : '')
+        : t.cardName || '';
+      var cardPill = acctLabel
+        ? '<span class="txn-card-pill' + pillClass + '">' + acctLabel + '</span>'
         : '';
+      var iconClass = isPositive ? 'payment' : 'expense';
+      var amtClass  = isPositive ? 'payment' : 'expense';
+      var prefix    = isPositive ? '+' : '-';
       html += '<div class="txn-item">' +
-        '<div class="txn-icon ' + (isPayment?'payment':'expense') + '">' + (t.cat?t.cat.split(' ')[0]:'💸') + '</div>' +
+        '<div class="txn-icon ' + iconClass + '">' + (t.cat?t.cat.split(' ')[0]:'💸') + '</div>' +
         '<div class="txn-info">' +
           '<div class="txn-name">' + t.desc + '</div>' +
           '<div class="txn-meta">' + (t.cat||'') + (t.cardName?' &nbsp;':'') + cardPill + '</div>' +
         '</div>' +
         '<div class="txn-amount-wrap">' +
-          '<div class="txn-amount ' + (isPayment?'payment':'expense') + '">' + (isPayment?'+':'-') + fmt(t.amount) + '</div>' +
+          '<div class="txn-amount ' + amtClass + '">' + prefix + fmt(t.amount) + '</div>' +
           '<button onclick="deleteTransaction(\"' + tid + '\")" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px 0;display:block;margin-left:auto" title="Delete">✕</button>' +
         '</div>' +
         '</div>';
@@ -2849,12 +3282,18 @@ function renderSpendingLog() {
       <div class="modal-close" onclick="closeModal('modal-log-payment')">✕</div>
     </div>
     <div class="form-sub" style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.6">
-      When you pay your card bill, log it here — the balance on that card will update automatically.
+      Both the card balance and the bank account you paid from will update automatically.
     </div>
     <div class="form-group">
-      <label class="form-label">Card / Account</label>
+      <label class="form-label">Credit Card Being Paid</label>
       <select class="form-input" id="pay-card">
         <option value="">Select card...</option>
+      </select>
+    </div>
+    <div class="form-group" id="pay-from-group">
+      <label class="form-label">Paid From (bank / debit account)</label>
+      <select class="form-input" id="pay-from-account">
+        <option value="">Select account (optional)...</option>
       </select>
     </div>
     <div class="form-row">
@@ -2871,12 +3310,96 @@ function renderSpendingLog() {
       <label class="form-label">Note (optional)</label>
       <input class="form-input" id="pay-note" placeholder="e.g. Full balance, Minimum payment..." type="text">
     </div>
-    <div id="pay-bank-note" style="display:none;font-size:12px;font-weight:700;color:var(--sage);background:var(--sage-light);border-radius:10px;padding:10px 14px;margin-bottom:8px;line-height:1.5">
-      🏦 For debit/bank accounts, logging a payment adds a <strong>deposit</strong> to your balance.
-    </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-log-payment')">Cancel</button>
       <button class="btn-save" id="pay-save-btn" onclick="savePayment()">Log Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEND MONEY (Zelle, Cash App, Venmo, etc.) -->
+<div class="modal-overlay" id="modal-send-money">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Send Money 📤</div>
+      <div class="modal-close" onclick="closeModal('modal-send-money')">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sent To</label>
+      <input class="form-input" id="send-to" placeholder="e.g. Mom, John Smith" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sent From (your account)</label>
+      <select class="form-input" id="send-from-account">
+        <option value="">Select account...</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="send-amount" placeholder="100.00" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="send-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Method</label>
+      <div class="type-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="type-opt selected" onclick="selectType(this,'send-method')" data-val="Zelle"><span class="type-opt-icon">💜</span>Zelle</div>
+        <div class="type-opt" onclick="selectType(this,'send-method')" data-val="Cash App"><span class="type-opt-icon">💚</span>Cash App</div>
+        <div class="type-opt" onclick="selectType(this,'send-method')" data-val="Venmo"><span class="type-opt-icon">💙</span>Venmo</div>
+        <div class="type-opt" onclick="selectType(this,'send-method')" data-val="Other"><span class="type-opt-icon">📤</span>Other</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optional)</label>
+      <input class="form-input" id="send-note" placeholder="e.g. Rent, Dinner split..." type="text">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-send-money')">Cancel</button>
+      <button class="btn-save" onclick="saveSendMoney()">Log Transfer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSFER BETWEEN ACCOUNTS -->
+<div class="modal-overlay" id="modal-transfer">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Transfer Between Accounts 🔄</div>
+      <div class="modal-close" onclick="closeModal('modal-transfer')">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">From Account</label>
+      <select class="form-input" id="transfer-from">
+        <option value="">Select account...</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">To Account</label>
+      <select class="form-input" id="transfer-to">
+        <option value="">Select account...</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="transfer-amount" placeholder="500.00" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="transfer-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optional)</label>
+      <input class="form-input" id="transfer-note" placeholder="e.g. Moving to savings..." type="text">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-transfer')">Cancel</button>
+      <button class="btn-save" onclick="saveTransfer()">Log Transfer</button>
     </div>
   </div>
 </div>
@@ -2988,6 +3511,770 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+
+// ── NOTIFICATIONS & SETTINGS ─────────────────────────────────
+
+var notifSettings = JSON.parse(localStorage.getItem('clarifi_notif_settings') || JSON.stringify({
+  dueAlerts: false,
+  daysBefore: 3,
+  overdueAlerts: true,
+  spendingReminder: false,
+  reminderTime: '20:00'
+}));
+
+function saveNotifSettings() {
+  notifSettings.dueAlerts       = document.getElementById('toggle-due-alerts')      ? document.getElementById('toggle-due-alerts').checked      : false;
+  notifSettings.daysBefore      = document.getElementById('due-days-before')         ? parseInt(document.getElementById('due-days-before').value)  : 3;
+  notifSettings.overdueAlerts   = document.getElementById('toggle-overdue-alerts')   ? document.getElementById('toggle-overdue-alerts').checked   : true;
+  notifSettings.spendingReminder= document.getElementById('toggle-spending-reminder')? document.getElementById('toggle-spending-reminder').checked : false;
+  notifSettings.reminderTime    = document.getElementById('spending-reminder-time')  ? document.getElementById('spending-reminder-time').value     : '20:00';
+  localStorage.setItem('clarifi_notif_settings', JSON.stringify(notifSettings));
+  scheduleAllNotifications();
+  showToast('Settings saved! ✅');
+}
+window.saveNotifSettings = saveNotifSettings;
+
+function loadNotifSettingsUI() {
+  var s = notifSettings;
+  var el;
+  el = document.getElementById('toggle-due-alerts');       if (el) el.checked = s.dueAlerts;
+  el = document.getElementById('due-days-before');          if (el) el.value   = s.daysBefore;
+  el = document.getElementById('toggle-overdue-alerts');    if (el) el.checked = s.overdueAlerts;
+  el = document.getElementById('toggle-spending-reminder'); if (el) el.checked = s.spendingReminder;
+  el = document.getElementById('spending-reminder-time');   if (el) el.value   = s.reminderTime;
+  updateNotifPermissionUI();
+}
+
+function updateNotifPermissionUI() {
+  var status = document.getElementById('notif-permission-status');
+  var text   = document.getElementById('notif-permission-text');
+  var btn    = document.getElementById('notif-enable-btn');
+  if (!('Notification' in window)) {
+    if (status) { status.className = 'notif-status denied'; status.textContent = '❌ Not supported'; }
+    if (btn) btn.style.display = 'none';
+    return;
+  }
+  var perm = Notification.permission;
+  if (perm === 'granted') {
+    if (status) { status.className = 'notif-status granted'; status.textContent = '✅ Notifications on'; }
+    if (text)   text.textContent = 'Notifications are enabled \u2014 you\'re all set!';
+    if (btn)    btn.textContent = 'Enabled ✓';
+    if (btn)    btn.disabled = true;
+  } else if (perm === 'denied') {
+    if (status) { status.className = 'notif-status denied'; status.textContent = '🚫 Blocked'; }
+    if (text)   text.textContent = 'Notifications are blocked. Go to your browser/phone settings to allow them for this site.';
+    if (btn)    btn.style.display = 'none';
+  } else {
+    if (status) { status.className = 'notif-status default'; status.textContent = '⚪ Not yet enabled'; }
+    if (text)   text.textContent = 'Tap Enable to allow Clarifi to send you reminders and alerts.';
+    if (btn)    { btn.textContent = 'Enable'; btn.disabled = false; btn.style.display = ''; }
+  }
+}
+
+window.requestNotifPermission = function() {
+  if (!('Notification' in window)) { showToast('Notifications not supported on this browser'); return; }
+  Notification.requestPermission().then(function(perm) {
+    updateNotifPermissionUI();
+    if (perm === 'granted') {
+      showToast('Notifications enabled! 🔔');
+      scheduleAllNotifications();
+    } else {
+      showToast('Notifications blocked. Check your browser settings.');
+    }
+  });
+};
+
+window.sendTestNotification = function() {
+  if (Notification.permission !== 'granted') {
+    showToast('Please enable notifications first');
+    return;
+  }
+  new Notification('Clarifi 💸', {
+    body: 'Test notification — Because guessing is broke behavior!',
+    icon: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E040A0"/><stop offset="100%" stop-color="#8040D0"/></linearGradient></defs><rect width="512" height="512" rx="115" fill="url(#bg)"/><text x="60" y="370" font-family="Arial Black" font-size="330" font-weight="900" fill="white">C</text><text x="295" y="195" font-family="Georgia" font-size="155" font-weight="700" font-style="italic" fill="#00B87A">fi</text></svg>'),
+    badge: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="115" fill="#E040A0"/></svg>'),
+    tag: 'clarifi-test'
+  });
+};
+window.sendTestNotification = window.sendTestNotification;
+
+// ── SCHEDULE NOTIFICATIONS ────────────────────────────────────
+
+var _notifTimers = [];
+
+function clearAllNotifTimers() {
+  _notifTimers.forEach(function(t){ clearTimeout(t); });
+  _notifTimers = [];
+}
+
+function scheduleAllNotifications() {
+  clearAllNotifTimers();
+  if (Notification.permission !== 'granted') return;
+
+  // Due date alerts
+  if (notifSettings.dueAlerts || notifSettings.overdueAlerts) {
+    scheduleDueAlerts();
+  }
+
+  // Daily spending reminder
+  if (notifSettings.spendingReminder) {
+    scheduleSpendingReminder();
+  }
+}
+
+function sendNotification(title, body, tag) {
+  if (Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, {
+      body: body,
+      icon: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E040A0"/><stop offset="100%" stop-color="#8040D0"/></linearGradient></defs><rect width="512" height="512" rx="115" fill="url(#bg)"/><text x="60" y="370" font-family="Arial Black" font-size="330" font-weight="900" fill="white">C</text><text x="295" y="195" font-family="Georgia" font-size="155" font-weight="700" font-style="italic" fill="#00B87A">fi</text></svg>'),
+      tag: tag || 'clarifi'
+    });
+  } catch(e) { console.log('Notification error:', e); }
+}
+
+function scheduleDueAlerts() {
+  var now = new Date();
+  var allUpcoming = getAllUpcoming();
+
+  allUpcoming.forEach(function(u) {
+    if (u.paid) return;
+    var dueDate = new Date(u.date + 'T00:00:00');
+    var daysUntilDue = Math.round((dueDate - now) / 86400000);
+
+    // Overdue alert — send now if past due and not paid
+    if (notifSettings.overdueAlerts && daysUntilDue < 0) {
+      var delay = 3000 + Math.random() * 2000; // stagger slightly
+      _notifTimers.push(setTimeout(function(name, days) {
+        return function() {
+          sendNotification(
+            'Clarifi — Overdue! 🚨',
+            name + ' was due ' + Math.abs(days) + ' day' + (Math.abs(days) !== 1 ? 's' : '') + ' ago and is still unpaid.',
+            'overdue-' + name
+          );
+        };
+      }(u.name, daysUntilDue), delay));
+    }
+
+    // Upcoming alert — schedule for the right time
+    if (notifSettings.dueAlerts && daysUntilDue >= 0 && daysUntilDue <= notifSettings.daysBefore) {
+      // Fire soon — within the alert window
+      var msUntilAlert = Math.max(0, (dueDate - now) - (notifSettings.daysBefore * 86400000));
+      if (msUntilAlert < 86400000 * 14) { // only schedule within 2 weeks
+        _notifTimers.push(setTimeout(function(name, days) {
+          return function() {
+            var msg = days === 0
+              ? name + ' is due TODAY!'
+              : name + ' is due in ' + days + ' day' + (days !== 1 ? 's' : '') + '.';
+            sendNotification('Clarifi — Payment Due 📅', msg, 'due-' + name);
+          };
+        }(u.name, daysUntilDue), msUntilAlert));
+      }
+    }
+  });
+}
+
+function scheduleSpendingReminder() {
+  var now = new Date();
+  var parts = (notifSettings.reminderTime || '20:00').split(':');
+  var targetHour = parseInt(parts[0]);
+  var targetMin  = parseInt(parts[1]) || 0;
+
+  var target = new Date();
+  target.setHours(targetHour, targetMin, 0, 0);
+
+  // If already past today's reminder time, schedule for tomorrow
+  if (target <= now) {
+    target.setDate(target.getDate() + 1);
+  }
+
+  var msUntil = target - now;
+  _notifTimers.push(setTimeout(function() {
+    // Check if they've logged anything today
+    var todayStr = new Date().toISOString().split('T')[0];
+    var loggedToday = state.transactions.some(function(t){ return t.date === todayStr; });
+    if (!loggedToday) {
+      sendNotification(
+        'Clarifi — Log your spending 💸',
+        'Have you logged today\'s transactions? Keep your balance accurate!',
+        'spending-reminder'
+      );
+    }
+    // Reschedule for tomorrow
+    if (notifSettings.spendingReminder) scheduleSpendingReminder();
+  }, msUntil));
+}
+
+// ── INIT SETTINGS ON SCREEN SWITCH ───────────────────────────
+var _origSwitchForSettings = switchScreen;
+switchScreen = function(name) {
+  _origSwitchForSettings(name);
+  if (name === 'settings') {
+    loadNotifSettingsUI();
+  }
+};
+
+// Start scheduling on load
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    scheduleAllNotifications();
+  }, 2000);
+});
+
+
+// ── INCOME SCREEN ─────────────────────────────────────────────
+
+function renderIncomeScreen() {
+  var now = new Date();
+  var thisMonth = now.getMonth();
+  var thisYear  = now.getFullYear();
+  var lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+  var lastYear  = thisMonth === 0 ? thisYear - 1 : thisYear;
+
+  var thisMonthDeps = state.income.filter(function(i){
+    if (!i.date) return false;
+    var d = new Date(i.date + 'T00:00:00');
+    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+  });
+  var lastMonthDeps = state.income.filter(function(i){
+    if (!i.date) return false;
+    var d = new Date(i.date + 'T00:00:00');
+    return d.getMonth() === lastMonth && d.getFullYear() === lastYear;
+  });
+  var yearDeps = state.income.filter(function(i){
+    if (!i.date) return false;
+    return new Date(i.date + 'T00:00:00').getFullYear() === thisYear;
+  });
+
+  var thisTotal = thisMonthDeps.reduce(function(s,i){ return s+i.amount; }, 0);
+  var lastTotal = lastMonthDeps.reduce(function(s,i){ return s+i.amount; }, 0);
+  var yearTotal = yearDeps.reduce(function(s,i){ return s+i.amount; }, 0);
+
+  // Stats
+  var el;
+  el = document.getElementById('income-this-month');       if (el) el.textContent = fmt(thisTotal);
+  el = document.getElementById('income-this-month-count'); if (el) el.textContent = thisMonthDeps.length + ' deposit' + (thisMonthDeps.length!==1?'s':'');
+  el = document.getElementById('income-last-month');       if (el) el.textContent = fmt(lastTotal);
+  el = document.getElementById('income-last-month-count'); if (el) el.textContent = lastMonthDeps.length + ' deposit' + (lastMonthDeps.length!==1?'s':'');
+  el = document.getElementById('income-year-total');       if (el) el.textContent = fmt(yearTotal);
+  el = document.getElementById('income-year-count');       if (el) el.textContent = yearDeps.length + ' deposit' + (yearDeps.length!==1?'s':'');
+  el = document.getElementById('income-total-display');    if (el) el.textContent = fmt(yearTotal) + ' this year';
+  el = document.getElementById('income-deposit-count');    if (el) el.textContent = state.income.length + ' entr' + (state.income.length===1?'y':'ies');
+
+  // Month-to-month bar chart
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var monthTotals = months.map(function(_, mi) {
+    return state.income.filter(function(i){
+      if (!i.date) return false;
+      var d = new Date(i.date + 'T00:00:00');
+      return d.getMonth() === mi && d.getFullYear() === thisYear;
+    }).reduce(function(s,i){ return s+i.amount; }, 0);
+  });
+
+  var maxVal = Math.max.apply(null, monthTotals) || 1;
+  var chartEl = document.getElementById('income-chart');
+  var labelsEl = document.getElementById('income-chart-labels');
+
+  if (chartEl) {
+    chartEl.innerHTML = monthTotals.map(function(val, mi) {
+      var pct = Math.round((val / maxVal) * 100);
+      var isThis = mi === thisMonth;
+      var color = isThis ? 'var(--sage)' : val > 0 ? 'var(--coral-mid)' : 'var(--border)';
+      var barStyle = 'flex:1;background:' + color + ';border-radius:6px 6px 0 0;min-height:4px;height:' + Math.max(pct,4) + '%;transition:height 0.4s;cursor:default;position:relative';
+      var tooltip = val > 0 ? ' title="' + months[mi] + ': ' + fmt(val) + '"' : '';
+      return '<div style="' + barStyle + '"' + tooltip + '></div>';
+    }).join('');
+  }
+
+  if (labelsEl) {
+    labelsEl.style.width = '100%';
+    labelsEl.innerHTML = months.map(function(m, mi) {
+      var isThis = mi === thisMonth;
+      var color = isThis ? 'var(--sage)' : 'var(--muted)';
+      var weight = isThis ? '800' : '600';
+      return '<div style="flex:1;text-align:center;font-size:9px;font-weight:'+weight+';color:'+color+'">'+m+'</div>';
+    }).join('');
+  }
+
+  // Deposits list grouped by month
+  // ── Top source by month ──────────────────────────────────────
+  var topSourceEl = document.getElementById('income-top-sources');
+  if (topSourceEl && state.income.length > 0) {
+    // Build month groups with source breakdown
+    var monthSourceMap = {};
+    state.income.forEach(function(i) {
+      if (!i.date) return;
+      var d = new Date(i.date + 'T00:00:00');
+      var key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+      var label = d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear();
+      if (!monthSourceMap[key]) monthSourceMap[key] = {label:label, sources:{}};
+      var src = i.name || 'Unknown';
+      monthSourceMap[key].sources[src] = (monthSourceMap[key].sources[src] || 0) + i.amount;
+    });
+    var monthKeys = Object.keys(monthSourceMap).sort().reverse();
+    var topHtml = '<div class="income-list" style="gap:6px">';
+    monthKeys.forEach(function(key) {
+      var m = monthSourceMap[key];
+      var topSrc = '', topAmt = 0;
+      Object.keys(m.sources).forEach(function(src) {
+        if (m.sources[src] > topAmt) { topAmt = m.sources[src]; topSrc = src; }
+      });
+      var total = Object.values(m.sources).reduce(function(s,v){ return s+v; }, 0);
+      var pct = total > 0 ? Math.round((topAmt/total)*100) : 0;
+      topHtml += '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--cream);border-radius:12px;border:1.5px solid var(--border)">' +
+        '<div style="font-size:10px;font-weight:800;color:var(--muted);min-width:44px;text-align:center;line-height:1.3">' + m.label.replace(' ','<br>') + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#x1F947; ' + topSrc + '</div>' +
+          '<div style="font-size:10px;font-weight:700;color:var(--muted)">' + pct + '% of month · ' + fmt(topAmt) + '</div>' +
+          '<div style="height:4px;background:var(--border);border-radius:4px;margin-top:4px"><div style="height:4px;background:var(--sage);border-radius:4px;width:' + pct + '%"></div></div>' +
+        '</div>' +
+        '</div>';
+    });
+    topHtml += '</div>';
+    topSourceEl.innerHTML = topHtml;
+  }
+
+  // ── Populate export month dropdown ────────────────────────────
+  var exportSel = document.getElementById('report-month');
+  if (exportSel && state.income.length > 0) {
+    var curVal = exportSel.value;
+    exportSel.innerHTML = '<option value="all">All time</option>';
+    var seen = {};
+    state.income.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); }).forEach(function(i) {
+      if (!i.date) return;
+      var d = new Date(i.date + 'T00:00:00');
+      var val = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+      if (!seen[val]) {
+        seen[val] = true;
+        var label = d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear();
+        var opt = document.createElement('option');
+        opt.value = val; opt.textContent = label;
+        exportSel.appendChild(opt);
+      }
+    });
+    if (curVal) exportSel.value = curVal;
+  }
+
+  var ifl = document.getElementById('income-full-list');
+  if (!ifl) return;
+
+  if (state.income.length === 0) {
+    ifl.innerHTML = '<div class="empty-state" style="padding:32px">' +
+      '<div class="empty-icon">&#x1F4B0;</div>' +
+      '<div class="empty-title">No deposits yet</div>' +
+      '<div class="empty-sub">Log your income as it hits your account</div>' +
+      '<button class="empty-btn clarifi-add-income">+ Log First Deposit</button></div>';
+    return;
+  }
+
+  // Sort newest first
+  var sorted = state.income.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+  // Group by month+year
+  var groups = {};
+  var groupOrder = [];
+  sorted.forEach(function(i) {
+    if (!i.date) return;
+    var d = new Date(i.date + 'T00:00:00');
+    var key = d.getFullYear() + '-' + d.getMonth();
+    var label = d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear();
+    if (!groups[key]) { groups[key] = {label:label, items:[], total:0}; groupOrder.push(key); }
+    groups[key].items.push(i);
+    groups[key].total += i.amount;
+  });
+
+  var html = '<div class="income-list">';
+  groupOrder.forEach(function(key) {
+    var g = groups[key];
+    html += '<div style="font-size:11px;font-weight:800;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;padding:12px 4px 6px;display:flex;justify-content:space-between">' +
+      '<span>' + g.label + '</span><span style="color:var(--sage)">' + fmt(g.total) + '</span></div>';
+    g.items.forEach(function(i) {
+      var iid = String(i.id);
+      var icon = i.type==='Primary'?'&#x1F3E2;':i.type==='Gig'?'&#x1F697;':i.type==='Side Hustle'?'&#x1F4A1;':'&#x1F4B8;';
+      html += '<div class="income-item">' +
+        '<div class="income-icon-wrap">' + icon + '</div>' +
+        '<div class="income-info">' +
+          '<div class="income-name">' + i.name + '</div>' +
+          '<div class="income-meta">' + (i.date||'') + (i.acctName?' &middot; '+i.acctName:'') + ' &middot; ' + (i.type||'') + '</div>' +
+        '</div>' +
+        '<div class="income-amount">' + fmt(i.amount) + '</div>' +
+        '<button class="del-btn clarifi-del-income" data-id="' + iid + '" title="Remove">&#x2715;</button>' +
+        '</div>';
+    });
+  });
+  html += '<div class="income-add-row clarifi-add-income"><span>&#x2795;</span> Log another deposit</div>';
+  html += '</div>';
+  ifl.innerHTML = html;
+}
+
+// Populate income account select when modal opens
+var _openModalForIncome = openModal;
+openModal = function(type) {
+  _openModalForIncome(type);
+  if (type === 'income') {
+    var today = new Date().toISOString().split('T')[0];
+    var dateEl = document.getElementById('income-date');
+    if (dateEl) dateEl.value = today;
+    var sel = document.getElementById('income-account');
+    if (sel) {
+      sel.innerHTML = '<option value="">Select account (optional)...</option>';
+      state.cards.filter(function(c){ return c.category === 'debit' || c.category === 'bank'; })
+        .forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = String(c.id);
+          opt.textContent = c.name;
+          sel.appendChild(opt);
+        });
+    }
+  }
+};
+
+
+// ── SEND MONEY ────────────────────────────────────────────────
+window.saveSendMoney = function() {
+  var to       = document.getElementById('send-to').value.trim();
+  var fromId   = document.getElementById('send-from-account').value;
+  var amount   = parseFloat(document.getElementById('send-amount').value) || 0;
+  var date     = document.getElementById('send-date').value;
+  var method   = getType('send-method', 'Other');
+  var note     = document.getElementById('send-note').value.trim();
+  if (!to)     { showToast('Please enter who you sent money to'); return; }
+  if (!fromId) { showToast('Please select the account you sent from'); return; }
+  if (!amount) { showToast('Please enter an amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var fromAcct = state.cards.find(function(c){ return String(c.id) === String(fromId); });
+  var fromName = fromAcct ? fromAcct.name : '';
+  if (fromAcct) {
+    var isBank = fromAcct.category === 'debit' || fromAcct.category === 'bank';
+    if (isBank) {
+      fromAcct.bankBalance = Math.max(0, (fromAcct.bankBalance || 0) - amount);
+    } else {
+      fromAcct.balance = (fromAcct.balance || 0) + amount;
+    }
+  }
+
+  var desc = (note || 'Sent to ' + to) + ' via ' + method;
+  state.transactions.push({
+    id: Date.now(), type: 'send',
+    desc: desc, to: to, method: method,
+    amount: amount, date: date,
+    cardId: fromId, cardName: fromName,
+    cat: '📤 Send Money'
+  });
+  state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+  save();
+  closeModal('modal-send-money');
+  ['send-to','send-amount','send-date','send-note'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderAll();
+  showToast('Sent ' + fmt(amount) + ' to ' + to + ' · ' + fromName + ' updated');
+};
+
+// ── TRANSFER BETWEEN ACCOUNTS ─────────────────────────────────
+window.saveTransfer = function() {
+  var fromId  = document.getElementById('transfer-from').value;
+  var toId    = document.getElementById('transfer-to').value;
+  var amount  = parseFloat(document.getElementById('transfer-amount').value) || 0;
+  var date    = document.getElementById('transfer-date').value;
+  var note    = document.getElementById('transfer-note').value.trim();
+  if (!fromId)        { showToast('Please select the account to transfer from'); return; }
+  if (!toId)          { showToast('Please select the account to transfer to'); return; }
+  if (fromId === toId){ showToast('From and To accounts must be different'); return; }
+  if (!amount)        { showToast('Please enter an amount'); return; }
+  if (!date)          { showToast('Please select a date'); return; }
+
+  var fromAcct = state.cards.find(function(c){ return String(c.id) === String(fromId); });
+  var toAcct   = state.cards.find(function(c){ return String(c.id) === String(toId); });
+  var fromName = fromAcct ? fromAcct.name : '';
+  var toName   = toAcct   ? toAcct.name   : '';
+
+  // Deduct from source
+  if (fromAcct) {
+    var fromIsBank = fromAcct.category === 'debit' || fromAcct.category === 'bank';
+    if (fromIsBank) fromAcct.bankBalance = Math.max(0, (fromAcct.bankBalance||0) - amount);
+    else            fromAcct.balance = (fromAcct.balance||0) + amount;
+  }
+  // Add to destination
+  if (toAcct) {
+    var toIsBank = toAcct.category === 'debit' || toAcct.category === 'bank';
+    if (toIsBank) toAcct.bankBalance = (toAcct.bankBalance||0) + amount;
+    else          toAcct.balance = Math.max(0, (toAcct.balance||0) - amount);
+  }
+
+  var desc = note || 'Transfer: ' + fromName + ' → ' + toName;
+  state.transactions.push({
+    id: Date.now(), type: 'transfer',
+    desc: desc,
+    amount: amount, date: date,
+    cardId: fromId, cardName: fromName,
+    toAcctId: toId, toAcctName: toName,
+    cat: '🔄 Transfer'
+  });
+  state.transactions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+  save();
+  closeModal('modal-transfer');
+  ['transfer-amount','transfer-note'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderAll();
+  showToast('Transfer logged! 🔄 ' + fromName + ' → ' + toName);
+};
+
+
+// ── COMBINED EXPORT ────────────────────────────────────────────
+
+function getReportMonth() {
+  var sel = document.getElementById('report-month') || document.getElementById('report-month-spending');
+  return sel ? sel.value : 'all';
+}
+
+function getReportLabel() {
+  var sel = document.getElementById('report-month') || document.getElementById('report-month-spending');
+  var opt = sel ? sel.options[sel.selectedIndex] : null;
+  return opt ? opt.textContent : 'All Time';
+}
+
+function getFilteredIncome() {
+  var val = getReportMonth();
+  var sorted = state.income.slice().sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
+  if (val === 'all') return sorted;
+  return sorted.filter(function(i) {
+    if (!i.date) return false;
+    var d = new Date(i.date + 'T00:00:00');
+    return (d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0')) === val;
+  });
+}
+
+function getFilteredSpending() {
+  var val = getReportMonth();
+  var sorted = state.transactions.slice().sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
+  if (val === 'all') return sorted;
+  return sorted.filter(function(t) {
+    if (!t.date) return false;
+    var d = new Date(t.date + 'T00:00:00');
+    return (d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0')) === val;
+  });
+}
+
+function txnTypeLabel(t) {
+  if (t.type === 'income')   return 'Income';
+  if (t.type === 'payment')  return 'Payment';
+  if (t.type === 'send')     return 'Send Money';
+  if (t.type === 'transfer') return 'Transfer';
+  return 'Expense';
+}
+
+window.exportCombinedExcel = function() {
+  var income  = getFilteredIncome();
+  var spending = getFilteredSpending();
+  var label   = getReportLabel();
+
+  if (income.length === 0 && spending.length === 0) {
+    showToast('No data to export for this period'); return;
+  }
+
+  // ── Summary numbers ──
+  var totalIncome   = income.reduce(function(s,i){ return s+(i.amount||0); }, 0);
+  var totalExpenses = spending.filter(function(t){ return t.type==='expense'||t.type==='send'; })
+                              .reduce(function(s,t){ return s+(t.amount||0); }, 0);
+  var totalPayments = spending.filter(function(t){ return t.type==='payment'; })
+                              .reduce(function(s,t){ return s+(t.amount||0); }, 0);
+  var totalTransfers= spending.filter(function(t){ return t.type==='transfer'; })
+                              .reduce(function(s,t){ return s+(t.amount||0); }, 0);
+
+  // ── Income source breakdown ──
+  var incomeSources = {};
+  income.forEach(function(i){ incomeSources[i.name] = (incomeSources[i.name]||0)+(i.amount||0); });
+
+  // ── Expense category breakdown ──
+  var cats = {};
+  spending.filter(function(t){ return t.type==='expense'; }).forEach(function(t){
+    var c = (t.cat||'Other').replace(/^\S+ /,'');
+    cats[c] = (cats[c]||0)+(t.amount||0);
+  });
+
+  var csv = 'Clarifi Financial Report — ' + label + '\n';
+  csv += 'Generated: ' + new Date().toLocaleDateString() + '\n\n';
+
+  // Summary
+  csv += 'SUMMARY\n';
+  csv += 'Total Income,' + totalIncome.toFixed(2) + '\n';
+  csv += 'Total Expenses,' + totalExpenses.toFixed(2) + '\n';
+  csv += 'Card Payments,' + totalPayments.toFixed(2) + '\n';
+  csv += 'Transfers,' + totalTransfers.toFixed(2) + '\n';
+  csv += 'Net (Income - Expenses),' + (totalIncome - totalExpenses).toFixed(2) + '\n\n';
+
+  // Income
+  csv += 'INCOME DEPOSITS\n';
+  csv += 'Date,Source,Type,Account,Amount\n';
+  income.forEach(function(i){
+    csv += [i.date||'', i.name||'', i.type||'', i.acctName||'', (i.amount||0).toFixed(2)].join(',') + '\n';
+  });
+  csv += ',TOTAL INCOME,,,'+totalIncome.toFixed(2)+'\n\n';
+
+  // Income source breakdown
+  if (Object.keys(incomeSources).length > 0) {
+    csv += 'INCOME BY SOURCE\n';
+    csv += 'Source,Total\n';
+    Object.keys(incomeSources).sort(function(a,b){ return incomeSources[b]-incomeSources[a]; }).forEach(function(s){
+      csv += s + ',' + incomeSources[s].toFixed(2) + '\n';
+    });
+    csv += '\n';
+  }
+
+  // Spending
+  csv += 'SPENDING LOG\n';
+  csv += 'Date,Description,Type,Category,Account,Amount,Direction\n';
+  spending.slice().reverse().forEach(function(t){
+    var isOut = t.type!=='income'&&t.type!=='payment';
+    var acct = t.type==='transfer'?(t.cardName||'')+' > '+(t.toAcctName||''):(t.cardName||'');
+    csv += [
+      t.date||'', t.desc||'', txnTypeLabel(t),
+      (t.cat||'').replace(/^\S+ /,''), acct,
+      (t.amount||0).toFixed(2), isOut?'OUT':'IN'
+    ].join(',') + '\n';
+  });
+  csv += '\n';
+
+  // Category breakdown
+  if (Object.keys(cats).length > 0) {
+    csv += 'EXPENSE CATEGORIES\n';
+    csv += 'Category,Total\n';
+    Object.keys(cats).sort(function(a,b){ return cats[b]-cats[a]; }).forEach(function(c){
+      csv += c + ',' + cats[c].toFixed(2) + '\n';
+    });
+  }
+
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Clarifi_Report_' + label.replace(/[^a-z0-9]/gi,'_') + '.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Report downloaded! 📊');
+};
+
+window.exportCombinedPDF = function() {
+  var income   = getFilteredIncome();
+  var spending = getFilteredSpending();
+  var label    = getReportLabel();
+
+  if (income.length === 0 && spending.length === 0) {
+    showToast('No data to export for this period'); return;
+  }
+
+  var totalIncome   = income.reduce(function(s,i){ return s+(i.amount||0); }, 0);
+  var totalExpenses = spending.filter(function(t){ return t.type==='expense'||t.type==='send'; })
+                              .reduce(function(s,t){ return s+(t.amount||0); }, 0);
+  var totalPayments = spending.filter(function(t){ return t.type==='payment'; })
+                              .reduce(function(s,t){ return s+(t.amount||0); }, 0);
+  var net = totalIncome - totalExpenses;
+
+  // Income sources
+  var incomeSources = {};
+  income.forEach(function(i){ incomeSources[i.name] = (incomeSources[i.name]||0)+(i.amount||0); });
+  var srcRows = Object.keys(incomeSources).sort(function(a,b){ return incomeSources[b]-incomeSources[a]; }).map(function(s){
+    var pct = totalIncome > 0 ? ((incomeSources[s]/totalIncome)*100).toFixed(1) : '0';
+    return '<tr><td style="padding:5px 10px">'+s+'</td>' +
+      '<td style="padding:5px 10px;text-align:right;color:#00B87A;font-weight:700">$'+incomeSources[s].toFixed(2)+'</td>' +
+      '<td style="padding:5px 10px;text-align:right;color:#C090B8">'+pct+'%</td></tr>';
+  }).join('');
+
+  // Expense categories
+  var cats = {};
+  spending.filter(function(t){ return t.type==='expense'; }).forEach(function(t){
+    var c = (t.cat||'Other').replace(/^\S+ /,'');
+    cats[c] = (cats[c]||0)+(t.amount||0);
+  });
+  var catRows = Object.keys(cats).sort(function(a,b){ return cats[b]-cats[a]; }).map(function(c){
+    return '<tr><td style="padding:5px 10px">'+c+'</td>' +
+      '<td style="padding:5px 10px;text-align:right;color:#E040A0;font-weight:700">$'+cats[c].toFixed(2)+'</td></tr>';
+  }).join('');
+
+  // Income rows
+  var incomeRows = income.slice().reverse().map(function(i){
+    return '<tr><td style="padding:5px 10px;color:#5A2060">'+i.date+'</td>' +
+      '<td style="padding:5px 10px">'+i.name+'</td>' +
+      '<td style="padding:5px 10px;color:#C090B8">'+i.type+'</td>' +
+      '<td style="padding:5px 10px;color:#C090B8">'+(i.acctName||'—')+'</td>' +
+      '<td style="padding:5px 10px;text-align:right;font-weight:700;color:#00B87A">+$'+i.amount.toFixed(2)+'</td></tr>';
+  }).join('');
+
+  // Spending rows
+  var typeColors = {expense:'#E040A0',payment:'#00B87A',income:'#00B87A',send:'#8040D0',transfer:'#5A2060'};
+  var spendRows = spending.slice().reverse().map(function(t){
+    var isOut = t.type!=='income'&&t.type!=='payment';
+    var color = typeColors[t.type]||'#E040A0';
+    var acct = t.type==='transfer'?(t.cardName||'')+' → '+(t.toAcctName||''):(t.cardName||'—');
+    return '<tr><td style="padding:5px 10px;color:#5A2060;font-size:12px">'+t.date+'</td>' +
+      '<td style="padding:5px 10px;font-size:12px">'+t.desc+'</td>' +
+      '<td style="padding:5px 10px"><span style="background:'+(isOut?'rgba(224,64,160,0.1)':'rgba(0,184,122,0.1)')+';color:'+color+';border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700">'+txnTypeLabel(t)+'</span></td>' +
+      '<td style="padding:5px 10px;font-size:11px;color:#C090B8">'+acct+'</td>' +
+      '<td style="padding:5px 10px;text-align:right;font-weight:700;color:'+(isOut?'#E040A0':'#00B87A')+'">'+(isOut?'-':'+')+' $'+t.amount.toFixed(2)+'</td></tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>body{font-family:Arial,sans-serif;padding:32px;color:#1C0830;font-size:13px}' +
+    'h1{color:#E040A0;font-size:24px;margin-bottom:4px}' +
+    'h2{color:#5A2060;font-size:14px;margin:24px 0 8px;border-bottom:2px solid #F0C8E8;padding-bottom:4px;text-transform:uppercase;letter-spacing:0.05em}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#FDF0FA;color:#5A2060;text-align:left;padding:7px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em}' +
+    'tr:nth-child(even){background:#FDF5FF}' +
+    '.total-row{background:#F0C8E8;font-weight:700;color:#5A2060}' +
+    '.net-pos{background:#E8FFF5;font-weight:700;color:#00B87A}' +
+    '.net-neg{background:rgba(224,64,160,0.08);font-weight:700;color:#E040A0}' +
+    '.footer{margin-top:40px;font-size:10px;color:#C090B8;text-align:center;border-top:1px solid #F0C8E8;padding-top:16px}' +
+    '@media print{body{padding:16px}}' +
+    '</style></head><body>' +
+
+    // Header
+    '<h1>&#x1F4B0; Clarifi Financial Report</h1>' +
+    '<p style="color:#C090B8;margin-bottom:24px">'+label+' &nbsp;·&nbsp; Generated '+new Date().toLocaleDateString()+'</p>' +
+
+    // Summary boxes
+    '<h2>Summary</h2>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">' +
+    '<div style="background:#E8FFF5;border-radius:10px;padding:12px;text-align:center"><div style="font-size:9px;color:#00B87A;font-weight:700;text-transform:uppercase;margin-bottom:4px">Total Income</div><div style="font-size:20px;font-weight:900;color:#00B87A">$'+totalIncome.toFixed(2)+'</div></div>' +
+    '<div style="background:#FDF0FA;border-radius:10px;padding:12px;text-align:center"><div style="font-size:9px;color:#E040A0;font-weight:700;text-transform:uppercase;margin-bottom:4px">Total Expenses</div><div style="font-size:20px;font-weight:900;color:#E040A0">$'+totalExpenses.toFixed(2)+'</div></div>' +
+    '<div style="background:#F0E8FF;border-radius:10px;padding:12px;text-align:center"><div style="font-size:9px;color:#8040D0;font-weight:700;text-transform:uppercase;margin-bottom:4px">Card Payments</div><div style="font-size:20px;font-weight:900;color:#8040D0">$'+totalPayments.toFixed(2)+'</div></div>' +
+    '<div style="background:'+(net>=0?'#E8FFF5':'rgba(224,64,160,0.08)')+';border-radius:10px;padding:12px;text-align:center"><div style="font-size:9px;color:'+(net>=0?'#00B87A':'#E040A0')+';font-weight:700;text-transform:uppercase;margin-bottom:4px">Net</div><div style="font-size:20px;font-weight:900;color:'+(net>=0?'#00B87A':'#E040A0')+'">'+(net>=0?'+':'')+net.toFixed(2)+'</div></div>' +
+    '</div>' +
+
+    // Income section
+    (income.length > 0 ?
+    '<h2>Income</h2>' +
+    '<table><thead><tr><th>Date</th><th>Source</th><th>Type</th><th>Account</th><th style="text-align:right">Amount</th></tr></thead>' +
+    '<tbody>'+incomeRows+'</tbody>' +
+    '<tfoot><tr class="total-row"><td colspan="4" style="padding:7px 10px">Total Income</td><td style="padding:7px 10px;text-align:right">$'+totalIncome.toFixed(2)+'</td></tr></tfoot></table>' +
+    (srcRows ? '<br><table><thead><tr><th>Source</th><th style="text-align:right">Total</th><th style="text-align:right">% of Income</th></tr></thead><tbody>'+srcRows+'</tbody></table>' : '')
+    : '') +
+
+    // Spending section
+    (spending.length > 0 ?
+    '<h2>Spending Log</h2>' +
+    '<table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Account</th><th style="text-align:right">Amount</th></tr></thead>' +
+    '<tbody>'+spendRows+'</tbody>' +
+    '<tfoot>' +
+    '<tr class="total-row"><td colspan="4" style="padding:7px 10px">Total Expenses</td><td style="padding:7px 10px;text-align:right">-$'+totalExpenses.toFixed(2)+'</td></tr>' +
+    '<tr class="'+(net>=0?'net-pos':'net-neg')+'"><td colspan="4" style="padding:7px 10px">Net (Income - Expenses)</td><td style="padding:7px 10px;text-align:right">'+(net>=0?'+':'')+net.toFixed(2)+'</td></tr>' +
+    '</tfoot></table>' +
+    (catRows ? '<br><table><thead><tr><th>Expense Category</th><th style="text-align:right">Total</th></tr></thead><tbody>'+catRows+'</tbody></table>' : '')
+    : '') +
+
+    '<div class="footer">Clarifi &mdash; Because guessing is broke behavior &nbsp;&#183;&nbsp; &copy; 2026 Yolanda McLeod</div>' +
+    '</body></html>';
+
+  var win = window.open('', '_blank');
+  if (!win) { showToast('Allow popups to download PDF'); return; }
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(function(){ win.print(); }, 600);
+  showToast('Report ready — Print > Save as PDF 📄');
+};
 
 </script>
 
