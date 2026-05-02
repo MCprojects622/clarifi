@@ -2009,18 +2009,12 @@ function editIncome(id) {
   document.getElementById('edit-income-date').value = i.date || '';
 
   // Populate account dropdown
+  populateIncomeAccountSelect('edit-income-account');
   var acctSel = document.getElementById('edit-income-account');
-  if (acctSel) {
-    acctSel.innerHTML = '<option value="">Select account (optional)...</option>';
-    state.cards.filter(function(c){ return c.category === 'debit' || c.category === 'bank'; })
-      .forEach(function(c) {
-        var opt = document.createElement('option');
-        opt.value = String(c.id);
-        opt.textContent = c.name;
-        acctSel.appendChild(opt);
-      });
-    acctSel.value = i.acctId || '';
-  }
+  if (acctSel) acctSel.value = i.acctId || '';
+  // Hide inline form
+  var editForm = document.getElementById('inline-new-account-edit');
+  if (editForm) editForm.style.display = 'none';
 
   // Set income type pill
   var typePills = document.querySelectorAll('#modal-edit-income .type-opt');
@@ -4026,19 +4020,34 @@ openModal = function(type) {
     var today = new Date().toISOString().split('T')[0];
     var dateEl = document.getElementById('income-date');
     if (dateEl) dateEl.value = today;
-    var sel = document.getElementById('income-account');
-    if (sel) {
-      sel.innerHTML = '<option value="">Select account (optional)...</option>';
-      state.cards.filter(function(c){ return c.category === 'debit' || c.category === 'bank'; })
-        .forEach(function(c) {
-          var opt = document.createElement('option');
-          opt.value = String(c.id);
-          opt.textContent = c.name;
-          sel.appendChild(opt);
-        });
-    }
+    populateIncomeAccountSelect('income-account');
+    // Hide inline form in case it was open from before
+    var form = document.getElementById('inline-new-account');
+    if (form) form.style.display = 'none';
   }
 };
+
+function populateIncomeAccountSelect(selId) {
+  var sel = document.getElementById(selId);
+  if (!sel) return;
+  var cur = sel.value !== '__new__' ? sel.value : '';
+  sel.innerHTML = '<option value="">Select account (optional)...</option>';
+  // Show all bank/debit accounts
+  state.cards.filter(function(c){ return c.category === 'debit' || c.category === 'bank'; })
+    .forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = String(c.id);
+      opt.textContent = c.name + (c.bankBalance ? ' (' + fmt(c.bankBalance) + ')' : '');
+      sel.appendChild(opt);
+    });
+  // Always add the "Add new" option at the bottom
+  var newOpt = document.createElement('option');
+  newOpt.value = '__new__';
+  newOpt.textContent = '➕ Add new account...';
+  sel.appendChild(newOpt);
+  // Restore selection if valid
+  if (cur) sel.value = cur;
+}
 
 
 // ── SEND MONEY ────────────────────────────────────────────────
@@ -4451,22 +4460,7 @@ window.saveInlineAccount = function(mode) {
   populateCardSelects();
 };
 
-// Also update populateCardSelects to preserve __new__ option in income selects
-var _origPopulateCardSelects = populateCardSelects;
-populateCardSelects = function() {
-  _origPopulateCardSelects();
-  // Re-add __new__ option to income account selects
-  ['income-account', 'edit-income-account'].forEach(function(selId) {
-    var sel = document.getElementById(selId);
-    if (!sel) return;
-    if (!sel.querySelector('option[value="__new__"]')) {
-      var opt = document.createElement('option');
-      opt.value = '__new__';
-      opt.textContent = '➕ Add new account...';
-      sel.appendChild(opt);
-    }
-  });
-};
+// income account selects handled by populateIncomeAccountSelect()
 
 </script>
 
