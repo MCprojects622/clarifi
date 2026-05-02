@@ -2009,6 +2009,11 @@ var auth = firebase.auth();
 var db = firebase.firestore();
 var currentUser = null;
 
+var _DEFAULT_CATS = [
+  {emoji:'🛒',name:'Groceries'},{emoji:'⛽',name:'Gas'},{emoji:'🍔',name:'Food'},
+  {emoji:'🛍️',name:'Shopping'},{emoji:'💊',name:'Health'},{emoji:'🚗',name:'Transport'},
+  {emoji:'🎮',name:'Fun'},{emoji:'📦',name:'Other'}
+];
 var state = {
   cards: JSON.parse(localStorage.getItem('fin_cards')||'[]'),
   income: JSON.parse(localStorage.getItem('fin_income')||'[]'),
@@ -2016,6 +2021,7 @@ var state = {
   subscriptions: JSON.parse(localStorage.getItem('fin_subs')||'[]'),
   bills: JSON.parse(localStorage.getItem('fin_bills')||'[]'),
   transactions: JSON.parse(localStorage.getItem('fin_txns')||'[]'),
+  categories: JSON.parse(localStorage.getItem('clarifi_categories')||'null') || _DEFAULT_CATS.map(function(c){ return Object.assign({},c); }),
   currentScreen: 'home',
   selectedTypes: {}
 };
@@ -2027,6 +2033,7 @@ function save() {
   localStorage.setItem('fin_subs',     JSON.stringify(state.subscriptions));
   localStorage.setItem('fin_bills',    JSON.stringify(state.bills));
   localStorage.setItem('fin_txns',     JSON.stringify(state.transactions || []));
+  localStorage.setItem('clarifi_categories', JSON.stringify(state.categories || []));
   if (currentUser) {
     db.collection('users').doc(currentUser.uid).set({
       cards: state.cards,
@@ -2035,6 +2042,7 @@ function save() {
       subscriptions: state.subscriptions,
       bills: state.bills,
       transactions: state.transactions || [],
+      categories: state.categories || [],
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(function(e){ console.error('Save error:', e); });
   }
@@ -2052,12 +2060,14 @@ function loadFromFirestore(callback) {
         state.subscriptions = data.subscriptions || [];
         state.bills         = data.bills         || [];
         state.transactions  = data.transactions  || [];
+        state.categories    = (data.categories && data.categories.length) ? data.categories : state.categories;
         localStorage.setItem('fin_cards',    JSON.stringify(state.cards));
         localStorage.setItem('fin_income',   JSON.stringify(state.income));
         localStorage.setItem('fin_upcoming', JSON.stringify(state.upcoming));
         localStorage.setItem('fin_subs',     JSON.stringify(state.subscriptions));
         localStorage.setItem('fin_bills',    JSON.stringify(state.bills));
         localStorage.setItem('fin_txns',     JSON.stringify(state.transactions));
+        localStorage.setItem('clarifi_categories', JSON.stringify(state.categories));
       }
       callback();
     })
@@ -2982,27 +2992,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── Global event delegation for all dynamic buttons ──────────
   document.body.addEventListener('click', function(e) {
-    var el = e.target;
-    var id = el.getAttribute('data-id');
+    // Walk up the DOM tree to find the matching element
+    // This fixes tap-on-icon-inside-button not firing on mobile
+    function closest(el, cls) {
+      while (el && el !== document.body) {
+        if (el.classList && el.classList.contains(cls)) return el;
+        el = el.parentElement;
+      }
+      return null;
+    }
 
-    if (el.classList.contains('clarifi-edit-card')) { editCard(id); return; }
-    if (el.classList.contains('clarifi-del-card')) { deleteCard(id); return; }
-    if (el.classList.contains('clarifi-edit-income') || el.classList.contains('clarifi-edit-income')) { editIncome(id); return; }
-    if (el.classList.contains('clarifi-del-income')) { deleteIncome(id); return; }
-    if (el.classList.contains('clarifi-edit-sub')) { editSub(id); return; }
-    if (el.classList.contains('clarifi-del-sub')) { deleteSub(id); return; }
-    if (el.classList.contains('clarifi-edit-bill')) { editBill(id); return; }
-    if (el.classList.contains('clarifi-del-bill')) { deleteBill(id); return; }
-    if (el.classList.contains('clarifi-mark-paid')) { markPaidUpcoming(id); return; }
-    if (el.classList.contains('clarifi-del-upcoming')) { deleteUpcoming(id); return; }
-    if (el.classList.contains('clarifi-goto-cards')) { switchScreen('cards'); return; }
-    if (el.classList.contains('clarifi-goto-upcoming')) { switchScreen('upcoming'); return; }
-    if (el.classList.contains('clarifi-goto-income')) { switchScreen('income'); return; }
-    if (el.classList.contains('clarifi-add-card')) { openModal('card'); return; }
-    if (el.classList.contains('clarifi-add-income')) { openModal('income'); return; }
-    if (el.classList.contains('clarifi-add-sub')) { openModal('subscription'); return; }
-    if (el.classList.contains('clarifi-add-bill')) { openModal('bill'); return; }
-    if (el.classList.contains('clarifi-add-upcoming')) { openModal('upcoming'); return; }
+    var handlers = [
+      ['clarifi-edit-card',    function(el){ editCard(el.getAttribute('data-id')); }],
+      ['clarifi-del-card',     function(el){ deleteCard(el.getAttribute('data-id')); }],
+      ['clarifi-edit-income',  function(el){ editIncome(el.getAttribute('data-id')); }],
+      ['clarifi-del-income',   function(el){ deleteIncome(el.getAttribute('data-id')); }],
+      ['clarifi-edit-sub',     function(el){ editSub(el.getAttribute('data-id')); }],
+      ['clarifi-del-sub',      function(el){ deleteSub(el.getAttribute('data-id')); }],
+      ['clarifi-edit-bill',    function(el){ editBill(el.getAttribute('data-id')); }],
+      ['clarifi-del-bill',     function(el){ deleteBill(el.getAttribute('data-id')); }],
+      ['clarifi-mark-paid',    function(el){ markPaidUpcoming(el.getAttribute('data-id')); }],
+      ['clarifi-del-upcoming', function(el){ deleteUpcoming(el.getAttribute('data-id')); }],
+      ['clarifi-goto-cards',   function(){ switchScreen('cards'); }],
+      ['clarifi-goto-upcoming',function(){ switchScreen('upcoming'); }],
+      ['clarifi-goto-income',  function(){ switchScreen('income'); }],
+      ['clarifi-add-card',     function(){ openModal('card'); }],
+      ['clarifi-add-income',   function(){ openModal('income'); }],
+      ['clarifi-add-sub',      function(){ openModal('subscription'); }],
+      ['clarifi-add-bill',     function(){ openModal('bill'); }],
+      ['clarifi-add-upcoming', function(){ openModal('upcoming'); }],
+      ['clarifi-edit-txn',     function(el){ editTransaction(el.getAttribute('data-id')); }],
+      ['clarifi-del-txn',      function(el){ deleteTransaction(el.getAttribute('data-id')); }],
+    ];
+
+    for (var i = 0; i < handlers.length; i++) {
+      var match = closest(e.target, handlers[i][0]);
+      if (match) { handlers[i][1](match); return; }
+    }
   });
 
   var btn = document.getElementById('auth-btn');
@@ -3404,8 +3430,8 @@ function renderSpendingLog() {
         '<div class="txn-amount-wrap">' +
           '<div class="txn-amount ' + amtClass + '">' + prefix + fmt(t.amount) + '</div>' +
           '<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px">' +
-            '<button onclick="editTransaction(\'' + tid + '\')" style="background:none;border:none;font-size:13px;color:var(--sage);cursor:pointer;padding:2px" title="Edit">&#9998;</button>' +
-            '<button onclick="deleteTransaction(\'' + tid + '\')" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px" title="Delete">✕</button>' +
+            '<button class="clarifi-edit-txn" data-id="' + tid + '" style="background:none;border:none;font-size:18px;color:var(--sage);cursor:pointer;padding:4px 6px;min-width:32px;min-height:32px" title="Edit">&#9998;</button>' +
+            '<button class="clarifi-del-txn" data-id="' + tid + '" style="background:none;border:none;font-size:14px;color:var(--dim);cursor:pointer;padding:4px 6px;min-width:32px;min-height:32px" title="Delete">✕</button>' +
           '</div>' +
         '</div>' +
         '</div>';
@@ -5072,6 +5098,10 @@ function renderCategoryGrid() {
 
 // ── Render categories in settings ──
 function renderCategoriesSettings() {
+  // Ensure categories are initialized before rendering
+  if (!state.categories || !state.categories.length) {
+    state.categories = JSON.parse(localStorage.getItem('clarifi_categories') || 'null') || DEFAULT_CATEGORIES.map(function(c){ return Object.assign({}, c); });
+  }
   var grid = document.getElementById('categories-grid');
   if (!grid) return;
   grid.innerHTML = state.categories.map(function(c, idx) {
