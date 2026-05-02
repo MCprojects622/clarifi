@@ -642,55 +642,238 @@ body {
 .signout-btn:hover { color: #E040A0; }
 
 /* ── MOBILE RESPONSIVE ── */
-@media (max-width: 768px) {
-  :root { --sidebar-w: 0px; }
-  body { flex-direction: column; overflow: auto; height: auto; min-height: 100vh; }
-  .sidebar { display: none; }
-  .main { overflow: visible; }
-  .content { overflow: visible; padding: 16px; }
-  .topbar { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
-  .topbar-actions { flex-wrap: wrap; gap: 6px; }
-  .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .content-grid { grid-template-columns: 1fr !important; gap: 14px; }
-  .stat-value { font-size: 22px; }
-  .cards-full-grid { grid-template-columns: 1fr !important; }
-  .card-full-row { grid-template-columns: 1fr 1fr 1fr; }
-  .card-full-header { flex-wrap: wrap; gap: 6px; }
-  .form-row { grid-template-columns: 1fr !important; }
-  .type-grid { grid-template-columns: repeat(3, 1fr); }
-  .modal { padding: 20px; border-radius: 20px; }
+/* ═══════════════════════════════════════════════════════════
+   MOBILE LAYOUT — Intentional, thumb-friendly design
+   Kicks in at ≤768px. Desktop is completely unchanged.
+   ═══════════════════════════════════════════════════════════ */
 
-  /* Mobile bottom nav */
-  .mobile-nav {
-    display: flex !important;
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--white);
-    border-top: 2px solid var(--border);
-    z-index: 100; padding: 8px 0 env(safe-area-inset-bottom, 8px);
-    box-shadow: 0 -4px 20px rgba(28,8,48,0.1);
-  }
-  .content { padding-bottom: 80px; }
-  .topbar { padding-top: env(safe-area-inset-top, 14px); }
-  .spending-filters { flex-wrap: wrap; }
-  .spending-stats { grid-template-columns: 1fr 1fr !important; }
-}
+/* Mobile bottom nav (hidden on desktop) */
+.mobile-nav { display: none; }
 @media (min-width: 769px) {
   .mobile-nav { display: none !important; }
 }
 
-/* Mobile bottom nav styles */
-.mobile-nav {
-  display: none;
+@media (max-width: 768px) {
+
+  /* ── Core layout ── */
+  :root { --sidebar-w: 0px; }
+  body {
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+  }
+  .sidebar { display: none !important; }
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  /* ── Mobile topbar ── */
+  .topbar {
+    padding: 12px 16px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+    flex-wrap: nowrap;
+    gap: 8px;
+    min-height: 0;
+    flex-shrink: 0;
+    border-bottom: 1.5px solid var(--border);
+  }
+  .topbar-title { font-size: 18px; }
+  .topbar-sub { font-size: 11px; display: none; }
+  .topbar-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .topbar-actions .btn-primary,
+  .topbar-actions .btn-secondary {
+    padding: 8px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* ── Screens scroll independently ── */
+  .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+  .screen.active { display: flex; }
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 14px 90px;
+    overscroll-behavior: contain;
+  }
+
+  /* ── Stats rows ── */
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat-card { padding: 14px 12px; }
+  .stat-value { font-size: 20px; }
+  .stat-label { font-size: 10px; }
+  .stat-sub { font-size: 10px; }
+  .stat-icon { font-size: 20px; margin-bottom: 6px; }
+
+  /* ── Panels ── */
+  .panel { border-radius: 16px; margin-bottom: 12px; }
+  .panel-header { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+  .panel-title { font-size: 13px; }
+  .panel-body { padding: 0; }
+  .panel-action { font-size: 11px; }
+
+  /* ── Content grids — single column ── */
+  .content-grid { grid-template-columns: 1fr !important; gap: 12px; }
+
+  /* ── Cards/Accounts grid ── */
+  .cards-full-grid { grid-template-columns: 1fr !important; gap: 12px; }
+  .card-full { border-radius: 16px; }
+  .card-full-header { padding: 14px 16px; flex-wrap: wrap; gap: 6px; }
+  .card-full-name { font-size: 15px; }
+  .card-full-body { padding: 14px 16px; }
+  .card-full-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .card-stat-val { font-size: 15px; }
+  .card-actions { gap: 8px; margin-top: 12px; }
+
+  /* ── Home screen cards row — horizontal scroll ── */
+  .cards-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card-chip {
+    min-width: 160px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* ── Income chart ── */
+  #income-chart { height: 80px !important; }
+
+  /* ── Spending log stats ── */
+  .spending-stats { grid-template-columns: 1fr 1fr !important; gap: 10px; }
+  .spending-filters { gap: 6px; }
+  .filter-pill { padding: 6px 12px; font-size: 11px; }
+
+  /* ── Transaction items ── */
+  .txn-item { padding: 11px 12px; gap: 10px; }
+  .txn-icon { width: 38px; height: 38px; font-size: 18px; border-radius: 10px; }
+  .txn-name { font-size: 13px; }
+  .txn-meta { font-size: 10px; }
+  .txn-amount { font-size: 14px; }
+
+  /* ── Income list ── */
+  .income-item { padding: 10px 12px; gap: 10px; }
+  .income-name { font-size: 13px; }
+  .income-meta { font-size: 10px; }
+  .income-amount { font-size: 14px; }
+
+  /* ── Settings ── */
+  .settings-section { border-radius: 16px; }
+  .settings-row { padding: 12px 16px; gap: 12px; }
+  .settings-row-label { font-size: 13px; }
+
+  /* ── Forms & Modals ── */
+  .form-row { grid-template-columns: 1fr !important; gap: 10px; }
+  .type-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 6px; }
+  .type-opt { padding: 8px 4px; font-size: 11px; }
+  .type-opt-icon { font-size: 18px; margin-bottom: 2px; }
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal {
+    border-radius: 24px 24px 0 0 !important;
+    padding: 20px 20px calc(env(safe-area-inset-bottom, 0px) + 20px);
+    max-height: 92vh;
+    max-height: 92dvh;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100%;
+    animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .modal-header { margin-bottom: 16px; }
+  .modal-title { font-size: 17px; }
+  .modal-footer { gap: 10px; margin-top: 16px; }
+  .btn-save, .btn-cancel { padding: 12px 20px; font-size: 14px; }
+  .form-input { font-size: 16px; } /* Prevents iOS zoom on focus */
+  .form-label { font-size: 12px; }
+  .form-group { margin-bottom: 14px; }
+
+  /* ── Bottom nav ── */
+  .mobile-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 1.5px solid var(--border);
+    z-index: 200;
+    padding: 6px 0 calc(env(safe-area-inset-bottom, 0px) + 4px);
+    box-shadow: 0 -4px 24px rgba(28,8,48,0.08);
+  }
+
+  /* ── Upcoming screen ── */
+  .upcoming-item { padding: 10px 12px; }
+
+  /* ── Empty states ── */
+  .empty-state { padding: 28px 16px; }
+  .empty-icon { font-size: 36px; }
+  .empty-title { font-size: 15px; }
+  .empty-sub { font-size: 12px; }
+
+  /* ── Export row in panel header ── */
+  .panel-header > div:last-child { flex-wrap: wrap; gap: 6px; }
+
+  /* ── Cat grid in settings ── */
+  .cat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* ── Notif status pill ── */
+  .notif-status { font-size: 11px; padding: 4px 10px; }
 }
+
+/* Bottom nav item styles (shared, not media-queried) */
 .mobile-nav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-  gap: 3px; padding: 6px 4px; cursor: pointer;
-  font-size: 9px; font-weight: 800; color: var(--muted);
-  letter-spacing: 0.04em; text-transform: uppercase;
-  transition: color 0.15s; border: none; background: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 2px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.mobile-nav-item.active { color: var(--coral); }
-.mobile-nav-icon { font-size: 20px; line-height: 1; }
+.mobile-nav-item.active {
+  color: var(--coral);
+}
+.mobile-nav-item.active .mobile-nav-icon {
+  transform: scale(1.15);
+}
+.mobile-nav-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
 
 /* ── SPENDING LOG ── */
 .spending-stats {
@@ -892,6 +1075,101 @@ body {
 }
 .emoji-opt:hover { background: var(--coral-light); }
 .emoji-opt.selected { background: var(--coral-light); outline: 2px solid var(--coral); }
+
+/* ── Mobile-only home hero ── */
+@media (max-width: 768px) {
+  /* Home screen hero card */
+  .home-hero {
+    background: linear-gradient(135deg, var(--coral), #8040D0);
+    border-radius: 20px;
+    padding: 20px;
+    color: #fff;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero::after {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .home-hero-label {
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0.8; margin-bottom: 6px;
+  }
+  .home-hero-amount {
+    font-family: 'Nunito', sans-serif;
+    font-size: 38px; font-weight: 900; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .home-hero-sub { font-size: 12px; opacity: 0.75; font-weight: 600; }
+
+  /* Pull-to-refresh feel with top padding */
+  .content { padding-top: 16px; }
+
+  /* Horizontal scroll hint */
+  .cards-grid::after {
+    content: '';
+    min-width: 14px;
+    display: block;
+  }
+
+  /* Tighter topbar actions on mobile — hide secondary buttons */
+  .topbar-actions .btn-secondary:not(:last-child) {
+    display: none;
+  }
+
+  /* Spending log filters as horizontal scroll */
+  .spending-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    gap: 6px;
+  }
+  .filter-pill { flex-shrink: 0; }
+
+  /* Panel export row — stack on mobile */
+  .panel-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .panel-header > div:last-child {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Auth overlay mobile */
+  .auth-card {
+    border-radius: 24px;
+    margin: 16px;
+    padding: 24px 20px;
+  }
+
+  /* Bigger touch targets for del buttons */
+  .del-btn {
+    min-width: 36px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Toast on mobile */
+  .toast {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 74px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+    text-align: center;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1652,34 +1930,9 @@ body {
     </div>
     <div class="form-group">
       <label class="form-label">Deposited Into</label>
-      <select class="form-input" id="income-account" onchange="onIncomeAccountChange()">
+      <select class="form-input" id="income-account">
         <option value="">Select account (optional)...</option>
-        <option value="__new__">➕ Add new account...</option>
       </select>
-    </div>
-    <!-- Inline new account form (hidden by default) -->
-    <div id="inline-new-account" style="display:none;background:var(--cream);border:1.5px solid var(--coral-mid);border-radius:14px;padding:16px;margin-top:-8px;margin-bottom:8px">
-      <div style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">New Account</div>
-      <div class="form-group" style="margin-bottom:10px">
-        <label class="form-label">Account Name</label>
-        <input class="form-input" id="inline-acct-name" placeholder="e.g. Chase Checking" type="text">
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Account Type</label>
-          <select class="form-input" id="inline-acct-type">
-            <option value="bank">🏛️ Bank Account</option>
-            <option value="debit">🏦 Debit Card</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Current Balance ($)</label>
-          <input class="form-input" id="inline-acct-balance" placeholder="0.00" type="number" step="0.01">
-        </div>
-      </div>
-      <button onclick="saveInlineAccount()" style="margin-top:12px;width:100%;background:var(--coral);color:#fff;border:none;border-radius:10px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer">
-        Create Account & Select
-      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Income Type</label>
@@ -2837,12 +3090,7 @@ window.openModal = function(type) {
     var ed = document.getElementById('exp-date');
     if (ed) ed.value = new Date().toISOString().split('T')[0];
     populateCardSelects();
-    var firstCat = document.querySelector('#modal-log-expense .type-opt');
-    if (firstCat) {
-      document.querySelectorAll('#modal-log-expense .type-opt').forEach(function(o){ o.classList.remove('selected'); });
-      firstCat.classList.add('selected');
-      state.selectedTypes['exp-cat'] = firstCat.getAttribute('data-val');
-    }
+    renderCategoryGrid();
   }
   if (type === 'log-payment') {
     var pd = document.getElementById('pay-date');
@@ -3034,7 +3282,8 @@ function renderSpendingLog() {
   // Stats
   var monthTxns = state.transactions.filter(function(t){
     var d = new Date(t.date+'T00:00:00');
-    return t.type==='expense' && d.getMonth()===thisMonth && d.getFullYear()===thisYear;
+    // Include expenses AND money sent to people — both are money spent
+    return (t.type==='expense' || t.type==='send') && d.getMonth()===thisMonth && d.getFullYear()===thisYear;
   });
   var monthTotal = monthTxns.reduce(function(s,t){ return s+t.amount; },0);
   var paymentsMonth = state.transactions.filter(function(t){
@@ -3134,7 +3383,10 @@ function renderSpendingLog() {
         '</div>' +
         '<div class="txn-amount-wrap">' +
           '<div class="txn-amount ' + amtClass + '">' + prefix + fmt(t.amount) + '</div>' +
-          '<button onclick="deleteTransaction(\"' + tid + '\")" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px 0;display:block;margin-left:auto" title="Delete">✕</button>' +
+          '<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px">' +
+            '<button onclick="editTransaction(\'' + tid + '\')" style="background:none;border:none;font-size:13px;color:var(--sage);cursor:pointer;padding:2px" title="Edit">&#9998;</button>' +
+            '<button onclick="deleteTransaction(\'' + tid + '\')" style="background:none;border:none;font-size:12px;color:var(--dim);cursor:pointer;padding:2px" title="Delete">✕</button>' +
+          '</div>' +
         '</div>' +
         '</div>';
     });
@@ -3232,33 +3484,9 @@ function renderSpendingLog() {
     </div>
     <div class="form-group">
       <label class="form-label">Deposited Into</label>
-      <select class="form-input" id="edit-income-account" onchange="onEditIncomeAccountChange()">
+      <select class="form-input" id="edit-income-account">
         <option value="">Select account (optional)...</option>
-        <option value="__new__">➕ Add new account...</option>
       </select>
-    </div>
-    <div id="inline-new-account-edit" style="display:none;background:var(--cream);border:1.5px solid var(--coral-mid);border-radius:14px;padding:16px;margin-top:-8px;margin-bottom:8px">
-      <div style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">New Account</div>
-      <div class="form-group" style="margin-bottom:10px">
-        <label class="form-label">Account Name</label>
-        <input class="form-input" id="inline-acct-name-edit" placeholder="e.g. Chase Checking" type="text">
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Account Type</label>
-          <select class="form-input" id="inline-acct-type-edit">
-            <option value="bank">🏛️ Bank Account</option>
-            <option value="debit">🏦 Debit Card</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Current Balance ($)</label>
-          <input class="form-input" id="inline-acct-balance-edit" placeholder="0.00" type="number" step="0.01">
-        </div>
-      </div>
-      <button onclick="saveInlineAccount('edit')" style="margin-top:12px;width:100%;background:var(--coral);color:#fff;border:none;border-radius:10px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer">
-        Create Account & Select
-      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Income Type</label>
@@ -3488,33 +3716,9 @@ function renderSpendingLog() {
     </div>
     <div class="form-group">
       <label class="form-label">Card / Account Used</label>
-      <select class="form-input" id="exp-card" onchange="onSpendingAccountChange('exp-card','inline-exp-account')">
+      <select class="form-input" id="exp-card">
         <option value="">Select account...</option>
       </select>
-    </div>
-    <div id="inline-exp-account" style="display:none;background:var(--cream);border:1.5px solid var(--coral-mid);border-radius:14px;padding:16px;margin-top:-8px;margin-bottom:8px">
-      <div style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">New Account</div>
-      <div class="form-group" style="margin-bottom:10px">
-        <label class="form-label">Account Name</label>
-        <input class="form-input" id="inline-exp-acct-name" placeholder="e.g. Chase Checking" type="text">
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Type</label>
-          <select class="form-input" id="inline-exp-acct-type">
-            <option value="bank">🏛️ Bank Account</option>
-            <option value="debit">🏦 Debit Card</option>
-            <option value="credit">💳 Credit Card</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Current Balance ($)</label>
-          <input class="form-input" id="inline-exp-acct-balance" placeholder="0.00" type="number" step="0.01">
-        </div>
-      </div>
-      <button onclick="saveSpendingInlineAccount('exp-card','inline-exp-account','inline-exp-acct-name','inline-exp-acct-type','inline-exp-acct-balance')" style="margin-top:12px;width:100%;background:var(--coral);color:#fff;border:none;border-radius:10px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer">
-        Create Account & Select
-      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Category</label>
@@ -3659,6 +3863,40 @@ function renderSpendingLog() {
   </div>
 </div>
 
+
+<!-- EDIT TRANSACTION -->
+<div class="modal-overlay" id="modal-edit-transaction">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Transaction ✏️</div>
+      <div class="modal-close" onclick="closeModal('modal-edit-transaction')">✕</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <input class="form-input" id="edit-txn-desc" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="edit-txn-amount" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="edit-txn-date" type="date">
+      </div>
+    </div>
+    <div class="form-group" id="edit-txn-cat-group">
+      <label class="form-label">Category</label>
+      <div class="type-grid" style="grid-template-columns:repeat(4,1fr)" id="edit-txn-cat-grid"></div>
+    </div>
+    <input type="hidden" id="edit-txn-id">
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-edit-transaction')">Cancel</button>
+      <button class="btn-save" onclick="saveEditTransaction()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── MOBILE BOTTOM NAV ── -->
 <nav class="mobile-nav" id="mobile-nav">
   <button class="mobile-nav-item active" id="mnav-home" onclick="switchScreen('home')">
@@ -3670,8 +3908,11 @@ function renderSpendingLog() {
   <button class="mobile-nav-item" id="mnav-spending" onclick="switchScreen('spending')">
     <span class="mobile-nav-icon">💸</span>Log
   </button>
+  <button class="mobile-nav-item" id="mnav-income" onclick="switchScreen('income')">
+    <span class="mobile-nav-icon">💰</span>Income
+  </button>
   <button class="mobile-nav-item" id="mnav-upcoming" onclick="switchScreen('upcoming')">
-    <span class="mobile-nav-icon">📅</span>Coming Up
+    <span class="mobile-nav-icon">📅</span>Due
   </button>
   <button class="mobile-nav-item" id="mnav-billssubs" onclick="switchScreen('billssubs')">
     <span class="mobile-nav-icon">🔁</span>Bills
@@ -4194,11 +4435,7 @@ function populateIncomeAccountSelect(selId) {
       opt.textContent = c.name + (c.bankBalance ? ' (' + fmt(c.bankBalance) + ')' : '');
       sel.appendChild(opt);
     });
-  // Always add the "Add new" option at the bottom
-  var newOpt = document.createElement('option');
-  newOpt.value = '__new__';
-  newOpt.textContent = '➕ Add new account...';
-  sel.appendChild(newOpt);
+  // No inline add — users add accounts from the Accounts screen
   // Restore selection if valid
   if (cur) sel.value = cur;
 }
@@ -4550,116 +4787,8 @@ window.exportCombinedPDF = function() {
 };
 
 
-// ── INLINE ACCOUNT CREATION ───────────────────────────────────
-
-window.onIncomeAccountChange = function() {
-  var sel = document.getElementById('income-account');
-  var form = document.getElementById('inline-new-account');
-  if (!form) return;
-  form.style.display = sel.value === '__new__' ? 'block' : 'none';
-};
-
-window.onEditIncomeAccountChange = function() {
-  var sel = document.getElementById('edit-income-account');
-  var form = document.getElementById('inline-new-account-edit');
-  if (!form) return;
-  form.style.display = sel.value === '__new__' ? 'block' : 'none';
-};
-
-window.saveInlineAccount = function(mode) {
-  var suffix = mode === 'edit' ? '-edit' : '';
-  var nameEl    = document.getElementById('inline-acct-name' + suffix);
-  var typeEl    = document.getElementById('inline-acct-type' + suffix);
-  var balEl     = document.getElementById('inline-acct-balance' + suffix);
-  var selEl     = document.getElementById(mode === 'edit' ? 'edit-income-account' : 'income-account');
-  var formEl    = document.getElementById('inline-new-account' + (mode === 'edit' ? '-edit' : ''));
-
-  var name    = nameEl ? nameEl.value.trim() : '';
-  var type    = typeEl ? typeEl.value : 'bank';
-  var balance = balEl  ? parseFloat(balEl.value) || 0 : 0;
-
-  if (!name) { showToast('Please enter an account name'); return; }
-
-  // Create the new card/account
-  var newCard = {
-    id: Date.now(),
-    name: name,
-    category: type,
-    type: type === 'debit' ? 'Debit' : 'Bank Account',
-    bankBalance: balance,
-    limit: 0, balance: 0, statement: '', due: ''
-  };
-  state.cards.push(newCard);
-  save();
-
-  // Add to the select and auto-select it
-  if (selEl) {
-    var opt = document.createElement('option');
-    opt.value = String(newCard.id);
-    opt.textContent = name;
-    // Insert before the "__new__" option
-    var newOpt = selEl.querySelector('option[value="__new__"]');
-    if (newOpt) selEl.insertBefore(opt, newOpt);
-    else selEl.appendChild(opt);
-    selEl.value = String(newCard.id);
-  }
-
-  // Hide the inline form and clear it
-  if (formEl) formEl.style.display = 'none';
-  if (nameEl) nameEl.value = '';
-  if (balEl)  balEl.value  = '';
-
-  showToast(name + ' added! 🏦');
-  // Also refresh all other card selects in the background
-  populateCardSelects();
-};
-
-// income account selects handled by populateIncomeAccountSelect()
-
-
-// ── SPENDING LOG INLINE ACCOUNT ───────────────────────────────
-
-window.onSpendingAccountChange = function(selId, formId) {
-  var sel  = document.getElementById(selId);
-  var form = document.getElementById(formId);
-  if (form) form.style.display = sel && sel.value === '__new__' ? 'block' : 'none';
-};
-
-window.saveSpendingInlineAccount = function(selId, formId, nameId, typeId, balId) {
-  var name    = document.getElementById(nameId) ? document.getElementById(nameId).value.trim() : '';
-  var type    = document.getElementById(typeId) ? document.getElementById(typeId).value : 'bank';
-  var balance = document.getElementById(balId)  ? parseFloat(document.getElementById(balId).value)||0 : 0;
-  var sel     = document.getElementById(selId);
-  var form    = document.getElementById(formId);
-  if (!name) { showToast('Please enter an account name'); return; }
-
-  var isCredit = type === 'credit';
-  var newCard = {
-    id: Date.now(), name: name, category: type,
-    type: type === 'credit' ? 'Unsecured' : type === 'debit' ? 'Debit' : 'Bank Account',
-    bankBalance: isCredit ? 0 : balance,
-    balance: isCredit ? 0 : 0,
-    limit: isCredit ? balance : 0,
-    statement: '', due: ''
-  };
-  state.cards.push(newCard);
-  save();
-
-  if (sel) {
-    var opt = document.createElement('option');
-    opt.value = String(newCard.id);
-    opt.textContent = name;
-    var newOpt = sel.querySelector('option[value="__new__"]');
-    if (newOpt) sel.insertBefore(opt, newOpt);
-    else sel.appendChild(opt);
-    sel.value = String(newCard.id);
-  }
-  if (form) form.style.display = 'none';
-  if (document.getElementById(nameId)) document.getElementById(nameId).value = '';
-  if (document.getElementById(balId))  document.getElementById(balId).value  = '';
-  showToast(name + ' created & selected! 🏦');
-  populateCardSelects();
-};
+// ── INLINE ACCOUNT CREATION REMOVED ──────────────────────────
+// Accounts are added from the Accounts screen only
 
 // ── SUBSCRIPTION / BILL AFFORDABILITY CHECK ───────────────────
 
@@ -4797,14 +4926,7 @@ openModal = function(type) {
 var _origPopulateCS = populateCardSelects;
 populateCardSelects = function() {
   _origPopulateCS();
-  // Add __new__ to expense card select
-  var expSel = document.getElementById('exp-card');
-  if (expSel && !expSel.querySelector('option[value="__new__"]')) {
-    var newOpt = document.createElement('option');
-    newOpt.value = '__new__';
-    newOpt.textContent = '➕ Add new account...';
-    expSel.appendChild(newOpt);
-  }
+  // No inline add — users add accounts from the Accounts screen
 };
 
 
@@ -4937,6 +5059,90 @@ var _origSaveForCat = save;
 save = function() {
   _origSaveForCat();
   localStorage.setItem('clarifi_categories', JSON.stringify(state.categories));
+};
+
+
+// ── EDIT TRANSACTION ──────────────────────────────────────────
+
+window.editTransaction = function(id) {
+  var t = state.transactions.find(function(x){ return String(x.id) === String(id); });
+  if (!t) return;
+
+  document.getElementById('edit-txn-id').value    = id;
+  document.getElementById('edit-txn-desc').value  = t.desc || '';
+  document.getElementById('edit-txn-amount').value = t.amount || '';
+  document.getElementById('edit-txn-date').value   = t.date || '';
+
+  // Show category grid only for expense/send types
+  var catGroup = document.getElementById('edit-txn-cat-group');
+  var catGrid  = document.getElementById('edit-txn-cat-grid');
+  var showCat  = t.type === 'expense' || t.type === 'send';
+  if (catGroup) catGroup.style.display = showCat ? '' : 'none';
+  if (catGrid && showCat) {
+    var currentCat = t.cat || '';
+    catGrid.innerHTML = state.categories.map(function(c) {
+      var val = c.emoji + ' ' + c.name;
+      return '<div class="type-opt' + (val === currentCat ? ' selected' : '') + '" onclick="selectType(this,\'edit-txn-cat\')" data-val="' + val + '">' +
+        '<span class="type-opt-icon">' + c.emoji + '</span>' + c.name + '</div>';
+    }).join('');
+    state.selectedTypes['edit-txn-cat'] = currentCat;
+  }
+
+  document.getElementById('modal-edit-transaction').classList.add('open');
+};
+
+window.saveEditTransaction = function() {
+  var id     = document.getElementById('edit-txn-id').value;
+  var desc   = document.getElementById('edit-txn-desc').value.trim();
+  var amount = parseFloat(document.getElementById('edit-txn-amount').value) || 0;
+  var date   = document.getElementById('edit-txn-date').value;
+
+  if (!desc)   { showToast('Please enter a description'); return; }
+  if (!amount) { showToast('Please enter an amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var t = state.transactions.find(function(x){ return String(x.id) === String(id); });
+  if (!t) return;
+
+  // Reverse old balance effect on card
+  if (t.cardId) {
+    var card = state.cards.find(function(c){ return String(c.id) === String(t.cardId); });
+    if (card) {
+      var isBank = card.category === 'debit' || card.category === 'bank';
+      if (t.type === 'expense' || t.type === 'send') {
+        if (isBank) card.bankBalance = (card.bankBalance||0) + t.amount;
+        else        card.balance = Math.max(0, (card.balance||0) - t.amount);
+      }
+    }
+  }
+
+  // Apply new values
+  t.desc   = desc;
+  t.amount = amount;
+  t.date   = date;
+
+  var showCat = t.type === 'expense' || t.type === 'send';
+  if (showCat) {
+    t.cat = getType('edit-txn-cat', t.cat || '📦 Other');
+  }
+
+  // Re-apply balance effect with new amount
+  if (t.cardId) {
+    var card2 = state.cards.find(function(c){ return String(c.id) === String(t.cardId); });
+    if (card2) {
+      var isBank2 = card2.category === 'debit' || card2.category === 'bank';
+      if (t.type === 'expense' || t.type === 'send') {
+        if (isBank2) card2.bankBalance = Math.max(0, (card2.bankBalance||0) - amount);
+        else         card2.balance = (card2.balance||0) + amount;
+      }
+    }
+  }
+
+  state.transactions.sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+  save();
+  closeModal('modal-edit-transaction');
+  renderAll();
+  showToast('Transaction updated! ✅');
 };
 
 </script>
