@@ -811,6 +811,87 @@ body {
 }
 .settings-btn.secondary:hover { border-color: var(--coral); color: var(--coral); background: var(--coral-light); }
 
+
+/* ── CATEGORIES ── */
+.cat-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px; padding: 4px 0;
+}
+.cat-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--cream);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  font-size: 13px; font-weight: 700; color: var(--text);
+  cursor: pointer; transition: all 0.15s; position: relative;
+}
+.cat-chip:hover { border-color: var(--coral-mid); background: var(--coral-light); }
+.cat-chip-emoji { font-size: 18px; }
+.cat-chip-name { flex: 1; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cat-chip-del {
+  position: absolute; top: -6px; right: -6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--coral); color: #fff;
+  font-size: 10px; font-weight: 900;
+  display: none; align-items: center; justify-content: center;
+  cursor: pointer; border: none;
+}
+.cat-chip:hover .cat-chip-del { display: flex; }
+.cat-add-row {
+  display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap;
+}
+.emoji-picker-wrap {
+  display: flex; gap: 6px; flex-wrap: wrap; padding: 8px;
+  background: var(--cream); border-radius: 12px;
+  border: 1.5px solid var(--border); margin-bottom: 8px;
+  max-height: 120px; overflow-y: auto;
+}
+.emoji-opt {
+  font-size: 22px; cursor: pointer; padding: 4px; border-radius: 8px;
+  transition: background 0.1s; line-height: 1;
+}
+.emoji-opt:hover { background: var(--coral-light); }
+.emoji-opt.selected { background: var(--coral-light); outline: 2px solid var(--coral); }
+
+
+/* ── CATEGORIES ── */
+.cat-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px; padding: 4px 0;
+}
+.cat-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--cream);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  font-size: 13px; font-weight: 700; color: var(--text);
+  cursor: pointer; transition: all 0.15s; position: relative;
+}
+.cat-chip:hover { border-color: var(--coral-mid); background: var(--coral-light); }
+.cat-chip-emoji { font-size: 18px; }
+.cat-chip-name { flex: 1; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cat-chip-del {
+  position: absolute; top: -6px; right: -6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--coral); color: #fff;
+  font-size: 10px; font-weight: 900;
+  display: none; align-items: center; justify-content: center;
+  cursor: pointer; border: none;
+}
+.cat-chip:hover .cat-chip-del { display: flex; }
+.cat-add-row {
+  display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap;
+}
+.emoji-picker-wrap {
+  display: flex; gap: 6px; flex-wrap: wrap; padding: 8px;
+  background: var(--cream); border-radius: 12px;
+  border: 1.5px solid var(--border); margin-bottom: 8px;
+  max-height: 120px; overflow-y: auto;
+}
+.emoji-opt {
+  font-size: 22px; cursor: pointer; padding: 4px; border-radius: 8px;
+  transition: background 0.1s; line-height: 1;
+}
+.emoji-opt:hover { background: var(--coral-light); }
+.emoji-opt.selected { background: var(--coral-light); outline: 2px solid var(--coral); }
 </style>
 </head>
 <body>
@@ -1404,6 +1485,54 @@ body {
       </div>
 
       <!-- About -->
+      <!-- Categories Section -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div class="settings-section-icon">🏷️</div>
+          <div>
+            <div class="settings-section-title">Spending Categories</div>
+            <div class="settings-section-sub">Customize the categories used in your spending log</div>
+          </div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="cat-grid" id="categories-grid"></div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em">Add New Category</div>
+            <!-- Emoji picker -->
+            <div class="emoji-picker-wrap" id="cat-emoji-picker">
+              <span class="emoji-opt selected" data-emoji="📦" onclick="selectCatEmoji(this)">📦</span>
+              <span class="emoji-opt" data-emoji="🛒" onclick="selectCatEmoji(this)">🛒</span>
+              <span class="emoji-opt" data-emoji="⛽" onclick="selectCatEmoji(this)">⛽</span>
+              <span class="emoji-opt" data-emoji="🍔" onclick="selectCatEmoji(this)">🍔</span>
+              <span class="emoji-opt" data-emoji="🛍️" onclick="selectCatEmoji(this)">🛍️</span>
+              <span class="emoji-opt" data-emoji="💊" onclick="selectCatEmoji(this)">💊</span>
+              <span class="emoji-opt" data-emoji="🚗" onclick="selectCatEmoji(this)">🚗</span>
+              <span class="emoji-opt" data-emoji="🎮" onclick="selectCatEmoji(this)">🎮</span>
+              <span class="emoji-opt" data-emoji="💇" onclick="selectCatEmoji(this)">💇</span>
+              <span class="emoji-opt" data-emoji="✈️" onclick="selectCatEmoji(this)">✈️</span>
+              <span class="emoji-opt" data-emoji="🏠" onclick="selectCatEmoji(this)">🏠</span>
+              <span class="emoji-opt" data-emoji="📱" onclick="selectCatEmoji(this)">📱</span>
+              <span class="emoji-opt" data-emoji="🎓" onclick="selectCatEmoji(this)">🎓</span>
+              <span class="emoji-opt" data-emoji="👶" onclick="selectCatEmoji(this)">👶</span>
+              <span class="emoji-opt" data-emoji="🐾" onclick="selectCatEmoji(this)">🐾</span>
+              <span class="emoji-opt" data-emoji="💪" onclick="selectCatEmoji(this)">💪</span>
+              <span class="emoji-opt" data-emoji="🎵" onclick="selectCatEmoji(this)">🎵</span>
+              <span class="emoji-opt" data-emoji="🍷" onclick="selectCatEmoji(this)">🍷</span>
+              <span class="emoji-opt" data-emoji="☕" onclick="selectCatEmoji(this)">☕</span>
+              <span class="emoji-opt" data-emoji="🎁" onclick="selectCatEmoji(this)">🎁</span>
+              <span class="emoji-opt" data-emoji="💈" onclick="selectCatEmoji(this)">💈</span>
+              <span class="emoji-opt" data-emoji="🧴" onclick="selectCatEmoji(this)">🧴</span>
+              <span class="emoji-opt" data-emoji="💰" onclick="selectCatEmoji(this)">💰</span>
+              <span class="emoji-opt" data-emoji="🔧" onclick="selectCatEmoji(this)">🔧</span>
+            </div>
+            <div class="cat-add-row">
+              <input class="form-input" id="new-cat-name" placeholder="Category name..." type="text" style="flex:1;min-width:120px">
+              <button class="settings-btn" onclick="addCategory()">+ Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-section">
         <div class="settings-section-header">
           <div class="settings-section-icon">✨</div>
@@ -3389,15 +3518,8 @@ function renderSpendingLog() {
     </div>
     <div class="form-group">
       <label class="form-label">Category</label>
-      <div class="type-grid" style="grid-template-columns: repeat(4,1fr)">
-        <div class="type-opt selected" onclick="selectType(this,'exp-cat')" data-val="🛒 Groceries"><span class="type-opt-icon">🛒</span>Groceries</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="⛽ Gas"><span class="type-opt-icon">⛽</span>Gas</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🍔 Food"><span class="type-opt-icon">🍔</span>Food</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🛍️ Shopping"><span class="type-opt-icon">🛍️</span>Shopping</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="💊 Health"><span class="type-opt-icon">💊</span>Health</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🚗 Transport"><span class="type-opt-icon">🚗</span>Transport</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="🎮 Fun"><span class="type-opt-icon">🎮</span>Fun</div>
-        <div class="type-opt" onclick="selectType(this,'exp-cat')" data-val="📦 Other"><span class="type-opt-icon">📦</span>Other</div>
+      <div class="type-grid" style="grid-template-columns: repeat(4,1fr)" id="exp-cat-grid">
+        <!-- Populated dynamically from state.categories -->
       </div>
     </div>
     <div class="modal-footer">
@@ -4683,6 +4805,138 @@ populateCardSelects = function() {
     newOpt.textContent = '➕ Add new account...';
     expSel.appendChild(newOpt);
   }
+};
+
+
+// ── CATEGORIES ────────────────────────────────────────────────
+
+var DEFAULT_CATEGORIES = [
+  {emoji:'🛒', name:'Groceries'},
+  {emoji:'⛽', name:'Gas'},
+  {emoji:'🍔', name:'Food'},
+  {emoji:'🛍️', name:'Shopping'},
+  {emoji:'💊', name:'Health'},
+  {emoji:'🚗', name:'Transport'},
+  {emoji:'🎮', name:'Fun'},
+  {emoji:'📦', name:'Other'}
+];
+
+// Load from localStorage or use defaults
+if (!state.categories) {
+  state.categories = JSON.parse(localStorage.getItem('clarifi_categories') || 'null') || DEFAULT_CATEGORIES.map(function(c){ return Object.assign({}, c); });
+}
+
+function saveCategories() {
+  localStorage.setItem('clarifi_categories', JSON.stringify(state.categories));
+  if (currentUser) {
+    db.collection('users').doc(currentUser.uid).update({
+      categories: state.categories
+    }).catch(function(){});
+  }
+}
+
+// ── Render category grid in expense modal ──
+function renderCategoryGrid() {
+  var grid = document.getElementById('exp-cat-grid');
+  if (!grid) return;
+  var selected = state.selectedTypes['exp-cat'] || (state.categories[0] ? state.categories[0].emoji + ' ' + state.categories[0].name : '📦 Other');
+  grid.innerHTML = state.categories.map(function(c) {
+    var val = c.emoji + ' ' + c.name;
+    var isSelected = val === selected;
+    return '<div class="type-opt' + (isSelected?' selected':'') + '" onclick="selectType(this,\'exp-cat\')" data-val="' + val + '">' +
+      '<span class="type-opt-icon">' + c.emoji + '</span>' + c.name + '</div>';
+  }).join('');
+  // Ensure selectedTypes is set
+  if (!state.selectedTypes['exp-cat']) {
+    state.selectedTypes['exp-cat'] = state.categories[0] ? state.categories[0].emoji + ' ' + state.categories[0].name : '📦 Other';
+  }
+}
+
+// ── Render categories in settings ──
+function renderCategoriesSettings() {
+  var grid = document.getElementById('categories-grid');
+  if (!grid) return;
+  grid.innerHTML = state.categories.map(function(c, idx) {
+    return '<div class="cat-chip">' +
+      '<span class="cat-chip-emoji">' + c.emoji + '</span>' +
+      '<span class="cat-chip-name">' + c.name + '</span>' +
+      '<button class="cat-chip-del" onclick="deleteCategory(' + idx + ')" title="Remove">✕</button>' +
+      '</div>';
+  }).join('');
+}
+
+// ── Selected emoji for new category ──
+var _selectedCatEmoji = '📦';
+window.selectCatEmoji = function(el) {
+  document.querySelectorAll('#cat-emoji-picker .emoji-opt').forEach(function(e){ e.classList.remove('selected'); });
+  el.classList.add('selected');
+  _selectedCatEmoji = el.getAttribute('data-emoji');
+};
+
+window.addCategory = function() {
+  var nameEl = document.getElementById('new-cat-name');
+  var name = nameEl ? nameEl.value.trim() : '';
+  if (!name) { showToast('Please enter a category name'); return; }
+  // Check for duplicate
+  var exists = state.categories.some(function(c){ return c.name.toLowerCase() === name.toLowerCase(); });
+  if (exists) { showToast('That category already exists'); return; }
+  state.categories.push({emoji: _selectedCatEmoji, name: name});
+  saveCategories();
+  if (nameEl) nameEl.value = '';
+  renderCategoriesSettings();
+  showToast(_selectedCatEmoji + ' ' + name + ' added!');
+};
+
+window.deleteCategory = function(idx) {
+  if (state.categories.length <= 1) { showToast('Keep at least one category'); return; }
+  var removed = state.categories.splice(idx, 1)[0];
+  saveCategories();
+  renderCategoriesSettings();
+  showToast(removed.name + ' removed');
+};
+
+// ── Load categories from Firestore ──
+// Hook into the existing loadFromFirestore
+var _origLoadFS = loadFromFirestore;
+loadFromFirestore = function(callback) {
+  _origLoadFS(function() {
+    if (currentUser) {
+      db.collection('users').doc(currentUser.uid).get().then(function(doc) {
+        if (doc.exists && doc.data().categories && doc.data().categories.length > 0) {
+          state.categories = doc.data().categories;
+          localStorage.setItem('clarifi_categories', JSON.stringify(state.categories));
+        }
+        callback();
+      }).catch(function(){ callback(); });
+    } else {
+      callback();
+    }
+  });
+};
+
+// ── Hook into openModal to render category grid ──
+var _origOpenModalCat = openModal;
+openModal = function(type) {
+  _origOpenModalCat(type);
+  if (type === 'log-expense') {
+    renderCategoryGrid();
+  }
+};
+
+// ── Hook into settings screen render ──
+var _origSwitchForCat = switchScreen;
+switchScreen = function(name) {
+  _origSwitchForCat(name);
+  if (name === 'settings') {
+    renderCategoriesSettings();
+  }
+};
+
+// Also include categories in save()
+var _origSaveForCat = save;
+save = function() {
+  _origSaveForCat();
+  localStorage.setItem('clarifi_categories', JSON.stringify(state.categories));
 };
 
 </script>
