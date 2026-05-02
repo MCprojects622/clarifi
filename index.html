@@ -1170,6 +1170,14 @@ body {
   }
 }
 
+
+@media (max-width: 768px) {
+  #mobile-fab-feedback { display: flex !important; }
+}
+@media (min-width: 769px) {
+  #mobile-fab-feedback { display: none !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1288,6 +1296,9 @@ body {
     </div>
   </nav>
   <div id="user-menu" style="display:none;padding:8px;border-top:1.5px solid var(--border)"><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#FDF5FF;border-radius:12px;border:1.5px solid #F0C8E8"><div class="user-avatar" id="user-avatar">Y</div><div class="user-email" id="user-email"></div><button class="signout-btn" onclick="authSignOut()">Sign out</button></div></div><div class="sidebar-footer">
+    <button onclick="openModal('feedback')" style="width:100%;background:var(--coral-light);color:var(--coral);border:1.5px solid var(--coral-mid);border-radius:12px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:8px">
+      💬 Send Feedback
+    </button>
     <div class="sidebar-copyright"><strong style="color:#E040A0">Clari</strong><strong style="color:#00B87A;font-family:'Playfair Display',serif;font-style:italic">fi</strong> · © 2026 Yolanda McLeod<br>All rights reserved</div>
   </div>
 </aside>
@@ -1327,12 +1338,7 @@ body {
           <div class="stat-value" id="stat-credit">$0</div>
           <div class="stat-sub" id="stat-credit-sub">No cards added yet</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">⚡</div>
-          <div class="stat-label">Net Position</div>
-          <div class="stat-value" id="stat-net">$0</div>
-          <div class="stat-sub">Income minus upcoming</div>
-        </div>
+
       </div>
 
       <div class="content-grid wide">
@@ -2542,20 +2548,23 @@ document.addEventListener('DOMContentLoaded', function() {
 function renderAll() {
   var allUpcoming = getAllUpcoming();
   var totalIncome = state.income.reduce(function(s,i){ return s+i.amount; },0);
-  var totalDue = allUpcoming.filter(function(u){ return !u.paid; }).reduce(function(s,u){ return s+u.amount; },0);
+  var now14 = new Date();
+  var twoWeeks14 = new Date(now14.getTime() + 14 * 86400000);
+  var upcomingIn2w = allUpcoming.filter(function(u){
+    if (u.paid) return false;
+    var d = new Date(u.date + 'T00:00:00');
+    return d <= twoWeeks14;
+  });
+  var totalDue = upcomingIn2w.reduce(function(s,u){ return s+(u.amount||0); },0);
   var totalAvail = state.cards.reduce(function(s,c){ return s+(c.limit-c.balance); },0);
-  var net = totalIncome - totalDue;
 
   // Stat cards
   document.getElementById('stat-income').textContent = fmt(totalIncome);
   document.getElementById('stat-income-sub').textContent = state.income.length + ' source' + (state.income.length!==1?'s':'');
   document.getElementById('stat-upcoming').textContent = fmt(totalDue);
-  document.getElementById('stat-upcoming-sub').textContent = allUpcoming.filter(function(u){ return !u.paid; }).length + ' payment' + (allUpcoming.filter(function(u){ return !u.paid; }).length!==1?'s':'') + ' pending';
+  document.getElementById('stat-upcoming-sub').textContent = upcomingIn2w.length + ' due in next 2 weeks';
   document.getElementById('stat-credit').textContent = fmt(totalAvail);
   document.getElementById('stat-credit-sub').textContent = state.cards.length + ' card' + (state.cards.length!==1?'s':'') + ' tracked';
-  var netEl = document.getElementById('stat-net');
-  netEl.textContent = fmt(net);
-  netEl.className = 'stat-value' + (net>=0?' green':' coral');
 
   // Nav counts
   function setCount(id, n) {
@@ -2598,7 +2607,13 @@ function renderAll() {
   // Home upcoming preview (next 3)
   var hup = document.getElementById('home-upcoming-preview');
   if (hup) {
-    var next3 = allUpcoming.filter(function(u){ return !u.paid; }).slice(0,3);
+    var now2w = new Date();
+    var twoWeeks = new Date(now2w.getTime() + 14 * 86400000);
+    var next3 = allUpcoming.filter(function(u){
+      if (u.paid) return false;
+      var d = new Date(u.date + 'T00:00:00');
+      return d <= twoWeeks;
+    }).slice(0, 5);
     if (next3.length===0) {
       hup.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">&#x1F4C5;</div><div class="empty-title" style="font-size:16px">Nothing due</div><div class="empty-sub" style="font-size:13px">Add bills and payments</div><button class="empty-btn clarifi-goto-upcoming">Add</button></div>';
     } else {
@@ -3021,7 +3036,7 @@ function onSignedIn(user) {
   authSetLoading(false);
   loadFromFirestore(function() {
     renderAll();
-    showToast('Welcome to Clarifi! &#x1F338;');
+    showToast('Welcome to Clarifi! 🌸');
   });
 }
 
@@ -3082,6 +3097,11 @@ window.openModal = function(type) {
   var el = document.getElementById(id);
   if (!el) return;
   el.classList.add('open');
+  // Scroll modal to top on open (fixes mobile not seeing save button)
+  setTimeout(function() {
+    var modal = el.querySelector('.modal');
+    if (modal) modal.scrollTop = 0;
+  }, 50);
   if (type === 'upcoming') {
     var ud = document.getElementById('up-date');
     if (ud) ud.value = new Date().toISOString().split('T')[0];
@@ -3896,6 +3916,82 @@ function renderSpendingLog() {
     </div>
   </div>
 </div>
+
+
+<!-- ════ FEEDBACK MODAL ════ -->
+<div class="modal-overlay" id="modal-feedback">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💬 Send Feedback</div>
+      <div class="modal-close" onclick="closeModal('modal-feedback')">✕</div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:16px;line-height:1.6">
+      Found a bug? Have a feature idea? We read every single one. 🙏
+    </div>
+    <div class="form-group">
+      <label class="form-label">What type of feedback?</label>
+      <div class="type-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="type-opt selected" onclick="selectType(this,'feedback-type')" data-val="Bug">
+          <span class="type-opt-icon">🐛</span>Bug
+        </div>
+        <div class="type-opt" onclick="selectType(this,'feedback-type')" data-val="Feature">
+          <span class="type-opt-icon">💡</span>Feature
+        </div>
+        <div class="type-opt" onclick="selectType(this,'feedback-type')" data-val="General">
+          <span class="type-opt-icon">💬</span>General
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your feedback</label>
+      <textarea class="form-input" id="feedback-text" rows="4" placeholder="Tell us what happened, what you expected, or what you'd love to see..." style="resize:none;min-height:100px"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">How would you rate Clarifi so far?</label>
+      <div style="display:flex;gap:8px;font-size:28px" id="feedback-stars">
+        <span onclick="setFeedbackStar(1)" style="cursor:pointer;transition:transform 0.1s" data-star="1">⭐</span>
+        <span onclick="setFeedbackStar(2)" style="cursor:pointer;transition:transform 0.1s" data-star="2">⭐</span>
+        <span onclick="setFeedbackStar(3)" style="cursor:pointer;transition:transform 0.1s" data-star="3">⭐</span>
+        <span onclick="setFeedbackStar(4)" style="cursor:pointer;transition:transform 0.1s" data-star="4">⭐</span>
+        <span onclick="setFeedbackStar(5)" style="cursor:pointer;transition:transform 0.1s" data-star="5">⭐</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email (optional — if you want a reply)</label>
+      <input class="form-input" id="feedback-email" type="email" placeholder="your@email.com">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-feedback')">Cancel</button>
+      <button class="btn-save" onclick="submitFeedback()">Send Feedback 💬</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FIRST-TIME TUTORIAL OVERLAY ════ -->
+<div id="tutorial-overlay" style="display:none;position:fixed;inset:0;background:rgba(28,8,48,0.85);z-index:1000;padding:20px;overflow-y:auto">
+  <div style="background:var(--white);border-radius:24px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 80px rgba(28,8,48,0.4)">
+    <!-- Progress bar -->
+    <div style="height:4px;background:var(--border)">
+      <div id="tutorial-progress" style="height:4px;background:linear-gradient(90deg,var(--coral),#8040D0);border-radius:4px;transition:width 0.4s;width:20%"></div>
+    </div>
+    <div style="padding:28px 28px 24px" id="tutorial-content">
+      <!-- Filled by JS -->
+    </div>
+    <div style="padding:0 28px 24px;display:flex;align-items:center;justify-content:space-between">
+      <button id="tutorial-skip" onclick="endTutorial()" style="background:none;border:none;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;padding:8px 0">Skip</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span id="tutorial-step-label" style="font-size:12px;font-weight:700;color:var(--muted)">1 of 5</span>
+        <button id="tutorial-next" onclick="nextTutorialStep()" style="background:linear-gradient(135deg,var(--coral),#8040D0);color:#fff;border:none;border-radius:12px;padding:10px 24px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;cursor:pointer">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Mobile Feedback FAB -->
+<button id="mobile-fab-feedback" onclick="openModal('feedback')" style="display:none;position:fixed;right:16px;bottom:80px;z-index:150;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#8040D0);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(224,64,160,0.4);align-items:center;justify-content:center">
+  💬
+</button>
 
 <!-- ── MOBILE BOTTOM NAV ── -->
 <nav class="mobile-nav" id="mobile-nav">
@@ -5045,14 +5141,7 @@ openModal = function(type) {
   }
 };
 
-// ── Hook into settings screen render ──
-var _origSwitchForCat = switchScreen;
-switchScreen = function(name) {
-  _origSwitchForCat(name);
-  if (name === 'settings') {
-    renderCategoriesSettings();
-  }
-};
+// switchScreen hooks consolidated below
 
 // Also include categories in save()
 var _origSaveForCat = save;
@@ -5143,6 +5232,165 @@ window.saveEditTransaction = function() {
   closeModal('modal-edit-transaction');
   renderAll();
   showToast('Transaction updated! ✅');
+};
+
+
+// ── UNIFIED switchScreen — all hooks consolidated ─────────────
+var _baseSwitchScreen = switchScreen;
+switchScreen = function(name) {
+  _baseSwitchScreen(name);
+  if (name === 'settings') {
+    loadNotifSettingsUI();
+    renderCategoriesSettings();
+  }
+  if (name === 'spending') renderSpendingLog();
+  if (name === 'income')   renderIncomeScreen();
+};
+
+
+// ══ FEEDBACK ══════════════════════════════════════════════════
+
+var _feedbackStars = 0;
+
+window.setFeedbackStar = function(n) {
+  _feedbackStars = n;
+  var stars = document.querySelectorAll('#feedback-stars span');
+  stars.forEach(function(s, i) {
+    s.textContent = i < n ? '⭐' : '☆';
+    s.style.transform = i < n ? 'scale(1.2)' : 'scale(1)';
+  });
+};
+
+window.submitFeedback = function() {
+  var text  = document.getElementById('feedback-text') ? document.getElementById('feedback-text').value.trim() : '';
+  var type  = getType('feedback-type', 'General');
+  var email = document.getElementById('feedback-email') ? document.getElementById('feedback-email').value.trim() : '';
+  if (!text) { showToast('Please write your feedback first 😊'); return; }
+
+  var feedback = {
+    type: type,
+    text: text,
+    stars: _feedbackStars,
+    email: email,
+    date: new Date().toISOString(),
+    user: currentUser ? currentUser.email : 'anonymous'
+  };
+
+  // Save to Firestore feedback collection
+  if (typeof db !== 'undefined') {
+    db.collection('feedback').add(feedback).then(function() {
+      closeModal('modal-feedback');
+      document.getElementById('feedback-text').value = '';
+      document.getElementById('feedback-email').value = '';
+      _feedbackStars = 0;
+      setFeedbackStar(0);
+      showToast('Feedback sent! Thank you 🙏');
+    }).catch(function(e) {
+      // Fallback: save to localStorage
+      var saved = JSON.parse(localStorage.getItem('clarifi_feedback')||'[]');
+      saved.push(feedback);
+      localStorage.setItem('clarifi_feedback', JSON.stringify(saved));
+      closeModal('modal-feedback');
+      showToast('Feedback saved locally 💾');
+    });
+  } else {
+    var saved = JSON.parse(localStorage.getItem('clarifi_feedback')||'[]');
+    saved.push(feedback);
+    localStorage.setItem('clarifi_feedback', JSON.stringify(saved));
+    closeModal('modal-feedback');
+    showToast('Feedback saved! Thank you 🙏');
+  }
+};
+
+// ══ FIRST-TIME TUTORIAL ═══════════════════════════════════════
+
+var TUTORIAL_STEPS = [
+  {
+    icon: '👋',
+    title: 'Welcome to Clarifi!',
+    body: 'Because guessing is broke behavior. This quick tour shows you how to get set up in under 2 minutes.',
+    action: null
+  },
+  {
+    icon: '🏦',
+    title: 'Add your accounts first',
+    body: 'Go to <strong>Accounts</strong> and add your credit cards, debit cards, and bank accounts with their current balances. Everything else connects to these.',
+    action: null
+  },
+  {
+    icon: '💰',
+    title: 'Log your income',
+    body: 'Head to <strong>Income</strong> to log deposits as they hit your account. Your bank balance updates automatically.',
+    action: null
+  },
+  {
+    icon: '💸',
+    title: 'Track your spending',
+    body: 'Use the <strong>Spending Log</strong> to record every expense, payment, or transfer. Your balances stay accurate in real time.',
+    action: null
+  },
+  {
+    icon: '📅',
+    title: 'Stay ahead of due dates',
+    body: 'Add your bills and subscriptions so <strong>Coming Up</strong> shows what\'s due. Go to <strong>Settings</strong> to turn on notifications so you never miss a payment.',
+    action: null
+  }
+];
+
+var _tutorialStep = 0;
+
+function showTutorialStep(n) {
+  var step = TUTORIAL_STEPS[n];
+  if (!step) return;
+  var content = document.getElementById('tutorial-content');
+  if (content) {
+    content.innerHTML =
+      '<div style="font-size:48px;text-align:center;margin-bottom:16px">' + step.icon + '</div>' +
+      '<div style="font-family:Nunito,sans-serif;font-size:20px;font-weight:900;color:var(--text);text-align:center;margin-bottom:12px">' + step.title + '</div>' +
+      '<div style="font-size:14px;font-weight:600;color:var(--muted);text-align:center;line-height:1.7">' + step.body + '</div>';
+  }
+  var prog = document.getElementById('tutorial-progress');
+  if (prog) prog.style.width = ((n+1) / TUTORIAL_STEPS.length * 100) + '%';
+  var label = document.getElementById('tutorial-step-label');
+  if (label) label.textContent = (n+1) + ' of ' + TUTORIAL_STEPS.length;
+  var nextBtn = document.getElementById('tutorial-next');
+  if (nextBtn) nextBtn.textContent = n === TUTORIAL_STEPS.length - 1 ? 'Get Started! 🚀' : 'Next →';
+}
+
+window.nextTutorialStep = function() {
+  if (_tutorialStep >= TUTORIAL_STEPS.length - 1) {
+    endTutorial();
+  } else {
+    _tutorialStep++;
+    showTutorialStep(_tutorialStep);
+  }
+};
+
+window.endTutorial = function() {
+  var overlay = document.getElementById('tutorial-overlay');
+  if (overlay) overlay.style.display = 'none';
+  localStorage.setItem('clarifi_tutorial_done', '1');
+};
+
+function startTutorialIfNew() {
+  var done = localStorage.getItem('clarifi_tutorial_done');
+  if (!done) {
+    _tutorialStep = 0;
+    var overlay = document.getElementById('tutorial-overlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.style.alignItems = 'center';
+      overlay.style.justifyContent = 'center';
+      showTutorialStep(0);
+    }
+  }
+}
+
+// Start tutorial after sign in — hook into onSignedIn
+var _origOnSignedInTutorial = onSignedIn;
+onSignedIn = function(user) {
+  _origOnSignedInTutorial(user);
+  setTimeout(startTutorialIfNew, 1500);
 };
 
 </script>
