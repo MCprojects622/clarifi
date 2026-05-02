@@ -889,8 +889,8 @@ body {
 
     <div class="nav-section-label">My Money</div>
     <div class="nav-item" id="nav-cards" onclick="switchScreen('cards')">
-      <div class="nav-item-icon">💳</div>
-      <div class="nav-item-label">Cards</div>
+      <div class="nav-item-icon">🏦</div>
+      <div class="nav-item-label">Accounts</div>
       <div class="nav-item-count" id="nav-cards-count" style="display:none"></div>
     </div>
     <div class="nav-item" id="nav-income" onclick="switchScreen('income')">
@@ -980,7 +980,7 @@ body {
         <!-- Cards preview -->
         <div class="panel">
           <div class="panel-header">
-            <div class="panel-title">💳 Cards Available</div>
+            <div class="panel-title">🏦 Accounts</div>
             <button class="panel-action" onclick="switchScreen('cards')">Manage cards →</button>
           </div>
           <div class="panel-body">
@@ -1033,19 +1033,19 @@ body {
   <div class="screen" id="screen-cards">
     <div class="topbar">
       <div>
-        <div class="topbar-title">💳 My Cards</div>
-        <div class="topbar-sub">Track available balance and usage across all cards</div>
+        <div class="topbar-title">🏦 My Accounts</div>
+        <div class="topbar-sub">All your cards and accounts in one place</div>
       </div>
       <div class="topbar-actions">
-        <button class="btn-primary" onclick="openModal('card')">＋ Add Card</button>
+        <button class="btn-primary" onclick="openModal('card')">＋ Add Account</button>
       </div>
     </div>
     <div class="content">
       <div id="cards-full-content">
         <div class="empty-state">
           <div class="empty-icon">💳</div>
-          <div class="empty-title">No cards added yet</div>
-          <div class="empty-sub">Add your credit cards to track available balance, usage, and due dates</div>
+          <div class="empty-title">No accounts added yet</div>
+          <div class="empty-sub">Add your credit cards, debit cards, and bank accounts</div>
           <button class="empty-btn" onclick="openModal('card')">+ Add Your First Card</button>
         </div>
       </div>
@@ -1523,9 +1523,34 @@ body {
     </div>
     <div class="form-group">
       <label class="form-label">Deposited Into</label>
-      <select class="form-input" id="income-account">
-        <option value="">Select account...</option>
+      <select class="form-input" id="income-account" onchange="onIncomeAccountChange()">
+        <option value="">Select account (optional)...</option>
+        <option value="__new__">➕ Add new account...</option>
       </select>
+    </div>
+    <!-- Inline new account form (hidden by default) -->
+    <div id="inline-new-account" style="display:none;background:var(--cream);border:1.5px solid var(--coral-mid);border-radius:14px;padding:16px;margin-top:-8px;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">New Account</div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="inline-acct-name" placeholder="e.g. Chase Checking" type="text">
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Account Type</label>
+          <select class="form-input" id="inline-acct-type">
+            <option value="bank">🏛️ Bank Account</option>
+            <option value="debit">🏦 Debit Card</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Current Balance ($)</label>
+          <input class="form-input" id="inline-acct-balance" placeholder="0.00" type="number" step="0.01">
+        </div>
+      </div>
+      <button onclick="saveInlineAccount()" style="margin-top:12px;width:100%;background:var(--coral);color:#fff;border:none;border-radius:10px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer">
+        Create Account & Select
+      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Income Type</label>
@@ -2235,7 +2260,7 @@ function renderAll() {
   var cfc = document.getElementById('cards-full-content');
   if (cfc) {
     if (state.cards.length===0) {
-      cfc.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F4B3;</div><div class="empty-title">No cards added yet</div><div class="empty-sub">Add your credit cards to track available balance, usage, and due dates</div><button class="empty-btn clarifi-add-card">+ Add Your First Card</button></div>';
+      cfc.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F4B3;</div><div class="empty-title">No accounts added yet</div><div class="empty-sub">Add your credit cards, debit cards, and bank accounts</div><button class="empty-btn clarifi-add-card">+ Add Your First Account</button></div>';
     } else {
       cfc.innerHTML = '<div class="cards-full-grid">' + state.cards.map(function(c){
         var cid = String(c.id);
@@ -3084,9 +3109,33 @@ function renderSpendingLog() {
     </div>
     <div class="form-group">
       <label class="form-label">Deposited Into</label>
-      <select class="form-input" id="edit-income-account">
+      <select class="form-input" id="edit-income-account" onchange="onEditIncomeAccountChange()">
         <option value="">Select account (optional)...</option>
+        <option value="__new__">➕ Add new account...</option>
       </select>
+    </div>
+    <div id="inline-new-account-edit" style="display:none;background:var(--cream);border:1.5px solid var(--coral-mid);border-radius:14px;padding:16px;margin-top:-8px;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">New Account</div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="inline-acct-name-edit" placeholder="e.g. Chase Checking" type="text">
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Account Type</label>
+          <select class="form-input" id="inline-acct-type-edit">
+            <option value="bank">🏛️ Bank Account</option>
+            <option value="debit">🏦 Debit Card</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Current Balance ($)</label>
+          <input class="form-input" id="inline-acct-balance-edit" placeholder="0.00" type="number" step="0.01">
+        </div>
+      </div>
+      <button onclick="saveInlineAccount('edit')" style="margin-top:12px;width:100%;background:var(--coral);color:#fff;border:none;border-radius:10px;padding:10px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer">
+        Create Account & Select
+      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Income Type</label>
@@ -3468,7 +3517,7 @@ function renderSpendingLog() {
     <span class="mobile-nav-icon">⚡</span>Snapshot
   </button>
   <button class="mobile-nav-item" id="mnav-cards" onclick="switchScreen('cards')">
-    <span class="mobile-nav-icon">💳</span>Cards
+    <span class="mobile-nav-icon">🏦</span>Accounts
   </button>
   <button class="mobile-nav-item" id="mnav-spending" onclick="switchScreen('spending')">
     <span class="mobile-nav-icon">💸</span>Log
@@ -3804,6 +3853,8 @@ function renderIncomeScreen() {
     if (!i.date) return false;
     return new Date(i.date + 'T00:00:00').getFullYear() === thisYear;
   });
+  // Count undated entries in totals for the list
+  var undatedDeps = state.income.filter(function(i){ return !i.date; });
 
   var thisTotal = thisMonthDeps.reduce(function(s,i){ return s+i.amount; }, 0);
   var lastTotal = lastMonthDeps.reduce(function(s,i){ return s+i.amount; }, 0);
@@ -3862,10 +3913,10 @@ function renderIncomeScreen() {
     // Build month groups with source breakdown
     var monthSourceMap = {};
     state.income.forEach(function(i) {
-      if (!i.date) return;
-      var d = new Date(i.date + 'T00:00:00');
+      var dateStr = i.date || '';
+      var d = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
       var key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
-      var label = d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear();
+      var label = dateStr ? d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear() : 'Undated';
       if (!monthSourceMap[key]) monthSourceMap[key] = {label:label, sources:{}};
       var src = i.name || 'Unknown';
       monthSourceMap[key].sources[src] = (monthSourceMap[key].sources[src] || 0) + i.amount;
@@ -3899,7 +3950,7 @@ function renderIncomeScreen() {
     var curVal = exportSel.value;
     exportSel.innerHTML = '<option value="all">All time</option>';
     var seen = {};
-    state.income.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); }).forEach(function(i) {
+    state.income.slice().sort(function(a,b){ return new Date(b.date||0)-new Date(a.date||0); }).forEach(function(i) {
       if (!i.date) return;
       var d = new Date(i.date + 'T00:00:00');
       var val = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
@@ -3927,16 +3978,16 @@ function renderIncomeScreen() {
   }
 
   // Sort newest first
-  var sorted = state.income.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+  var sorted = state.income.slice().sort(function(a,b){ return new Date(b.date||'1970-01-01') - new Date(a.date||'1970-01-01'); });
 
   // Group by month+year
   var groups = {};
   var groupOrder = [];
   sorted.forEach(function(i) {
-    if (!i.date) return;
-    var d = new Date(i.date + 'T00:00:00');
-    var key = d.getFullYear() + '-' + d.getMonth();
-    var label = d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear();
+    var dateStr = i.date || '';
+    var d = dateStr ? new Date(dateStr + 'T00:00:00') : null;
+    var key = d ? d.getFullYear() + '-' + d.getMonth() : 'undated';
+    var label = d ? d.toLocaleString('default', {month:'long'}) + ' ' + d.getFullYear() : 'Undated';
     if (!groups[key]) { groups[key] = {label:label, items:[], total:0}; groupOrder.push(key); }
     groups[key].items.push(i);
     groups[key].total += i.amount;
@@ -4333,6 +4384,88 @@ window.exportCombinedPDF = function() {
   win.focus();
   setTimeout(function(){ win.print(); }, 600);
   showToast('Report ready — Print > Save as PDF 📄');
+};
+
+
+// ── INLINE ACCOUNT CREATION ───────────────────────────────────
+
+window.onIncomeAccountChange = function() {
+  var sel = document.getElementById('income-account');
+  var form = document.getElementById('inline-new-account');
+  if (!form) return;
+  form.style.display = sel.value === '__new__' ? 'block' : 'none';
+};
+
+window.onEditIncomeAccountChange = function() {
+  var sel = document.getElementById('edit-income-account');
+  var form = document.getElementById('inline-new-account-edit');
+  if (!form) return;
+  form.style.display = sel.value === '__new__' ? 'block' : 'none';
+};
+
+window.saveInlineAccount = function(mode) {
+  var suffix = mode === 'edit' ? '-edit' : '';
+  var nameEl    = document.getElementById('inline-acct-name' + suffix);
+  var typeEl    = document.getElementById('inline-acct-type' + suffix);
+  var balEl     = document.getElementById('inline-acct-balance' + suffix);
+  var selEl     = document.getElementById(mode === 'edit' ? 'edit-income-account' : 'income-account');
+  var formEl    = document.getElementById('inline-new-account' + (mode === 'edit' ? '-edit' : ''));
+
+  var name    = nameEl ? nameEl.value.trim() : '';
+  var type    = typeEl ? typeEl.value : 'bank';
+  var balance = balEl  ? parseFloat(balEl.value) || 0 : 0;
+
+  if (!name) { showToast('Please enter an account name'); return; }
+
+  // Create the new card/account
+  var newCard = {
+    id: Date.now(),
+    name: name,
+    category: type,
+    type: type === 'debit' ? 'Debit' : 'Bank Account',
+    bankBalance: balance,
+    limit: 0, balance: 0, statement: '', due: ''
+  };
+  state.cards.push(newCard);
+  save();
+
+  // Add to the select and auto-select it
+  if (selEl) {
+    var opt = document.createElement('option');
+    opt.value = String(newCard.id);
+    opt.textContent = name;
+    // Insert before the "__new__" option
+    var newOpt = selEl.querySelector('option[value="__new__"]');
+    if (newOpt) selEl.insertBefore(opt, newOpt);
+    else selEl.appendChild(opt);
+    selEl.value = String(newCard.id);
+  }
+
+  // Hide the inline form and clear it
+  if (formEl) formEl.style.display = 'none';
+  if (nameEl) nameEl.value = '';
+  if (balEl)  balEl.value  = '';
+
+  showToast(name + ' added! 🏦');
+  // Also refresh all other card selects in the background
+  populateCardSelects();
+};
+
+// Also update populateCardSelects to preserve __new__ option in income selects
+var _origPopulateCardSelects = populateCardSelects;
+populateCardSelects = function() {
+  _origPopulateCardSelects();
+  // Re-add __new__ option to income account selects
+  ['income-account', 'edit-income-account'].forEach(function(selId) {
+    var sel = document.getElementById(selId);
+    if (!sel) return;
+    if (!sel.querySelector('option[value="__new__"]')) {
+      var opt = document.createElement('option');
+      opt.value = '__new__';
+      opt.textContent = '➕ Add new account...';
+      sel.appendChild(opt);
+    }
+  });
 };
 
 </script>
