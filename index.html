@@ -1981,7 +1981,30 @@ function editIncome(id) {
   document.getElementById('edit-income-id').value = id;
   document.getElementById('edit-income-name').value = i.name || '';
   document.getElementById('edit-income-amount').value = i.amount || '';
-  document.getElementById('edit-income-freq').value = i.freq || 'Biweekly';
+  document.getElementById('edit-income-date').value = i.date || '';
+
+  // Populate account dropdown
+  var acctSel = document.getElementById('edit-income-account');
+  if (acctSel) {
+    acctSel.innerHTML = '<option value="">Select account (optional)...</option>';
+    state.cards.filter(function(c){ return c.category === 'debit' || c.category === 'bank'; })
+      .forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = String(c.id);
+        opt.textContent = c.name;
+        acctSel.appendChild(opt);
+      });
+    acctSel.value = i.acctId || '';
+  }
+
+  // Set income type pill
+  var typePills = document.querySelectorAll('#modal-edit-income .type-opt');
+  typePills.forEach(function(p) {
+    var isMatch = p.getAttribute('data-val') === (i.type || 'Primary');
+    p.classList.toggle('selected', isMatch);
+  });
+  state.selectedTypes['edit-income-type'] = i.type || 'Primary';
+
   document.getElementById('modal-edit-income').classList.add('open');
 }
 window.editIncome = editIncome;
@@ -2052,11 +2075,36 @@ document.addEventListener('DOMContentLoaded', function() {
     var id = document.getElementById('edit-income-id').value;
     var i = state.income.find(function(x){ return String(x.id) === String(id); });
     if (!i) return;
-    i.name   = document.getElementById('edit-income-name').value.trim();
-    i.amount = parseFloat(document.getElementById('edit-income-amount').value) || 0;
-    i.freq   = document.getElementById('edit-income-freq').value;
-    save(); document.getElementById('modal-edit-income').classList.remove('open');
-    renderAll(); showToast('Income updated! ✅');
+
+    // Reverse old bank balance effect if account changed or amount changed
+    if (i.acctId) {
+      var oldAcct = state.cards.find(function(c){ return String(c.id) === String(i.acctId); });
+      if (oldAcct && (oldAcct.category === 'debit' || oldAcct.category === 'bank')) {
+        oldAcct.bankBalance = Math.max(0, (oldAcct.bankBalance || 0) - i.amount);
+      }
+    }
+
+    // Apply new values
+    var newAcctId = document.getElementById('edit-income-account').value;
+    i.name    = document.getElementById('edit-income-name').value.trim();
+    i.amount  = parseFloat(document.getElementById('edit-income-amount').value) || 0;
+    i.date    = document.getElementById('edit-income-date').value;
+    i.acctId  = newAcctId;
+    i.type    = getType('edit-income-type', i.type || 'Primary');
+
+    // Find account name
+    var newAcct = newAcctId ? state.cards.find(function(c){ return String(c.id) === String(newAcctId); }) : null;
+    i.acctName = newAcct ? newAcct.name : '';
+
+    // Apply new bank balance effect
+    if (newAcct && (newAcct.category === 'debit' || newAcct.category === 'bank')) {
+      newAcct.bankBalance = (newAcct.bankBalance || 0) + i.amount;
+    }
+
+    save();
+    document.getElementById('modal-edit-income').classList.remove('open');
+    renderAll();
+    showToast('Deposit updated! ✅');
   });
 
   // Save subscription
@@ -3017,26 +3065,36 @@ function renderSpendingLog() {
 <div class="modal-overlay" id="modal-edit-income">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Edit Income ✏️</div>
+      <div class="modal-title">Edit Deposit ✏️</div>
       <div class="modal-close" id="close-edit-income">✕</div>
     </div>
     <div class="form-group">
-      <label class="form-label">Source Name</label>
+      <label class="form-label">Source</label>
       <input class="form-input" id="edit-income-name" type="text">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Monthly Amount ($)</label>
-        <input class="form-input" id="edit-income-amount" type="number">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="edit-income-amount" type="number" step="0.01">
       </div>
       <div class="form-group">
-        <label class="form-label">Pay Frequency</label>
-        <select class="form-input" id="edit-income-freq">
-          <option>Biweekly</option>
-          <option>Weekly</option>
-          <option>Monthly</option>
-          <option>Variable</option>
-        </select>
+        <label class="form-label">Date Received</label>
+        <input class="form-input" id="edit-income-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deposited Into</label>
+      <select class="form-input" id="edit-income-account">
+        <option value="">Select account (optional)...</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Income Type</label>
+      <div class="type-grid">
+        <div class="type-opt selected" onclick="selectType(this,'edit-income-type')" data-val="Primary"><span class="type-opt-icon">🏢</span>Primary</div>
+        <div class="type-opt" onclick="selectType(this,'edit-income-type')" data-val="Gig"><span class="type-opt-icon">🚗</span>Gig</div>
+        <div class="type-opt" onclick="selectType(this,'edit-income-type')" data-val="Side Hustle"><span class="type-opt-icon">💡</span>Side Hustle</div>
+        <div class="type-opt" onclick="selectType(this,'edit-income-type')" data-val="Other"><span class="type-opt-icon">💸</span>Other</div>
       </div>
     </div>
     <input type="hidden" id="edit-income-id">
@@ -3899,6 +3957,7 @@ function renderIncomeScreen() {
           '<div class="income-meta">' + (i.date||'') + (i.acctName?' &middot; '+i.acctName:'') + ' &middot; ' + (i.type||'') + '</div>' +
         '</div>' +
         '<div class="income-amount">' + fmt(i.amount) + '</div>' +
+        '<button class="del-btn clarifi-edit-income" data-id="' + iid + '" title="Edit" style="color:#00B87A;margin-right:2px">&#9998;</button>' +
         '<button class="del-btn clarifi-del-income" data-id="' + iid + '" title="Remove">&#x2715;</button>' +
         '</div>';
     });
