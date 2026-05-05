@@ -1179,6 +1179,15 @@ body {
   #mobile-fab-feedback { display: none !important; }
 }
 
+
+@media (max-width: 768px) {
+  .desktop-only-btn { display: none !important; }
+  .mobile-more-btn { display: inline-flex !important; }
+}
+@media (min-width: 769px) {
+  .mobile-more-btn { display: none !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1596,10 +1605,20 @@ body {
         <div class="topbar-sub">Track every transaction — balances update automatically</div>
       </div>
       <div class="topbar-actions">
-        <button class="btn-secondary" onclick="openModal('transfer')">🔄 Transfer</button>
-        <button class="btn-secondary" onclick="openModal('send-money')">📤 Send Money</button>
-        <button class="btn-secondary" onclick="openModal('log-payment')">💳 Log Payment</button>
-        <button class="btn-primary" onclick="openModal('log-expense')">＋ Add Transaction</button>
+        <!-- Desktop: show all buttons -->
+        <button class="btn-secondary desktop-only-btn" onclick="openModal('transfer')">🔄 Transfer</button>
+        <button class="btn-secondary desktop-only-btn" onclick="openModal('send-money')">📤 Send Money</button>
+        <button class="btn-secondary desktop-only-btn" onclick="openModal('log-payment')">💳 Log Payment</button>
+        <!-- Mobile: More menu -->
+        <div style="position:relative" class="mobile-more-wrap">
+          <button class="btn-secondary mobile-more-btn" onclick="toggleSpendingMore()" style="display:none">⋯ More</button>
+          <div id="spending-more-menu" style="display:none;position:absolute;right:0;top:110%;background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:8px;z-index:300;min-width:160px;box-shadow:0 8px 32px rgba(28,8,48,0.15)">
+            <button onclick="openModal('log-payment');closeSpendingMore()" style="display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:none;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;border-radius:8px" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='none'">💳 Log Payment</button>
+            <button onclick="openModal('send-money');closeSpendingMore()" style="display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:none;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;border-radius:8px" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='none'">📤 Send Money</button>
+            <button onclick="openModal('transfer');closeSpendingMore()" style="display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:none;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;border-radius:8px" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='none'">🔄 Transfer</button>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="openModal('log-expense')">＋ Add</button>
       </div>
     </div>
     <div class="content">
@@ -2747,16 +2766,20 @@ function renderAll() {
         var paidBg = isPaid ? 'rgba(0,184,122,0.1)' : 'rgba(224,64,160,0.08)';
         var paidColor = isPaid ? 'var(--sage)' : 'var(--coral)';
         var paidLabel = isPaid ? '&#x2713; Paid' : 'Mark Paid';
-        return '<div class="income-item" style="opacity:' + (isPaid?'0.7':'1') + '">' +
+        return '<div class="income-item" style="opacity:' + (isPaid?'0.7':'1') + ';flex-wrap:wrap;gap:8px">' +
           '<div class="income-icon-wrap">&#x1F501;</div>' +
-          '<div class="income-info">' +
-            '<div class="income-name">'+s.name+(isPaid?' <span style="font-size:10px;background:var(--sage-light);color:var(--sage);border-radius:6px;padding:2px 6px;font-weight:800">PAID</span>':'')+'</div>' +
+          '<div class="income-info" style="flex:1;min-width:100px">' +
+            '<div class="income-name">'+s.name+'</div>' +
             '<div class="income-meta">'+s.freq+' &middot; '+dayStr+(s.card?' &middot; '+s.card:'')+'</div>' +
           '</div>' +
-          '<div class="income-amount" style="color:var(--coral)">'+fmt(s.amount)+'</div>' +
-          '<button class="del-btn clarifi-mark-paid-recurring" data-id="'+sid+'" data-rtype="sub" title="Mark Paid" style="background:'+paidBg+';color:'+paidColor+';border:1.5px solid '+paidColor+';border-radius:8px;padding:4px 8px;font-size:11px;font-weight:800;min-width:auto">'+paidLabel+'</button>' +
-          '<button class="del-btn clarifi-edit-sub" data-id="'+sid+'" title="Edit" style="color:#00B87A">&#9998;</button>' +
-          '<button class="del-btn clarifi-del-sub" data-id="'+sid+'" title="Remove">&#x2715;</button>' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">' +
+            '<div class="income-amount" style="color:var(--coral)">'+fmt(s.amount)+'</div>' +
+            '<button class="del-btn clarifi-mark-paid-recurring" data-id="'+sid+'" data-rtype="sub" style="background:'+paidBg+';color:'+paidColor+';border:1.5px solid '+paidColor+';border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;white-space:nowrap">'+paidLabel+'</button>' +
+          '</div>' +
+          '<div style="display:flex;gap:4px;align-self:center">' +
+            '<button class="del-btn clarifi-edit-sub" data-id="'+sid+'" title="Edit" style="color:#00B87A">&#9998;</button>' +
+            '<button class="del-btn clarifi-del-sub" data-id="'+sid+'" title="Remove">&#x2715;</button>' +
+          '</div>' +
           '</div>';
       }).join('') +
       '<div class="income-add-row clarifi-add-sub"><span>&#x2795;</span> Add another subscription</div>' +
@@ -2776,16 +2799,20 @@ function renderAll() {
         var paidBg = isPaid ? 'rgba(0,184,122,0.1)' : 'rgba(212,168,67,0.1)';
         var paidColor = isPaid ? 'var(--sage)' : 'var(--gold)';
         var paidLabel = isPaid ? '&#x2713; Paid' : 'Mark Paid';
-        return '<div class="income-item" style="opacity:' + (isPaid?'0.7':'1') + '">' +
+        return '<div class="income-item" style="opacity:' + (isPaid?'0.7':'1') + ';flex-wrap:wrap;gap:8px">' +
           '<div class="income-icon-wrap">&#x1F4CB;</div>' +
-          '<div class="income-info">' +
-            '<div class="income-name">'+b.name+(isPaid?' <span style="font-size:10px;background:var(--sage-light);color:var(--sage);border-radius:6px;padding:2px 6px;font-weight:800">PAID</span>':'')+'</div>' +
+          '<div class="income-info" style="flex:1;min-width:100px">' +
+            '<div class="income-name">'+b.name+'</div>' +
             '<div class="income-meta">Recurring &middot; '+dayStr+(b.card?' &middot; '+b.card:'')+'</div>' +
           '</div>' +
-          '<div class="income-amount" style="color:var(--gold)">'+fmt(b.amount)+'</div>' +
-          '<button class="del-btn clarifi-mark-paid-recurring" data-id="'+bid+'" data-rtype="bill" title="Mark Paid" style="background:'+paidBg+';color:'+paidColor+';border:1.5px solid '+paidColor+';border-radius:8px;padding:4px 8px;font-size:11px;font-weight:800;min-width:auto">'+paidLabel+'</button>' +
-          '<button class="del-btn clarifi-edit-bill" data-id="'+bid+'" title="Edit" style="color:#00B87A">&#9998;</button>' +
-          '<button class="del-btn clarifi-del-bill" data-id="'+bid+'" title="Remove">&#x2715;</button>' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">' +
+            '<div class="income-amount" style="color:var(--gold)">'+fmt(b.amount)+'</div>' +
+            '<button class="del-btn clarifi-mark-paid-recurring" data-id="'+bid+'" data-rtype="bill" style="background:'+paidBg+';color:'+paidColor+';border:1.5px solid '+paidColor+';border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;white-space:nowrap">'+paidLabel+'</button>' +
+          '</div>' +
+          '<div style="display:flex;gap:4px;align-self:center">' +
+            '<button class="del-btn clarifi-edit-bill" data-id="'+bid+'" title="Edit" style="color:#00B87A">&#9998;</button>' +
+            '<button class="del-btn clarifi-del-bill" data-id="'+bid+'" title="Remove">&#x2715;</button>' +
+          '</div>' +
           '</div>';
       }).join('') +
       '<div class="income-add-row clarifi-add-bill" style="border-color:var(--gold-mid);color:var(--gold)"><span>&#x2795;</span> Add another bill</div>' +
@@ -5649,6 +5676,20 @@ window._handleMarkPaidRecurring = function(el) {
   var rtype = el.getAttribute('data-rtype');
   markPaidRecurring(id, rtype);
 };
+
+
+window.toggleSpendingMore = function() {
+  var m = document.getElementById('spending-more-menu');
+  if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+};
+window.closeSpendingMore = function() {
+  var m = document.getElementById('spending-more-menu');
+  if (m) m.style.display = 'none';
+};
+// Close on outside tap
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.mobile-more-wrap')) closeSpendingMore();
+});
 
 </script>
 
