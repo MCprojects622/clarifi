@@ -4176,8 +4176,8 @@ function renderSpendingLog() {
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Interest Rate (% optional)</label>
-        <input class="form-input" id="bnpl-interest" placeholder="0" type="number" step="0.01" min="0" oninput="calcBnplPayments()">
+        <label class="form-label">Total Interest $ (optional)</label>
+        <input class="form-input" id="bnpl-interest" placeholder="0.00" type="number" step="0.01" min="0" oninput="calcBnplPayments()">
       </div>
     </div>
     <div class="form-row">
@@ -5871,7 +5871,7 @@ window.calcBnplPayments = function() {
   if (!total || !num || !start) { if (preview) preview.style.display = 'none'; return; }
 
   // Calculate total with interest
-  var totalWithInterest = interest > 0 ? total * (1 + interest/100) : total;
+  var totalWithInterest = total + interest;
   var perPayment = totalWithInterest / num;
   var dates = calcBnplDates(start, num, freq);
   var endDate = dates[dates.length - 1];
@@ -5883,7 +5883,7 @@ window.calcBnplPayments = function() {
       '<div>💰 <strong>' + fmt(perPayment) + '</strong> per payment × ' + num + ' payments</div>' +
       '<div>📅 ' + num + ' ' + freqLabel + ' payments starting <strong>' + start + '</strong></div>' +
       '<div>🏁 Final payment: <strong>' + endDate + '</strong></div>' +
-      (interest > 0 ? '<div>💸 Total with ' + interest + '% interest: <strong>' + fmt(totalWithInterest) + '</strong></div>' : '') +
+      (interest > 0 ? '<div>💸 Interest: <strong>' + fmt(interest) + '</strong></div>' : '') +
       '<div>💳 Total: <strong>' + fmt(totalWithInterest) + '</strong></div>';
   }
 };
@@ -5903,7 +5903,7 @@ window.saveBnplPlan = function() {
   if (!num)   { showToast('Please enter number of payments'); return; }
   if (!start) { showToast('Please select a start date'); return; }
 
-  var totalWithInterest = interest > 0 ? total * (1 + interest/100) : total;
+  var totalWithInterest = total + interest;
   var perPayment = totalWithInterest / num;
   var dates = calcBnplDates(start, num, freq);
 
@@ -6086,7 +6086,7 @@ function renderBnplList() {
         '<div style="background:' + color + ';color:#fff;border-radius:10px;padding:4px 10px;font-size:11px;font-weight:900">' + p.provider + '</div>' +
         '<div style="flex:1">' +
           '<div style="font-size:14px;font-weight:800;color:var(--text)">' + p.name + (isComplete?' <span style="font-size:10px;background:var(--sage-light);color:var(--sage);border-radius:6px;padding:2px 6px">PAID OFF</span>':'') + '</div>' +
-          '<div style="font-size:11px;color:var(--muted);font-weight:600">' + p.freq + ' · ' + p.numPayments + ' payments · ' + (p.interest>0?p.interest+'% interest · ':'') + (p.acctName||'no account') + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);font-weight:600">' + p.freq + ' · ' + p.numPayments + ' payments · ' + (p.interest>0?'$'+p.interest.toFixed(2)+' interest · ':'') + (p.acctName||'no account') + '</div>' +
         '</div>' +
         '<button onclick="deleteBnplPlan(\''+pid+'\')\" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:4px">✕</button>' +
       '</div>' +
