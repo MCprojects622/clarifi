@@ -1593,6 +1593,28 @@ body {
           </div>
         </div>
       </div>
+
+      <!-- Pay Later Plans -->
+      <div class="panel" style="margin-top:0">
+        <div class="panel-header">
+          <div class="panel-title">🛍️ Pay Later Plans</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="panel-action" id="bnpl-total-display">$0 remaining</div>
+            <button class="btn-primary" style="padding:6px 14px;font-size:12px" onclick="openModal('bnpl')">＋ Add Plan</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="bnpl-list">
+            <div class="empty-state" style="padding:28px">
+              <div class="empty-icon">🛍️</div>
+              <div class="empty-title" style="font-size:16px">No pay later plans</div>
+              <div class="empty-sub" style="font-size:13px">Track Affirm, Klarna, Afterpay and other installment plans</div>
+              <button class="empty-btn" onclick="openModal('bnpl')">+ Add Plan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -3068,6 +3090,8 @@ document.addEventListener('DOMContentLoaded', function() {
       ['clarifi-edit-txn',          function(el){ editTransaction(el.getAttribute('data-id')); }],
       ['clarifi-del-txn',           function(el){ deleteTransaction(el.getAttribute('data-id')); }],
       ['clarifi-mark-paid-recurring',function(el){ markPaidRecurring(el.getAttribute('data-id'), el.getAttribute('data-rtype')); }],
+      ['clarifi-del-bnpl',          function(el){ deleteBnplPlan(el.getAttribute('data-id')); }],
+      ['clarifi-add-bnpl',          function(){ openModal('bnpl'); }],
     ];
 
     for (var i = 0; i < handlers.length; i++) {
@@ -4106,6 +4130,108 @@ function renderSpendingLog() {
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-mark-paid-recurring')">Cancel</button>
       <button class="btn-save" onclick="confirmRecurringPaid()">Confirm Payment ✅</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ADD BNPL PLAN -->
+<div class="modal-overlay" id="modal-bnpl">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🛍️ Add Pay Later Plan</div>
+      <div class="modal-close" onclick="closeModal('modal-bnpl')">✕</div>
+    </div>
+    <!-- Provider -->
+    <div class="form-group">
+      <label class="form-label">Provider</label>
+      <div class="type-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="type-opt selected" onclick="selectType(this,'bnpl-provider')" data-val="Affirm"><span class="type-opt-icon">🔵</span>Affirm</div>
+        <div class="type-opt" onclick="selectType(this,'bnpl-provider')" data-val="Klarna"><span class="type-opt-icon">🟣</span>Klarna</div>
+        <div class="type-opt" onclick="selectType(this,'bnpl-provider')" data-val="Afterpay"><span class="type-opt-icon">🟢</span>Afterpay</div>
+        <div class="type-opt" onclick="selectType(this,'bnpl-provider')" data-val="Other"><span class="type-opt-icon">🛍️</span>Other</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">What is this for?</label>
+      <input class="form-input" id="bnpl-name" placeholder="e.g. MacBook, Winter boots, Sofa..." type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Total Amount ($)</label>
+        <input class="form-input" id="bnpl-total" placeholder="500.00" type="number" step="0.01" oninput="calcBnplPayments()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Number of Payments</label>
+        <input class="form-input" id="bnpl-num-payments" placeholder="4" type="number" min="1" oninput="calcBnplPayments()">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Frequency</label>
+        <select class="form-input" id="bnpl-freq" onchange="calcBnplPayments()">
+          <option value="biweekly">Biweekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Interest Rate (% optional)</label>
+        <input class="form-input" id="bnpl-interest" placeholder="0" type="number" step="0.01" min="0" oninput="calcBnplPayments()">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Start Date (first payment)</label>
+        <input class="form-input" id="bnpl-start" type="date" onchange="calcBnplPayments()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Paid From (account)</label>
+        <select class="form-input" id="bnpl-account">
+          <option value="">Select account...</option>
+        </select>
+      </div>
+    </div>
+    <!-- Preview -->
+    <div id="bnpl-preview" style="display:none;background:var(--cream);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:4px">
+      <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Plan Summary</div>
+      <div id="bnpl-preview-content" style="font-size:13px;font-weight:700;color:var(--text);line-height:2"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-bnpl')">Cancel</button>
+      <button class="btn-save" onclick="saveBnplPlan()">Create Plan 🛍️</button>
+    </div>
+  </div>
+</div>
+
+<!-- MARK BNPL PAYMENT PAID -->
+<div class="modal-overlay" id="modal-bnpl-pay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="bnpl-pay-title">Mark Payment Paid ✅</div>
+      <div class="modal-close" onclick="closeModal('modal-bnpl-pay')">✕</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input class="form-input" id="bnpl-pay-amount" type="number" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date Paid</label>
+        <input class="form-input" id="bnpl-pay-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Paid From</label>
+      <select class="form-input" id="bnpl-pay-account">
+        <option value="">Select account...</option>
+      </select>
+    </div>
+    <input type="hidden" id="bnpl-pay-plan-id">
+    <input type="hidden" id="bnpl-pay-payment-idx">
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-bnpl-pay')">Cancel</button>
+      <button class="btn-save" onclick="confirmBnplPayment()">Confirm Payment ✅</button>
     </div>
   </div>
 </div>
@@ -5690,6 +5816,396 @@ window.closeSpendingMore = function() {
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.mobile-more-wrap')) closeSpendingMore();
 });
+
+
+// ══ BUY NOW PAY LATER ═══════════════════════════════════════
+
+// Initialize bnpl plans in state
+if (!state.bnpl) state.bnpl = JSON.parse(localStorage.getItem('clarifi_bnpl') || '[]');
+
+// Include in save/load
+var _origSaveBnpl = save;
+save = function() {
+  _origSaveBnpl();
+  localStorage.setItem('clarifi_bnpl', JSON.stringify(state.bnpl || []));
+  if (currentUser && state.bnpl) {
+    db.collection('users').doc(currentUser.uid).update({ bnpl: state.bnpl }).catch(function(){});
+  }
+};
+
+function bnplFreqDays(freq) {
+  return freq === 'weekly' ? 7 : freq === 'biweekly' ? 14 : 30;
+}
+
+function bnplAddDays(dateStr, days) {
+  var d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+function bnplAddMonths(dateStr, months) {
+  var d = new Date(dateStr + 'T00:00:00');
+  d.setMonth(d.getMonth() + months);
+  return d.toISOString().split('T')[0];
+}
+
+function calcBnplDates(startDate, numPayments, freq) {
+  var dates = [];
+  var cur = startDate;
+  for (var i = 0; i < numPayments; i++) {
+    dates.push(cur);
+    if (freq === 'monthly') cur = bnplAddMonths(cur, 1);
+    else cur = bnplAddDays(cur, bnplFreqDays(freq));
+  }
+  return dates;
+}
+
+window.calcBnplPayments = function() {
+  var total    = parseFloat(document.getElementById('bnpl-total').value) || 0;
+  var num      = parseInt(document.getElementById('bnpl-num-payments').value) || 0;
+  var freq     = document.getElementById('bnpl-freq').value;
+  var interest = parseFloat(document.getElementById('bnpl-interest').value) || 0;
+  var start    = document.getElementById('bnpl-start').value;
+  var preview  = document.getElementById('bnpl-preview');
+  var previewContent = document.getElementById('bnpl-preview-content');
+  if (!total || !num || !start) { if (preview) preview.style.display = 'none'; return; }
+
+  // Calculate total with interest
+  var totalWithInterest = interest > 0 ? total * (1 + interest/100) : total;
+  var perPayment = totalWithInterest / num;
+  var dates = calcBnplDates(start, num, freq);
+  var endDate = dates[dates.length - 1];
+
+  if (preview) preview.style.display = 'block';
+  if (previewContent) {
+    var freqLabel = freq === 'biweekly' ? 'biweekly' : freq;
+    previewContent.innerHTML =
+      '<div>💰 <strong>' + fmt(perPayment) + '</strong> per payment × ' + num + ' payments</div>' +
+      '<div>📅 ' + num + ' ' + freqLabel + ' payments starting <strong>' + start + '</strong></div>' +
+      '<div>🏁 Final payment: <strong>' + endDate + '</strong></div>' +
+      (interest > 0 ? '<div>💸 Total with ' + interest + '% interest: <strong>' + fmt(totalWithInterest) + '</strong></div>' : '') +
+      '<div>💳 Total: <strong>' + fmt(totalWithInterest) + '</strong></div>';
+  }
+};
+
+window.saveBnplPlan = function() {
+  var provider = getType('bnpl-provider', 'Other');
+  var name     = document.getElementById('bnpl-name').value.trim();
+  var total    = parseFloat(document.getElementById('bnpl-total').value) || 0;
+  var num      = parseInt(document.getElementById('bnpl-num-payments').value) || 0;
+  var freq     = document.getElementById('bnpl-freq').value;
+  var interest = parseFloat(document.getElementById('bnpl-interest').value) || 0;
+  var start    = document.getElementById('bnpl-start').value;
+  var acctId   = document.getElementById('bnpl-account').value;
+
+  if (!name)  { showToast('Please enter what this plan is for'); return; }
+  if (!total) { showToast('Please enter the total amount'); return; }
+  if (!num)   { showToast('Please enter number of payments'); return; }
+  if (!start) { showToast('Please select a start date'); return; }
+
+  var totalWithInterest = interest > 0 ? total * (1 + interest/100) : total;
+  var perPayment = totalWithInterest / num;
+  var dates = calcBnplDates(start, num, freq);
+
+  var acct = acctId ? state.cards.find(function(c){ return String(c.id) === String(acctId); }) : null;
+
+  // Build payment schedule
+  var payments = dates.map(function(d, i) {
+    return { idx: i, date: d, amount: perPayment, paid: false, paidDate: null };
+  });
+
+  var plan = {
+    id: Date.now(),
+    provider: provider,
+    name: name,
+    total: total,
+    totalWithInterest: totalWithInterest,
+    perPayment: perPayment,
+    numPayments: num,
+    freq: freq,
+    interest: interest,
+    startDate: start,
+    endDate: dates[dates.length-1],
+    acctId: acctId,
+    acctName: acct ? acct.name : '',
+    payments: payments,
+    createdAt: new Date().toISOString()
+  };
+
+  if (!state.bnpl) state.bnpl = [];
+  state.bnpl.push(plan);
+  save();
+  closeModal('modal-bnpl');
+  // Clear form
+  ['bnpl-name','bnpl-total','bnpl-num-payments','bnpl-interest','bnpl-start'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('bnpl-preview').style.display = 'none';
+  renderAll();
+  showToast(provider + ' plan for ' + name + ' created! 🛍️');
+};
+
+window.openBnplPayModal = function(planId, payIdx) {
+  var plan = (state.bnpl||[]).find(function(p){ return String(p.id) === String(planId); });
+  if (!plan) return;
+  var payment = plan.payments[payIdx];
+  if (!payment) return;
+
+  document.getElementById('bnpl-pay-plan-id').value    = planId;
+  document.getElementById('bnpl-pay-payment-idx').value = payIdx;
+  document.getElementById('bnpl-pay-amount').value      = payment.amount.toFixed(2);
+  document.getElementById('bnpl-pay-date').value        = new Date().toISOString().split('T')[0];
+
+  var title = document.getElementById('bnpl-pay-title');
+  if (title) title.textContent = 'Payment ' + (payIdx+1) + ' of ' + plan.numPayments + ' — ' + plan.name;
+
+  // Populate account
+  var sel = document.getElementById('bnpl-pay-account');
+  if (sel) {
+    sel.innerHTML = '<option value="">Select account...</option>';
+    state.cards.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = String(c.id);
+      var isBank = c.category === 'debit' || c.category === 'bank';
+      opt.textContent = c.name + ' (' + (isBank ? fmt(c.bankBalance||0) : fmt(c.limit-c.balance) + ' avail') + ')';
+      sel.appendChild(opt);
+    });
+    if (plan.acctId) sel.value = String(plan.acctId);
+  }
+
+  document.getElementById('modal-bnpl-pay').classList.add('open');
+};
+
+window.confirmBnplPayment = function() {
+  var planId  = document.getElementById('bnpl-pay-plan-id').value;
+  var payIdx  = parseInt(document.getElementById('bnpl-pay-payment-idx').value);
+  var amount  = parseFloat(document.getElementById('bnpl-pay-amount').value) || 0;
+  var date    = document.getElementById('bnpl-pay-date').value;
+  var acctId  = document.getElementById('bnpl-pay-account').value;
+
+  if (!amount) { showToast('Please enter an amount'); return; }
+  if (!date)   { showToast('Please select a date'); return; }
+
+  var plan = (state.bnpl||[]).find(function(p){ return String(p.id) === String(planId); });
+  if (!plan) return;
+
+  var payment = plan.payments[payIdx];
+  if (!payment) return;
+
+  // Mark payment paid
+  payment.paid     = true;
+  payment.paidDate = date;
+  payment.amount   = amount;
+
+  // Update account balance
+  var acct = acctId ? state.cards.find(function(c){ return String(c.id) === String(acctId); }) : null;
+  if (acct) {
+    var isBank = acct.category === 'debit' || acct.category === 'bank';
+    if (isBank) acct.bankBalance = Math.max(0, (acct.bankBalance||0) - amount);
+    else        acct.balance = (acct.balance||0) + amount;
+  }
+
+  // Log to spending
+  state.transactions.push({
+    id: Date.now(),
+    type: 'expense',
+    desc: plan.provider + ' — ' + plan.name + ' (payment ' + (payIdx+1) + '/' + plan.numPayments + ')',
+    amount: amount,
+    date: date,
+    cardId: acctId,
+    cardName: acct ? acct.name : '',
+    cat: '🛍️ Pay Later',
+    bnplPlanId: String(plan.id),
+    bnplPayIdx: payIdx
+  });
+  state.transactions.sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+
+  save();
+  closeModal('modal-bnpl-pay');
+  renderAll();
+  showToast('Payment ' + (payIdx+1) + ' marked paid ✅' + (acct ? ' · ' + acct.name + ' updated' : ''));
+};
+
+window.deleteBnplPlan = function(id) {
+  state.bnpl = (state.bnpl||[]).filter(function(p){ return String(p.id) !== String(id); });
+  save(); renderAll(); showToast('Plan removed');
+};
+
+// ── Render BNPL list ───────────────────────────────────────────
+function renderBnplList() {
+  var list = document.getElementById('bnpl-list');
+  var totalEl = document.getElementById('bnpl-total-display');
+  if (!list) return;
+
+  var plans = state.bnpl || [];
+
+  // Total remaining
+  var totalRemaining = plans.reduce(function(s, p) {
+    var paid = p.payments.filter(function(x){ return x.paid; }).reduce(function(a,x){ return a+x.amount; },0);
+    return s + (p.totalWithInterest - paid);
+  }, 0);
+  if (totalEl) totalEl.textContent = fmt(totalRemaining) + ' remaining';
+
+  if (plans.length === 0) {
+    list.innerHTML = '<div class="empty-state" style="padding:28px">' +
+      '<div class="empty-icon">🛍️</div>' +
+      '<div class="empty-title" style="font-size:16px">No pay later plans</div>' +
+      '<div class="empty-sub" style="font-size:13px">Track Affirm, Klarna, Afterpay installment plans</div>' +
+      '<button class="empty-btn clarifi-add-bnpl">+ Add Plan</button></div>';
+    return;
+  }
+
+  var providerColors = {
+    'Affirm': '#0040FF', 'Klarna': '#FF69B4', 'Afterpay': '#00C846', 'Other': '#8040D0'
+  };
+
+  list.innerHTML = plans.map(function(p) {
+    var pid = String(p.id);
+    var paidCount = p.payments.filter(function(x){ return x.paid; }).length;
+    var pct = Math.round((paidCount / p.numPayments) * 100);
+    var remaining = p.totalWithInterest - p.payments.filter(function(x){ return x.paid; }).reduce(function(a,x){ return a+x.amount; },0);
+    var color = providerColors[p.provider] || '#8040D0';
+    var nextPayment = p.payments.find(function(x){ return !x.paid; });
+    var isComplete = paidCount === p.numPayments;
+
+    // Payment schedule rows
+    var paymentRows = p.payments.map(function(pay, idx) {
+      var isPaid = pay.paid;
+      return '<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:' + (isPaid?'var(--sage-light)':'var(--cream)') + ';border-radius:8px;margin-bottom:4px">' +
+        '<div style="font-size:11px;font-weight:700;color:var(--muted);min-width:60px">' + pay.date + '</div>' +
+        '<div style="flex:1;font-size:12px;font-weight:700;color:var(--text)">Payment ' + (idx+1) + (isPaid?' <span style="color:var(--sage)">✓</span>':'') + '</div>' +
+        '<div style="font-size:13px;font-weight:800;color:' + (isPaid?'var(--sage)':'var(--text)') + '">' + fmt(pay.amount) + '</div>' +
+        (!isPaid ? '<button onclick="openBnplPayModal(\"' + pid + '\",' + idx + ')" style="background:' + color + ';color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap">Pay</button>' :
+          '<span style="font-size:10px;color:var(--sage);font-weight:700">' + (pay.paidDate||'') + '</span>') +
+        '</div>';
+    }).join('');
+
+    return '<div style="border:1.5px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:12px">' +
+      // Header
+      '<div style="background:' + color + '18;padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">' +
+        '<div style="background:' + color + ';color:#fff;border-radius:10px;padding:4px 10px;font-size:11px;font-weight:900">' + p.provider + '</div>' +
+        '<div style="flex:1">' +
+          '<div style="font-size:14px;font-weight:800;color:var(--text)">' + p.name + (isComplete?' <span style="font-size:10px;background:var(--sage-light);color:var(--sage);border-radius:6px;padding:2px 6px">PAID OFF</span>':'') + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);font-weight:600">' + p.freq + ' · ' + p.numPayments + ' payments · ' + (p.interest>0?p.interest+'% interest · ':'') + (p.acctName||'no account') + '</div>' +
+        '</div>' +
+        '<button onclick="deleteBnplPlan(\''+pid+'\')\" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:4px">✕</button>' +
+      '</div>' +
+      // Progress
+      '<div style="padding:12px 16px;border-bottom:1px solid var(--border)">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+          '<span style="font-size:12px;font-weight:700;color:var(--muted)">' + paidCount + ' of ' + p.numPayments + ' paid</span>' +
+          '<span style="font-size:12px;font-weight:800;color:var(--text)">' + fmt(remaining) + ' remaining</span>' +
+        '</div>' +
+        '<div style="height:6px;background:var(--border);border-radius:6px">' +
+          '<div style="height:6px;background:' + color + ';border-radius:6px;width:' + pct + '%;transition:width 0.4s"></div>' +
+        '</div>' +
+        (nextPayment && !isComplete ? '<div style="font-size:11px;font-weight:700;color:var(--muted);margin-top:6px">Next payment: <strong style="color:var(--text)">' + fmt(nextPayment.amount) + '</strong> on <strong style="color:var(--text)">' + nextPayment.date + '</strong></div>' : '') +
+      '</div>' +
+      // Payment schedule (collapsible)
+      '<div style="padding:12px 16px" id="bnpl-schedule-' + pid + '">' +
+        '<div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Payment Schedule</div>' +
+        paymentRows +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ── Add BNPL to getAllUpcoming ───────────────────────────────
+var _origGetAllUpcoming = getAllUpcoming;
+getAllUpcoming = function() {
+  var base = _origGetAllUpcoming();
+  var bnplItems = [];
+  (state.bnpl || []).forEach(function(p) {
+    p.payments.forEach(function(pay, idx) {
+      if (!pay.paid) {
+        bnplItems.push({
+          id: 'bnpl-' + p.id + '-' + idx,
+          name: p.provider + ': ' + p.name + ' (payment ' + (idx+1) + '/' + p.numPayments + ')',
+          amount: pay.amount,
+          date: pay.date,
+          paid: false,
+          auto: true,
+          isBnpl: true,
+          bnplPlanId: String(p.id),
+          bnplPayIdx: idx
+        });
+      }
+    });
+  });
+  var all = base.concat(bnplItems);
+  all.sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
+  return all;
+};
+
+// ── Hook renderAll to render BNPL list ─────────────────────
+var _origRenderAllBnpl = renderAll;
+renderAll = function() {
+  _origRenderAllBnpl();
+  renderBnplList();
+};
+
+// ── Populate BNPL account select when modal opens ───────────
+var _origOpenModalBnpl = openModal;
+openModal = function(type) {
+  _origOpenModalBnpl(type);
+  if (type === 'bnpl') {
+    var today = new Date().toISOString().split('T')[0];
+    var startEl = document.getElementById('bnpl-start');
+    if (startEl) startEl.value = today;
+    var sel = document.getElementById('bnpl-account');
+    if (sel) {
+      sel.innerHTML = '<option value="">Select account...</option>';
+      state.cards.forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = String(c.id);
+        var isBank = c.category === 'debit' || c.category === 'bank';
+        opt.textContent = c.name + ' (' + (isBank ? fmt(c.bankBalance||0) : fmt(c.limit-c.balance) + ' avail') + ')';
+        sel.appendChild(opt);
+      });
+    }
+    // Reset preview
+    var preview = document.getElementById('bnpl-preview');
+    if (preview) preview.style.display = 'none';
+    // Reset provider selection
+    var firstProv = document.querySelector('#modal-bnpl .type-opt');
+    if (firstProv) {
+      document.querySelectorAll('#modal-bnpl .type-opt').forEach(function(o){ o.classList.remove('selected'); });
+      firstProv.classList.add('selected');
+      state.selectedTypes['bnpl-provider'] = 'Affirm';
+    }
+  }
+};
+
+// ── Load BNPL from Firestore on sign in ─────────────────────
+var _origLoadBnpl = loadFromFirestore;
+loadFromFirestore = function(callback) {
+  _origLoadBnpl(function() {
+    if (currentUser) {
+      db.collection('users').doc(currentUser.uid).get().then(function(doc) {
+        if (doc.exists && doc.data().bnpl) {
+          state.bnpl = doc.data().bnpl;
+          localStorage.setItem('clarifi_bnpl', JSON.stringify(state.bnpl));
+        }
+        callback();
+      }).catch(function(){ callback(); });
+    } else {
+      callback();
+    }
+  });
+};
+
+// ── Also mark BNPL payment when tapped from Coming Up ──────
+var _origMarkPaidUpcoming = markPaidUpcoming;
+markPaidUpcoming = function(id) {
+  if (String(id).startsWith('bnpl-')) {
+    var parts = String(id).split('-');
+    var planId = parts[1];
+    var payIdx = parseInt(parts[2]);
+    openBnplPayModal(planId, payIdx);
+    return;
+  }
+  _origMarkPaidUpcoming(id);
+};
 
 </script>
 
