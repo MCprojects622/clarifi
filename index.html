@@ -4260,6 +4260,24 @@ function renderSpendingLog() {
         <input class="form-input" id="edit-bnpl-interest" type="number" step="0.01" min="0">
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Number of Payments</label>
+        <input class="form-input" id="edit-bnpl-num-payments" type="number" min="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Frequency</label>
+        <select class="form-input" id="edit-bnpl-freq">
+          <option value="weekly">Weekly</option>
+          <option value="biweekly">Biweekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Start Date</label>
+      <input class="form-input" id="edit-bnpl-start" type="date">
+    </div>
     <div class="form-group">
       <label class="form-label">Paid From (account)</label>
       <select class="form-input" id="edit-bnpl-account">
@@ -6250,10 +6268,13 @@ markPaidUpcoming = function(id) {
 window.openEditBnplModal = function(id) {
   var plan = (state.bnpl||[]).find(function(p){ return String(p.id) === String(id); });
   if (!plan) return;
-  document.getElementById('edit-bnpl-id').value       = id;
-  document.getElementById('edit-bnpl-name').value     = plan.name || '';
-  document.getElementById('edit-bnpl-total').value    = plan.total || '';
-  document.getElementById('edit-bnpl-interest').value = plan.interest || '';
+  document.getElementById('edit-bnpl-id').value              = id;
+  document.getElementById('edit-bnpl-name').value            = plan.name || '';
+  document.getElementById('edit-bnpl-total').value           = plan.total || '';
+  document.getElementById('edit-bnpl-interest').value        = plan.interest || '';
+  document.getElementById('edit-bnpl-num-payments').value    = plan.numPayments || '';
+  document.getElementById('edit-bnpl-freq').value            = plan.freq || 'biweekly';
+  document.getElementById('edit-bnpl-start').value           = plan.startDate || '';
   var sel = document.getElementById('edit-bnpl-account');
   if (sel) {
     sel.innerHTML = '<option value="">Select account...</option>';
@@ -6274,22 +6295,39 @@ window.saveEditBnpl = function() {
   var name     = document.getElementById('edit-bnpl-name').value.trim();
   var total    = parseFloat(document.getElementById('edit-bnpl-total').value) || 0;
   var interest = parseFloat(document.getElementById('edit-bnpl-interest').value) || 0;
+  var num      = parseInt(document.getElementById('edit-bnpl-num-payments').value) || 0;
+  var freq     = document.getElementById('edit-bnpl-freq').value;
+  var start    = document.getElementById('edit-bnpl-start').value;
   var acctId   = document.getElementById('edit-bnpl-account').value;
   if (!name)  { showToast('Please enter a name'); return; }
   if (!total) { showToast('Please enter a total'); return; }
+  if (!num)   { showToast('Please enter number of payments'); return; }
+  if (!start) { showToast('Please select a start date'); return; }
   var plan = (state.bnpl||[]).find(function(p){ return String(p.id) === String(id); });
   if (!plan) return;
   var acct = acctId ? state.cards.find(function(c){ return String(c.id) === String(acctId); }) : null;
-  plan.name     = name;
-  plan.total    = total;
-  plan.interest = interest;
+  plan.name             = name;
+  plan.total            = total;
+  plan.interest         = interest;
   plan.totalWithInterest = total + interest;
-  plan.acctId   = acctId;
-  plan.acctName = acct ? acct.name : '';
-  // Recalculate per payment
-  plan.perPayment = plan.totalWithInterest / plan.numPayments;
-  plan.payments.forEach(function(pay) {
-    if (!pay.paid) pay.amount = plan.perPayment;
+  plan.numPayments      = num;
+  plan.freq             = freq;
+  plan.startDate        = start;
+  plan.acctId           = acctId;
+  plan.acctName         = acct ? acct.name : '';
+  // Recalculate per-payment amount
+  plan.perPayment = plan.totalWithInterest / num;
+  // Rebuild payment schedule, preserving paid payments
+  var newDates = calcBnplDates(start, num, freq);
+  plan.endDate = newDates[newDates.length - 1];
+  var oldPayments = plan.payments || [];
+  plan.payments = newDates.map(function(d, i) {
+    var old = oldPayments[i];
+    if (old && old.paid) {
+      // Keep already-paid entries as-is
+      return old;
+    }
+    return { idx: i, date: d, amount: plan.perPayment, paid: false, paidDate: null };
   });
   save(); closeModal('modal-edit-bnpl'); renderAll();
   showToast('Plan updated! ✅');
